@@ -1,13 +1,9 @@
-<?php  include 'header.php' ?>
+<?php require 'header.php';
+?>
 
 <body>
   <div class="header">
-    <div class="logo">
-      <a href="/cartopia/public/">
-        <img src="/cartopia/public/images/logo.png" class="logo-img" />
-        <p style="display: inline-block;">CartOpia</p>
-      </a>
-    </div>
+   <?php require 'logo.php'?>
     <div>
       <ul class="nav-list">
         <li><a class="nav-link" href="">Accueil</a></li>
@@ -26,4 +22,4 @@
       </ul>
     </div>
   </div>
-<!-- </body> -->
+  <!-- </body> -->

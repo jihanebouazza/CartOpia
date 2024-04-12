@@ -1,6 +1,9 @@
 <?php
-include '/xampp/htdocs/cartopia/public/inc/navbar.php'
+// include dirname(__DIR__) .'/public/inc/navbar.php'
+require './inc/navbar.php';
+// require_once dirname(__DIR__)  . '/src/init.php';
 ?>
+
 
 <div class="hero">
   <div class="hero-text">
@@ -10,7 +13,7 @@ include '/xampp/htdocs/cartopia/public/inc/navbar.php'
   </div>
   <a href="" class="primary-btn">Explorez Nos Produits</a>
   <div>
-    <img class="hero-img" src="./images/home222.png" />
+    <img class="hero-img" src="<?= ROOT ?>/images/home222.png" />
   </div>
 </div>
 <section class="first-section">
@@ -64,7 +67,7 @@ include '/xampp/htdocs/cartopia/public/inc/navbar.php'
     </div>
     <div class="testemonial2">
       <div style="position: relative; height: 100%;">
-        <img src="./images/homebg.jpg" class="bg-img" />
+        <img src="<?= ROOT ?>/images/homebg.jpg" class="bg-img" />
         <div class="client">Pierre</div>
         <div class="overlay"></div>
         <p>"Je suis un client fidèle depuis des années et je n'ai jamais été déçu par CartOpia. Des produits de haute qualité, une livraison rapide et un excellent service clientèle font de cette entreprise mon premier choix pour mes achats en ligne."</p>
@@ -72,10 +75,4 @@ include '/xampp/htdocs/cartopia/public/inc/navbar.php'
     </div>
   </div>
 </section>
-<footer>
-  <hr />
-  <p> &copy; 2024 CartOpia. Tous droits réservés. </p>
-</footer>
-</body>
-
-</html>
+<?php require './inc/footer.php' ?>
