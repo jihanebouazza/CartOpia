@@ -8,6 +8,7 @@ require_once dirname(__DIR__) . '/../' . 'src/init.php';
 <head>
   <meta charset="UTF-8">
   <link rel="stylesheet" href="<?= ROOT ?>/css/index.css">
+  <link rel="stylesheet" href="<?= ROOT ?>/css/404.css">
   <link rel="stylesheet" href="<?= ROOT ?>/css/home.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,3 +17,5 @@ require_once dirname(__DIR__) . '/../' . 'src/init.php';
   <title>Cartopia</title>
   <script src="<?= ROOT ?>/script.js" defer></script>
 </head>
+
+<body>

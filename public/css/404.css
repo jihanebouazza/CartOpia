@@ -1,0 +1,22 @@
+.not-found-container {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.not-found-container img {
+  height: 250px;
+  width: 250px;
+  padding-top: 16px;
+}
+.not-found-container p {
+  margin: 8px;
+}
+
+.not-found-container a {
+  margin: 16px 0px 8px;
+  text-align: center;
+}

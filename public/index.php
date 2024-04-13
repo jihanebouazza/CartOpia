@@ -4,7 +4,6 @@ require './inc/navbar.php';
 // require_once dirname(__DIR__)  . '/src/init.php';
 ?>
 
-
 <div class="hero">
   <div class="hero-text">
     <h1 class="hero-header">Votre Destination <span>Unique</span> pour Tout ce Dont Vous Avez <br />

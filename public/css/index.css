@@ -34,6 +34,11 @@ a {
   left: 0;
   background-color: #fffdfd;
 }
+.vr {
+  border-left: 1px solid #bab3b2;
+  min-height: 30px;
+}
+
 .logo {
   font-weight: 700;
   font-size: 28px;
@@ -96,4 +101,38 @@ a {
   font-size: 16px;
   border-radius: 8px;
   color: #fffdfd;
+  border: none;
+  cursor: pointer;
+  transition: box-shadow 0.4s ease;
+  /* background-color 0.3s ease */
+}
+.primary-btn:focus {
+  outline: none; /* focus:outline-none */
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 1),
+    /* White border */ 0 0 0 4px rgba(255, 214, 209, 0.8); /* Main shadow with gap */
+  /* box-shadow: 0 0 0 4px rgba(255, 214, 209, 0.8); */
+}
+
+.secondary-btn {
+  color: #ff988d;
+  padding: 12px 24px;
+  font-size: 16px;
+  border: 2px solid #ff988d;
+  border-radius: 8px;
+  background-color: #fffdfd;
+  cursor: pointer;
+}
+
+footer {
+  padding: 24px 32px;
+}
+
+footer p {
+  color: #615959;
+  text-align: center;
+  padding-top: 16px;
+}
+footer hr {
+  color: #bab3b2;
+  margin: 0px;
 }
