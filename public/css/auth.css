@@ -1,0 +1,112 @@
+.login_container {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.login_form {
+  height: 100vh;
+  /* background-color: aqua; */
+  width: 55%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.login_form form {
+  width: 65%;
+}
+.login_form form h1,
+.login_form form h2 {
+  text-align: center;
+  /* line-height: 1; */
+}
+.login_form form h2 {
+  text-align: center;
+  color: #615959;
+  font-weight: 300;
+  margin-bottom: 8px;
+}
+
+.login_side {
+  height: 100vh;
+  /* background-color: brown; */
+  width: 45%;
+  border: 16px solid transparent;
+  box-sizing: border-box;
+}
+.login_img_bg {
+  background-image: radial-gradient(
+    circle,
+    #ee786b,
+    #f28478,
+    #f59085,
+    #f89c92,
+    #faa89f,
+    #fcb2a9,
+    #fdbcb3,
+    #fec6bd,
+    #ffd0c8,
+    #ffdad3,
+    #ffe4de,
+    #ffeeea
+  );
+  height: 100%;
+  width: 100%;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+.login_img_bg img {
+  height: 300px;
+}
+.login_img_bg h2 {
+  padding: 16px;
+  color: #fffdfd;
+}
+
+.login_label {
+  display: block;
+  padding: 8px 0px;
+font-weight: 700;
+}
+.forgot_password {
+  display: flex;
+  justify-content: flex-end;
+  padding: 8px 0px ;
+  font-weight: 300;
+  color: #4d4444;
+}
+
+.password_div {
+  position: relative;
+}
+.password_icon {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  bottom: 2px;
+}
+.underline {
+  text-align: center;
+  padding-top: 8px;
+}
+.back-home {
+  position: absolute;
+  top: 24px;
+  left: 15%;
+  /* transform: translateX(-50%); */
+  font-weight: 700;
+}
+.double-input {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.double-input div {
+  width: 100%;
+}
