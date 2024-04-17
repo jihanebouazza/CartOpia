@@ -13,13 +13,12 @@
       <li class="vr"></li>
       <li id="geolocation"><i style="padding-right: 4px;" class="fa-solid fa-location-dot fa-xs"></i></li>
       <li class="vr"></li>
-      <li><button class="icon-button"><i style="color: #7C6F6E;" class="fa-solid fa-cart-shopping fa-2x"></i></button></li>
-      <li><button class="icon-button"><i style="color: #7C6F6E;" class="fa-solid fa-heart fa-2x"></i></button></li>
-      <!-- <li class="vr"></li> -->
+      <li><button class="icon-button"><i style="color: #080100;" class="fa-solid fa-cart-shopping fa-xl"></i></button></li>
+      <li><button class="icon-button"><i style="color: #080100;" class="fa-solid fa-heart fa-xl"></i></button></li>
       <li>
         <div class="dropdown">
           <button class="user-btn icon-button">
-            <i style=" color: #7C6F6E;" class="fa-solid fa-circle-user fa-2x"></i>
+            <i style=" color: #080100;" class="fa-solid fa-user fa-xl"></i>
           </button>
           <div class="dropdown-menu">
             <a href="<?= ROOT ?>/views/auth/login.php" class="login">Login</a>
@@ -31,4 +30,3 @@
     </ul>
   </div>
 </div>
-<!-- </body> -->

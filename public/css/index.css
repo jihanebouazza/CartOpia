@@ -139,7 +139,7 @@ footer hr {
 .input {
   width: calc(100% - 16px);
   padding: 8px;
-  border: 1px solid #8E8484;
+  border: 1px solid #8e8484;
   border-radius: 8px;
   font-size: 16px;
   transition: box-shadow 0.4s ease;
@@ -150,14 +150,15 @@ footer hr {
     0 0 0 4px rgba(255, 214, 209, 0.8);
 }
 
-.icon-button{
-  padding: 4px;
+.icon-button {
+  padding: 8px 8px;
   border-radius: 8px;
-  /* background-color: none; */
-  border: 1px solid #bab3b2;
+  border: 1px solid #080100;;
   box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  color: #4D4444;
   background: none;
-  /* border: none; */
   cursor: pointer;
+}
+::placeholder {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 16px;
 }

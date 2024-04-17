@@ -11,6 +11,7 @@ require_once dirname(__DIR__) . '/../' . 'src/init.php';
   <link rel="stylesheet" href="<?= ROOT ?>/css/auth.css">
   <link rel="stylesheet" href="<?= ROOT ?>/css/404.css">
   <link rel="stylesheet" href="<?= ROOT ?>/css/home.css">
+  <link rel="stylesheet" href="<?= ROOT ?>/css/products.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
@@ -19,7 +20,6 @@ require_once dirname(__DIR__) . '/../' . 'src/init.php';
       type="image/png" 
       href="<?= ROOT ?>/images/logo.png" />
   <title>Cartopia</title>
-  <!-- <script src="<?= ROOT ?>/script.js" defer></script> -->
 </head>
 
 <body>
