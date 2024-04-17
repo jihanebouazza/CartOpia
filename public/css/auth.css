@@ -72,12 +72,12 @@
 .login_label {
   display: block;
   padding: 8px 0px;
-font-weight: 700;
+  font-weight: 700;
 }
 .forgot_password {
   display: flex;
   justify-content: flex-end;
-  padding: 8px 0px ;
+  padding: 8px 0px;
   font-weight: 300;
   color: #4d4444;
 }
@@ -97,9 +97,8 @@ font-weight: 700;
 }
 .back-home {
   position: absolute;
-  top: 24px;
+  top: 20px;
   left: 15%;
-  /* transform: translateX(-50%); */
   font-weight: 700;
 }
 .double-input {
@@ -109,4 +108,28 @@ font-weight: 700;
 }
 .double-input div {
   width: 100%;
+}
+.password-validation {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  margin: 8px 0px;
+  flex-wrap: wrap;
+}
+.password-div,
+.password-div-error {
+  font-size: 14px;
+  border-radius: 8px;
+  font-weight: 300;
+  padding: 8px;
+}
+
+.password-div {
+  background-color: #dafecd;
+  color: #154d01;
+}
+
+.password-div-error {
+  background-color: #FFD7D7;
+  color: #760101;
 }

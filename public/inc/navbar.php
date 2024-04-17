@@ -1,7 +1,8 @@
 <?php require 'header.php';
 ?>
 
-<script src="<?= ROOT ?>/script.js" defer></script>
+<script src="<?= ROOT ?>/js/geolocation.js" defer></script>
+<script src="<?= ROOT ?>/js/dropdown.js" defer></script>
 <div class="header">
   <?php require 'logo.php' ?>
   <div>
@@ -12,13 +13,13 @@
       <li class="vr"></li>
       <li id="geolocation"><i style="padding-right: 4px;" class="fa-solid fa-location-dot fa-xs"></i></li>
       <li class="vr"></li>
-      <li><i style="color:#080100" class="fa-solid fa-cart-shopping fa-lg"></i></li>
-      <li><i style="color:#080100" class="fa-solid fa-heart fa-lg"></i></li>
+      <li><button class="icon-button"><i style="color: #7C6F6E;" class="fa-solid fa-cart-shopping fa-2x"></i></button></li>
+      <li><button class="icon-button"><i style="color: #7C6F6E;" class="fa-solid fa-heart fa-2x"></i></button></li>
       <!-- <li class="vr"></li> -->
       <li>
         <div class="dropdown">
-          <button class="user-btn">
-            <i style="color:#080100; padding-right: 6px;" class="fa-solid fa-circle-user fa-2x"></i>
+          <button class="user-btn icon-button">
+            <i style=" color: #7C6F6E;" class="fa-solid fa-circle-user fa-2x"></i>
           </button>
           <div class="dropdown-menu">
             <a href="<?= ROOT ?>/views/auth/login.php" class="login">Login</a>

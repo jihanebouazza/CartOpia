@@ -23,14 +23,14 @@ require '../../inc/header.php';
         <label class="login_label">
           Email
         </label>
-        <input value="" placeholder="" type="text" name="email" class="">
+        <input value="" placeholder="" type="text" name="email" class="input">
       </div>
       <div>
         <label class="login_label">
           Mot de passe
         </label>
         <div class="password_div">
-          <input value="" placeholder="" type="password" name="password" class="password_input">
+          <input value="" placeholder="" type="password" name="password" class="password_input input">
           <div class="password_icon">
             <i class="fa-regular fa-eye show-password" style="cursor: pointer;display: none;"></i>
             <i class="fa-regular fa-eye-slash hide-password" style="cursor: pointer;"></i>
@@ -43,6 +43,7 @@ require '../../inc/header.php';
     </form>
   </div>
 </main>
+<script src="<?= ROOT ?>/js/password-login.js" defer></script>
 
 </body>
 
