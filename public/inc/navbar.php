@@ -8,7 +8,7 @@
   <div>
     <ul class="nav-list">
       <li><a class="nav-link" href="<?= ROOT ?>/">Accueil</a></li>
-      <li><a class="nav-link" href="<?= ROOT ?>/produits.php">Produits</a></li>
+      <li><a class="nav-link" href="<?= ROOT ?>/views/products/">Produits</a></li>
       <li><a class="nav-link" href="">Accueil</a></li>
       <li class="vr"></li>
       <li id="geolocation"><i style="padding-right: 4px;" class="fa-solid fa-location-dot fa-xs"></i></li>

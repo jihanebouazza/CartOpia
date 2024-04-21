@@ -10,7 +10,7 @@ require './inc/navbar.php';
       <span>Besoin</span> et <span>Envie</span>.
     </h1>
   </div>
-  <a href="<?= ROOT ?>/views/products/products.php"><button class="primary-btn">Explorez Nos Produits</button></a>
+  <a href="<?= ROOT ?>/views/products/"><button class="primary-btn">Explorez Nos Produits</button></a>
   <div>
     <img class="hero-img" src="<?= ROOT ?>/images/home222.png" />
   </div>
