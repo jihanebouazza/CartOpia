@@ -13,7 +13,7 @@
       <li class="vr"></li>
       <li id="geolocation"><i style="padding-right: 4px;" class="fa-solid fa-location-dot fa-xs"></i></li>
       <li class="vr"></li>
-      <li><button class="icon-button"><i style="color: #080100;" class="fa-solid fa-cart-shopping fa-xl"></i></button></li>
+      <li><a href="<?= ROOT ?>/views/products/cart.php" class="icon-button"><i style="color: #080100;" class="fa-solid fa-cart-shopping fa-xl"></i></a></li>
       <li><button class="icon-button"><i style="color: #080100;" class="fa-solid fa-heart fa-xl"></i></button></li>
       <li>
         <div class="dropdown">

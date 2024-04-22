@@ -22,7 +22,7 @@ h2 {
 }
 a {
   text-decoration: none;
-  color: #210401;
+  color: #080100;
 }
 .header {
   display: flex;
@@ -83,7 +83,7 @@ a {
   border-radius: 0.25rem;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.1);
   /* border: 0.2px solid #bab3b2; */
-  border: 0.2px solid #8e8484;
+  border: 0.2px solid #BAB3B2;
 
   opacity: 0;
   pointer-events: none;
@@ -99,7 +99,7 @@ a {
 }
 .hr {
   /* border-: 0.2px solid #bab3b2; */
-  border-bottom: 0.2px solid #8e8484;
+  border-bottom: 0.2px solid #BAB3B2;
 }
 .primary-btn {
   background-color: #ff988d;
@@ -137,6 +137,16 @@ a {
   cursor: pointer;
   font-weight: 300;
 }
+.regular-btn {
+  color: #080100;
+  padding: 8px 12px;
+  font-size: 14px;
+  border: 1px solid #080100;
+  border-radius: 8px;
+  background-color: #fffdfd;
+  cursor: pointer;
+  font-weight: 300;
+}
 
 .secondary-btn {
   color: #ff988d;
@@ -146,6 +156,17 @@ a {
   border-radius: 8px;
   background-color: #fffdfd;
   cursor: pointer;
+}
+
+.red-btn-regular{
+  background:none;
+  /* padding: 12px 24px; */
+  font-size: 16px;
+  /* border: 8px; */
+  color: #F56262;
+  border: none;
+  cursor: pointer;
+
 }
 
 footer {
@@ -165,7 +186,7 @@ footer hr {
 .input {
   width: calc(100% - 16px);
   padding: 8px;
-  border: 1px solid #8e8484;
+  border: 1px solid #BAB3B2;
   border-radius: 8px;
   font-size: 16px;
   transition: box-shadow 0.4s ease;
