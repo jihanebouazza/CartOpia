@@ -126,3 +126,166 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     document.querySelector(".js-file").src = URL.createObjectURL(file);
   }
 </script>
+
+
+
+
+
+
+
+
+<!-- <?php
+require '../../inc/navbar.php';
+$title = "title";
+$product_id = $_GET['id'] ?? 0;
+// sanitizing
+$product_id = (int)$product_id;
+
+if ($product_id > 0) {
+  // Prepare the statement to fetch product details along with category title
+  if ($stmt = $con->prepare("SELECT p.*, c.title AS category_title FROM products p LEFT JOIN categories c ON p.category_id = c.id WHERE p.id = ?")) {
+    $stmt->bind_param("i", $product_id);  // Bind the integer parameter for the product ID
+    $stmt->execute();  // Execute the prepared statement
+    $result = $stmt->get_result();  // Get the result of the query
+
+    $product_details = $result->fetch_assoc();  // Fetch results as an associative array
+
+    // Check if product details exist
+    if ($product_details) {
+      // Prepare the statement to fetch all images for the product
+      if ($image_stmt = $con->prepare("SELECT title FROM images WHERE product_id = ?")) {
+        $image_stmt->bind_param("i", $product_id);
+        $image_stmt->execute();
+        $image_result = $image_stmt->get_result();
+
+        $images = [];
+        while ($row = $image_result->fetch_assoc()) {
+          $images[] = $row['title'];  // Append each image title to the images array
+        }
+
+        $product_details['images'] = $images;  // Add images array to the product details
+      }
+    }
+  } else {
+    echo "Prepared Statement Error: " . $con->error;
+  }
+}
+
+// echo '<pre>';
+// print_r($product_details);
+// echo '</pre>';
+?> -->
+
+<!-- <?php
+require '../../inc/navbar.php';
+$title = "title";
+$product_id = $_GET['id'] ?? 0;
+// sanitizing
+$product_id = (int)$product_id;
+
+if ($product_id > 0) {
+    // Fetch product details along with category title
+    if ($stmt = $con->prepare("SELECT p.*, c.title AS category_title FROM products p LEFT JOIN categories c ON p.category_id = c.id WHERE p.id = ?")) {
+        $stmt->bind_param("i", $product_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $product_details = $result->fetch_assoc();
+
+        // Fetch images for the product
+        if ($product_details && ($image_stmt = $con->prepare("SELECT title FROM images WHERE product_id = ?"))) {
+            $image_stmt->bind_param("i", $product_id);
+            $image_stmt->execute();
+            $image_result = $image_stmt->get_result();
+            $images = [];
+            while ($row = $image_result->fetch_assoc()) {
+                $images[] = $row['title'];
+            }
+            $product_details['images'] = $images;
+        }
+
+        // Fetch reviews for the product
+        if ($review_stmt = $con->prepare("SELECT r.text, r.user_id FROM reviews r WHERE r.product_id = ?")) {
+            $review_stmt->bind_param("i", $product_id);
+            $review_stmt->execute();
+            $review_result = $review_stmt->get_result();
+            $reviews = [];
+            while ($row = $review_result->fetch_assoc()) {
+                $reviews[] = $row;
+            }
+            $product_details['reviews'] = $reviews;
+        }
+
+        // Fetch similar products from the same category
+        if ($similar_stmt = $con->prepare("SELECT * FROM products WHERE category_id = ? AND id != ? LIMIT 4")) {
+            $similar_stmt->bind_param("ii", $product_details['category_id'], $product_id);
+            $similar_stmt->execute();
+            $similar_result = $similar_stmt->get_result();
+            $similar_products = [];
+            while ($row = $similar_result->fetch_assoc()) {
+                $similar_products[] = $row;
+            }
+            $product_details['similar_products'] = $similar_products;
+        }
+    } else {
+        echo "Prepared Statement Error: " . $con->error;
+    }
+}
+
+echo '<pre>';
+print_r($product_details);
+echo '</pre>';
+?> -->
+
+
+
+
+
+<!-- ------------------------------------------------ -->
+if ($product_id > 0) {
+  // Fetch product details along with category title
+  $stmt = $con->prepare("SELECT p.*, c.title AS category_title FROM products p LEFT JOIN categories c ON p.category_id = c.id WHERE p.id = ?");
+  $stmt->bind_param("i", $product_id);
+  $stmt->execute();
+  $product_details = $stmt->get_result()->fetch_assoc();
+
+  if ($product_details) {
+    // Fetch images for the product
+    $image_stmt = $con->prepare("SELECT title FROM images WHERE product_id = ?");
+    $image_stmt->bind_param("i", $product_id);
+    $image_stmt->execute();
+    $image_result = $image_stmt->get_result();
+    $product_details['images'] = [];
+    while ($row = $image_result->fetch_assoc()) {
+      $product_details['images'][] = $row['title'];
+    }
+
+    // Fetch reviews for the product including user names
+    $review_stmt = $con->prepare("SELECT r.text,r.rating, u.firstname, u.lastname FROM reviews r JOIN users u ON r.user_id = u.id WHERE r.product_id = ?");
+    $review_stmt->bind_param("i", $product_id);
+    $review_stmt->execute();
+    $review_result = $review_stmt->get_result();
+    $product_details['reviews'] = [];
+    while ($review = $review_result->fetch_assoc()) {
+      $product_details['reviews'][] = $review;
+    }
+
+    // Fetch similar products from the same category with their category titles
+    $similar_stmt = $con->prepare("SELECT p.*, c.title AS category_title FROM products p JOIN categories c ON p.category_id = c.id WHERE p.category_id = ? AND p.id != ? LIMIT 10");
+    $similar_stmt->bind_param("ii", $product_details['category_id'], $product_id);
+    $similar_stmt->execute();
+    $similar_result = $similar_stmt->get_result();
+    $product_details['similar_products'] = [];
+    while ($similar = $similar_result->fetch_assoc()) {
+      $similar['images'] = [];
+      // Fetch images for each similar product
+      $image_stmt = $con->prepare("SELECT title FROM images WHERE product_id = ?");
+      $image_stmt->bind_param("i", $similar['id']);
+      $image_stmt->execute();
+      $images_result = $image_stmt->get_result();
+      while ($img = $images_result->fetch_assoc()) {
+        $similar['images'][] = $img['title'];
+      }
+      $product_details['similar_products'][] = $similar;
+    }
+  }
+}

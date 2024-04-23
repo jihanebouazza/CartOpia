@@ -1,46 +1,15 @@
 <?php
 require '../../inc/navbar.php';
-$title = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
 
-
-// Fetch products along with their category titles
-$query = "SELECT p.*, c.title AS category_title
-          FROM products p
-          LEFT JOIN categories c ON p.category_id = c.id
-          ORDER BY p.id;";
-$products = query($query);
-
-// Initialize an array to store products with an additional images key
-$products_with_images = [];
-
-foreach ($products as $product) {
-  // Initialize each product with an empty images array
-  $product['images'] = [];
-  $products_with_images[$product['id']] = $product;
-}
-
-// Only proceed if we have products
-if (!empty($products_with_images)) {
-  $product_ids = array_keys($products_with_images);
-  $id_list = implode(',', $product_ids);
-
-  $image_query = "SELECT i.product_id, i.title AS image_title
-                    FROM images i
-                    WHERE i.product_id IN ($id_list);";
-  $images = query($image_query);
-
-  // Loop over images and append them to their respective products
-  foreach ($images as $image) {
-    $products_with_images[$image['product_id']]['images'][] = $image['image_title'];
-  }
-}
-
-// Now $products_with_images contains all products and their images correctly
-echo '<pre>';
-print_r($products_with_images);
-echo '</pre>';
+$products_with_images = getAllProducts();
+// if (!empty($products_with_images)) {
+//   echo '<pre>';
+//   print_r($products_with_images);
+//   echo '</pre>';
+// } else {
+//   echo "No product found!";
+// }
 ?>
-
 
 <main class="products-main">
   <div class="filter-container">
@@ -98,25 +67,40 @@ echo '</pre>';
       <div class="search-icon"><button style="background: none;border: none; cursor: pointer;"><i class="fa-solid fa-magnifying-glass fa-lg" style="color: #080100;"></i></button></div>
     </div>
     <div class="products">
-      <div class="product">
-        <div class="product-img-div">
-          <img class="product-img" src="<?= ROOT ?>/images/product.png" alt="">
-          <div class="category"><i class="fa-solid fa-circle fa-2xs"></i> Category</div>
-          <div class="product-img-icon">
-            <button class="icon-button"><i style="color: #C51818; opacity: 1;" class="fa-regular fa-heart fa-xl"></i></button>
-          </div>
-        </div>
-        <a href="<?= ROOT ?>/views/products/product.php/id=1" class="product-title"><?= strlen($title) >= 58 ? substr($title, 0, 58) . '...' : $title ?></a>
-        <p class="review"><i style="color:#FAE264" class="fa-solid fa-star"></i> 4.5 (14)</p>
-        <div class="product-icon-container">
-          <div>
-            <!-- <button class="regular-btn"><i style="color: #080100;" class="fa-solid fa-cart-shopping fa-lg"></i> Ajouter au panier</button> -->
-            <button class="icon-button"><i style="color: #080100;" class="fa-solid fa-cart-shopping fa-xl"></i></button>
 
+      <?php if (!empty($products_with_images)) : ?>
+
+        <?php foreach ($products_with_images as $product) : ?>
+          <div class="product">
+            <div class="product-img-div">
+              <img class="product-img" src="<?= '../' . $product['images'][0] ?>" alt="">
+              <div class="category"><i class="fa-solid fa-circle fa-2xs"></i> <?= $product['category_title'] ?></div>
+              <div class="product-img-icon">
+                <button class="icon-button"><i style="color: #C51818; opacity: 1;" class="fa-regular fa-heart fa-xl"></i></button>
+              </div>
+            </div>
+            <a href="<?= ROOT ?>/views/products/product.php?id=<?= $product['id'] ?>" class="product-title"><?= strlen($product['title']) >= 50 ? substr($product['title'], 0, 50) . '...' :  $product['title']  ?></a>
+            <p class="review"><i style="color:#FAE264" class="fa-solid fa-star"></i>
+              <?= $product['rating_details']['average_rating'] == null ? '<span class="review">Pas encore d\'avis</span>' : $product['rating_details']['average_rating'] . '(' . $product['rating_details']['rating_count'] . ')' ?>
+            </p>
+            <div class="product-icon-container">
+              <div>
+                <button class="icon-button"><i style="color: #080100;" class="fa-solid fa-cart-shopping fa-xl"></i></button>
+              </div>
+              <div class="product-price-container">
+
+                <?= $product['discount_percentage'] > 0 ? ' <p class="discount-price">' . $product['price'] . 'dh</p>' . '<p class="product-price">' . calculateDiscountPrice($product['price'],  $product['discount_percentage']) . 'dh</p>'  : '<p class="product-price">' . $product['price'] . 'dh</p>' ?>
+
+              </div>
+            </div>
           </div>
-          <div class="product-price">250 dh</div>
+        <?php endforeach; ?>
+
+      <?php else : ?>
+        <div style="text-align: center; width: 100%;">
+          <p>Aucun produit trouvé !</p>
         </div>
-      </div>
+      <?php endif; ?>
     </div>
   </div>
 </main>
