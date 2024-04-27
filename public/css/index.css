@@ -6,7 +6,7 @@ body {
   font-size: 16px;
   padding: 0;
 }
-button{
+button {
   font-family: "Space Grotesk", sans-serif;
 }
 p,
@@ -60,8 +60,14 @@ a {
 .nav-list li {
   padding-right: 16px;
 }
+.nav-link{
+  transition: border-bottom 0.3s ease, color 0.3s ease;
+}
 .nav-link:hover {
+  border-bottom: 4px solid #ee786b;
+  padding-bottom: 4px;
   color: #ee786b;
+  font-weight: 700;
 }
 
 .user-btn {
@@ -83,7 +89,7 @@ a {
   border-radius: 0.25rem;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.1);
   /* border: 0.2px solid #bab3b2; */
-  border: 0.2px solid #BAB3B2;
+  border: 0.2px solid #bab3b2;
 
   opacity: 0;
   pointer-events: none;
@@ -99,7 +105,7 @@ a {
 }
 .hr {
   /* border-: 0.2px solid #bab3b2; */
-  border-bottom: 0.2px solid #BAB3B2;
+  border-bottom: 0.2px solid #bab3b2;
 }
 .primary-btn {
   background-color: #ff988d;
@@ -160,12 +166,12 @@ a {
   cursor: pointer;
 }
 
-.red-btn-regular{
-  background:none;
+.red-btn-regular {
+  background: none;
   /* padding: 12px 24px; */
   font-size: 16px;
   /* border: 8px; */
-  color: #F56262;
+  color: #f56262;
   border: none;
   cursor: pointer;
 }
@@ -187,12 +193,12 @@ footer hr {
 .input {
   width: calc(100% - 16px);
   padding: 8px;
-  border: 1px solid #BAB3B2;
+  border: 1px solid #bab3b2;
   border-radius: 8px;
   font-size: 16px;
   transition: box-shadow 0.4s ease;
   font-family: "Space Grotesk", sans-serif;
-font-size: 16px;
+  font-size: 16px;
 }
 .input:focus {
   outline: none; /* focus:outline-none */

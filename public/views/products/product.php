@@ -47,10 +47,13 @@ if ($product_id > 0) {
           <?= $product_details['discount_percentage'] > 0 ? '<p class="product-price">' . calculateDiscountPrice($product_details['price'],  $product_details['discount_percentage']) . 'dh</p>' . ' <p class="discount-price">' . $product_details['price'] . 'dh</p>' : '<p class="product-price">' . $product_details['price'] . 'dh</p>' ?>
         </div>
         <div>
-          <button class="icon-button plus"><i style="color: #080100;" class="fa-solid fa-plus fa-xl"></i></button>
-          <input type="text" value="0" class="qty-input">
-          <button style="margin-right: 8px;" class="icon-button minus"><i style="color: #080100;" class="fa-solid fa-minus fa-xl"></i></button>
-          <button class="secondary-btn-small"><i style="color: #ff988d;" class="fa-solid fa-cart-shopping fa-lg"></i> Ajouter au panier</button>
+          <form style="display: inline-block;" method="post" action="cart.php">
+            <input type="hidden" name="product_id" value="<?= $product_details['id'] ?>">
+            <button type="button" class="icon-button plus"><i style="color: #080100;" class="fa-solid fa-plus fa-xl"></i></button>
+            <input type="text" name="quantity" value="1" class="qty-input">
+            <button type="button" style="margin-right: 8px;" class="icon-button minus"><i style="color: #080100;" class="fa-solid fa-minus fa-xl"></i></button>
+            <button name="add" type="submit" class="secondary-btn-small"><i style="color: #ff988d;" class="fa-solid fa-cart-shopping fa-lg"></i> Ajouter au panier</button>
+          </form>
           <button class="icon-button" style="border-color: #C51818;">
             <i style="color: #C51818;" class="fa-regular fa-heart fa-xl"></i></button>
         </div>
@@ -77,7 +80,7 @@ if ($product_id > 0) {
       </div>
     </div>
   <?php endif; ?>
-  <?php if (!empty($product_details['reviews'])) : ?>
+  <?php if (!empty($product_details['similar_products'])) : ?>
     <div class="suggestions-section">
       <h2>Vous aimerez peut-être aussi</h2>
       <div class="suggestions-container">
@@ -95,9 +98,10 @@ if ($product_id > 0) {
               <?= $product['rating_details']['average_rating'] == null ? '<span class="review">Pas encore d\'avis</span>' : $product['rating_details']['average_rating'] . '(' . $product['rating_details']['rating_count'] . ')' ?>
             </p>
             <div class="product-icon-container">
-              <div>
-                <button class="icon-button"><i style="color: #080100;" class="fa-solid fa-cart-shopping fa-xl"></i></button>
-              </div>
+              <form method="post" action="cart.php">
+                <input type="hidden" name="product_id" value="<?= $product['id'] ?>">
+                <button name="add" type="submit" class="icon-button"><i style="color: #080100;" class="fa-solid fa-cart-shopping fa-xl"></i></button>
+              </form>
               <div class="product-price-container">
                 <?= $product['discount_percentage'] > 0 ? ' <p class="discount-price">' . $product['price'] . 'dh</p>' . '<p class="product-price">' . calculateDiscountPrice($product['price'],  $product['discount_percentage']) . 'dh</p>'  : '<p class="product-price">' . $product['price'] . 'dh</p>' ?>
               </div>

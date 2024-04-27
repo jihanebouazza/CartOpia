@@ -1,44 +1,85 @@
 <?php
 require '../../inc/navbar.php';
-$title = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.";
+
+// Cart operations
+if ($_SERVER['REQUEST_METHOD'] == "POST") {
+  if (isset($_POST['add'])) {
+    $product_id = $_POST['product_id'];
+    $quantity = $_POST['quantity'] ?? 1; // Default quantity to 1 if not specified
+
+    // Check if the cart session exists
+    if (!isset($_SESSION['cart'])) {
+      $_SESSION['cart'] = [];
+    }
+
+    // Add or update the product in the cart
+    if (!isset($_SESSION['cart'][$product_id])) {
+      $_SESSION['cart'][$product_id] = $quantity;
+    }
+    // else {
+    //   $_SESSION['cart'][$product_id] += $quantity;
+    // }
+    header('Location: ' . $_SERVER['HTTP_REFERER']);  // Redirect back to the previous page
+    exit;
+  } elseif (isset($_POST['remove'])) {
+    $product_id = $_POST['product_id'];
+    if (isset($_SESSION['cart'][$product_id])) {
+      unset($_SESSION['cart'][$product_id]);  // Remove the item from the cart
+    }
+  } elseif (isset($_POST['empty_cart'])) {
+    $_SESSION['cart'] = [];  // Empty the cart
+  }
+}
+// print_r($_SESSION['cart']);
 ?>
 
 <main class="cart">
   <div class="cart-container">
     <div class="cart-heading">
-      <h2>Panier <span>(2 produits)</span></h2>
-      <button class="red-btn-regular"><i class="fa-solid fa-x fa-sm"></i> Vider le panier</button>
+      <h2>Panier <span>(<?= count($_SESSION['cart'] ?? []) ?> produit<?= count($_SESSION['cart'] ?? []) > 1 ? 's' : '' ?>)</span></h2>
+      <form method="post">
+        <button name="empty_cart" class="red-btn-regular"><i class="fa-solid fa-x fa-sm"></i> Vider le panier</button>
+      </form>
     </div>
-    <div class="cart-product">
-      <div class="product-img-title">
-        <img style="margin-right: 8px;" class="small-img" src="<?= ROOT ?>/images/product1.jpeg" alt="">
-        <a href="<?= ROOT ?>/views/products/product.php/id=1" class="product-title"><?= strlen($title) >= 15 ? substr($title, 0, 15) . '...' : $title ?></a>
+    <?php if (!empty($_SESSION['cart'])) : ?>
+      <?php foreach ($_SESSION['cart'] as $product_id => $quantity) : ?>
+        <?php
+        $product = getProductByID($product_id);
+        $basePrice = $product['discount_percentage'] > 0 ? calculateDiscountPrice($product['price'], $product['discount_percentage']) : $product['price'];
+        // echo '<pre>';
+        // print_r($product);
+        // echo '</pre>';
+        ?>
+        <div class="cart-product">
+          <div class="product-img-title">
+            <img style="margin-right: 8px;" class="small-img" src="<?= '../' . $product['images'][0] ?>" alt="">
+            <a href="<?= ROOT ?>/views/products/product.php?id=<?= $product['id'] ?>" class="product-title"><?= strlen($product['title']) >= 15 ? substr($product['title'], 0, 15) . '...' : $product['title'] ?></a>
+          </div>
+          <div class="product-qty">
+            <button class="icon-button plus"><i style="color: #080100;" class="fa-solid fa-plus fa-xl"></i></button>
+            <input type="text" value="<?= $quantity ?>" class="qty-input">
+            <!-- <input type="text" value="<?= $quantity ?>" class="qty-input" data-price="<?= $unit_price ?>"> -->
+
+            <button style="margin-right: 8px;" class="icon-button minus"><i style="color: #080100;" class="fa-solid fa-minus fa-xl"></i></button>
+          </div>
+          <div class="product-price-cart">
+            <p class="product-price">
+            <?= $basePrice * $quantity ?>dh
+            </p>
+          </div>
+          <div>
+            <form method="post">
+              <input type="hidden" name="product_id" value="<?= $product_id ?>">
+              <button type="submit" name="remove" class="red-btn-regular"><i class="fa-solid fa-x fa-sm"></i></button>
+            </form>
+          </div>
+        </div>
+      <?php endforeach; ?>
+    <?php else : ?>
+      <div style="height:26vh; width: 100%; display:flex; align-items: center; justify-content: center;">
+        <p>Aucun produit trouvé !</p>
       </div>
-      <div class="product-qty">
-        <button class="icon-button plus"><i style="color: #080100;" class="fa-solid fa-plus fa-xl"></i></button>
-        <input type="text" value="0" class="qty-input">
-        <button style="margin-right: 8px;" class="icon-button minus"><i style="color: #080100;" class="fa-solid fa-minus fa-xl"></i></button>
-      </div>
-      <div class="product-price-cart">
-        <p class="product-price">250dh</p>
-      </div>
-      <div><button class="red-btn-regular"><i class="fa-solid fa-x fa-sm"></i></button></div>
-    </div>
-    <div class="cart-product">
-      <div class="product-img-title">
-        <img style="margin-right: 8px;" class="small-img" src="<?= ROOT ?>/images/product1.jpeg" alt="">
-        <a href="<?= ROOT ?>/views/products/product.php/id=1" class="product-title"><?= strlen($title) >= 15 ? substr($title, 0, 15) . '...' : $title ?></a>
-      </div>
-      <div class="product-qty">
-        <button class="icon-button plus"><i style="color: #080100;" class="fa-solid fa-plus fa-xl"></i></button>
-        <input type="text" value="0" class="qty-input">
-        <button style="margin-right: 8px;" class="icon-button minus"><i style="color: #080100;" class="fa-solid fa-minus fa-xl"></i></button>
-      </div>
-      <div class="product-price-cart">
-        <p class="product-price">250dh</p>
-      </div>
-      <div><button class="red-btn-regular"><i class="fa-solid fa-x fa-sm"></i></button></div>
-    </div>
+    <?php endif; ?>
   </div>
   <div class="total-container">
     <h2>Résumé de la commande</h2>
