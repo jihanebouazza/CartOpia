@@ -130,3 +130,10 @@
   border-radius: 8px;
 }
 
+.active{
+  border-bottom: 4px solid #EE786B;
+  padding-bottom: 4px;
+  color: #EE786B;
+  font-weight: 700;
+}
+

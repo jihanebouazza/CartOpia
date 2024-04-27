@@ -38,9 +38,9 @@ if ($product_id > 0) {
       <h2><?= $product_details['title'] ?></h2>
       <div class="category"><i class="fa-solid fa-circle fa-2xs"></i> <?= $product_details['category_title'] ?></div>
 
-      <p style="margin-bottom:8px;">
+      <p class="review" style="margin-bottom:8px;">
         <i style="color:#FAE264" class="fa-solid fa-star"></i>
-        <?= $product_details['rating_details']['average_rating'] == null ? '<span class="review">Pas encore d\'avis</span>' : $product_details['rating_details']['average_rating'] . '(' . $product_details['rating_details']['rating_count'] . ')' ?>
+        <?= $product_details['rating_details']['average_rating'] == null ? '<span class="review">Pas encore d\'avis</span>' : $product_details['rating_details']['average_rating'] . ' (' . $product_details['rating_details']['rating_count'] . ')' ?>
       </p>
       <div class="product-icon-container">
         <div class="product-price-container">
@@ -69,7 +69,7 @@ if ($product_id > 0) {
           <div class="single-review">
             <p style="font-weight: 700;"><?= $review['firstname'] . ' ' . $review['lastname'] ?></p>
             <p style="margin-top: 4px;" class="review">
-              <i style="color:#FAE264" class="fa-solid fa-star"></i> <?= $review['rating'] ?>
+              <i style="color:#FAE264" class="fa-solid fa-star"></i> <?= $review['rating'] ?>/5
             </p>
             <p><?= $review['text'] ?></p>
           </div>

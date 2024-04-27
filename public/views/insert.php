@@ -289,3 +289,160 @@ if ($product_id > 0) {
     }
   }
 }
+
+
+
+
+
+// function getAllProducts()
+// {
+//   $query = "SELECT p.*, c.title AS category_title
+//           FROM products p
+//           LEFT JOIN categories c ON p.category_id = c.id
+//           ORDER BY p.id;";
+//   $products = query($query);
+
+//   // Initialize an array to store products with an additional images key
+//   $products_with_images = [];
+
+//   foreach ($products as $product) {
+//     // Initialize each product with an empty images array
+//     $product['images'] = [];
+//     $products_with_images[$product['id']] = $product;
+//   }
+
+//   // Only proceed if we have products
+//   if (!empty($products_with_images)) {
+//     $product_ids = array_keys($products_with_images);
+//     $id_list = implode(',', $product_ids);
+
+//     $image_query = "SELECT i.product_id, i.title AS image_title
+//                     FROM images i
+//                     WHERE i.product_id IN ($id_list);";
+//     $images = query($image_query);
+
+//     // Loop over images and append them to their respective products
+//     foreach ($images as $image) {
+//       $products_with_images[$image['product_id']]['images'][] = $image['image_title'];
+//     }
+//   }
+//   return $products_with_images;
+// }
+
+
+
+
+// function getSimilarProducts($category_id, $product_id)
+// {
+//   global $con;
+//   $similar_products = [];
+//   $similar_stmt = $con->prepare("SELECT p.*, c.title AS category_title FROM products p JOIN categories c ON p.category_id = c.id WHERE p.category_id = ? AND p.id != ? LIMIT 10");
+//   $similar_stmt->bind_param("ii", $category_id, $product_id);
+//   $similar_stmt->execute();
+//   $similar_result = $similar_stmt->get_result();
+//   while ($similar = $similar_result->fetch_assoc()) {
+//     $similar['images'] = [];
+//     $image_stmt = $con->prepare("SELECT title FROM images WHERE product_id = ?");
+//     $image_stmt->bind_param("i", $similar['id']);
+//     $image_stmt->execute();
+//     $images_result = $image_stmt->get_result();
+//     while ($img = $images_result->fetch_assoc()) {
+//       $similar['images'][] = $img['title'];
+//     }
+//     $similar_products[] = $similar;
+//   }
+//   return $similar_products;
+// }
+
+
+
+
+// Capture filter inputs
+$search = isset($_GET['search']) ? $_GET['search'] : '';
+$brandFilter = isset($_GET['brand']) ? $_GET['brand'] : [];
+$minPrice = isset($_GET['min_price']) ? $_GET['min_price'] : null;
+$maxPrice = isset($_GET['max_price']) ? $_GET['max_price'] : null;
+$ratingRanges = [
+  (isset($_GET['rating_1_2']) && $_GET['rating_1_2'] == 'on') ? [1, 2] : null,
+  (isset($_GET['rating_2_3']) && $_GET['rating_2_3'] == 'on') ? [2, 3] : null,
+  (isset($_GET['rating_3_4']) && $_GET['rating_3_4'] == 'on') ? [3, 4] : null,
+  (isset($_GET['rating_4_5']) && $_GET['rating_4_5'] == 'on') ? [4, 5] : null,
+];
+$ratingFilter = array_filter($ratingRanges);  // Remove null entries
+
+// Fetch products based on filters
+$products_with_images = getAllProducts($search, $brandFilter, $minPrice, $maxPrice, $ratingFilter);
+
+// Fetch all brands for the filter list
+$brands = query("SELECT DISTINCT brand FROM products ORDER BY brand");
+
+
+
+
+
+
+
+// categories:id,title
+// images:id,title	,product_id	
+// products:id,title	,description	,brand	,stock	,price	,category_id
+// reviews:id,user_id,product_id,text,rating
+
+
+
+
+// function getAllProducts()
+// {
+//   global $con; // Ensure that your database connection variable is accessible
+//   $query = "SELECT p.*, c.title AS category_title
+//             FROM products p
+//             LEFT JOIN categories c ON p.category_id = c.id
+//             ORDER BY p.id;";
+//   $products = query($query);
+
+//   // Initialize an array to store products with additional keys
+//   $products_with_images = [];
+
+//   foreach ($products as $product) {
+//     // Initialize each product with an empty images array and default rating details
+//     $product['images'] = [];
+//     $product['rating_details'] = ['average_rating' => null, 'rating_count' => 0];
+//     $products_with_images[$product['id']] = $product;
+//   }
+
+//   // Only proceed if we have products
+//   if (!empty($products_with_images)) {
+//     // id of the products in $products array so we can select there respective images
+//     $product_ids = array_keys($products_with_images);
+//     $id_list = implode(',', $product_ids);
+
+//     // Fetch images for each product
+//     $image_query = "SELECT i.product_id, i.title AS image_title
+//                       FROM images i
+//                       WHERE i.product_id IN ($id_list);";
+//     $images = query($image_query);
+
+//     // Append images to their respective products
+//     foreach ($images as $image) {
+//       // we use the product id to put the images on it's rescpective products
+//       // [1(product id)][images][array of the images]
+//       $products_with_images[$image['product_id']]['images'][] = $image['image_title'];
+//     }
+
+//     // Fetch rating details for each product
+//     $rating_query = "SELECT product_id, AVG(rating) AS average_rating, COUNT(*) AS rating_count
+//                        FROM reviews
+//                        WHERE product_id IN ($id_list)
+//                        GROUP BY product_id;";
+//     $ratings = query($rating_query);
+
+//     // Append rating details to their respective products
+//     foreach ($ratings as $rating) {
+//       $products_with_images[$rating['product_id']]['rating_details'] = [
+//         'average_rating' => round($rating['average_rating'], 1), // Round the average rating to one decimal place
+//         'rating_count' => (int) $rating['rating_count']
+//       ];
+//     }
+//   }
+
+//   return $products_with_images;
+// }
