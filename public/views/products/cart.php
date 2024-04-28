@@ -1,24 +1,45 @@
 <?php
 require '../../inc/navbar.php';
+$subtotal = 0;
+// out of stock tag
+// Le produit sélectionné n'est plus en stock
+// Votre panier est vide, ajoutez des produits pour continuer
 
 // Cart operations
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
   if (isset($_POST['add'])) {
     $product_id = $_POST['product_id'];
-    $quantity = $_POST['quantity'] ?? 1; // Default quantity to 1 if not specified
+    ['stock' => $stock] = getProductByID($product_id);
+    $quantity = $_POST['quantity'] ?? 1;
+
+    if ($stock < $quantity) {
+      set_message('La quantité demandée dépasse le stock disponible!', 'error');
+      header('Location: ' . $_SERVER['HTTP_REFERER']);  // Redirect back to the previous page
+      exit;
+    }
+    if ($stock === 0) {
+      set_message('Le produit sélectionné n\'est plus en stock !', 'error');
+      header('Location: ' . $_SERVER['HTTP_REFERER']);
+      exit;
+    }
 
     // Check if the cart session exists
     if (!isset($_SESSION['cart'])) {
       $_SESSION['cart'] = [];
     }
+    if (!isset($_SESSION['cart_totals'])) {
+      $_SESSION['cart_totals'] = ['subtotal' => 0, 'shipping' => 0, 'total' => 0];
+    }
 
-    // Add or update the product in the cart
+    // Add the product to the cart
     if (!isset($_SESSION['cart'][$product_id])) {
       $_SESSION['cart'][$product_id] = $quantity;
+      set_message('Ce produit a été ajouté à votre panier.', 'success');
+    } else {
+      // $_SESSION['cart'][$product_id] = min($stock, $_SESSION['cart'][$product_id] + $quantity);
+      // set_message('La quantité de ce produit dans votre panier a été mise à jour.', 'success');
+      set_message('Ce produit existe déjà dans votre panier!', 'error');
     }
-    // else {
-    //   $_SESSION['cart'][$product_id] += $quantity;
-    // }
     header('Location: ' . $_SERVER['HTTP_REFERER']);  // Redirect back to the previous page
     exit;
   } elseif (isset($_POST['remove'])) {
@@ -28,6 +49,20 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     }
   } elseif (isset($_POST['empty_cart'])) {
     $_SESSION['cart'] = [];  // Empty the cart
+  } else if (isset($_POST['update_quantity'])) {
+    $product_id = $_POST['product_id'];
+    $new_quantity = $_POST['quantity'];
+    ['stock' => $stock] = getProductByID($product_id);
+
+    if ($new_quantity > $stock) {
+      set_message('La quantité demandée dépasse le stock disponible!', 'error');
+      header('Location: ' . $_SERVER['HTTP_REFERER']);
+      exit;
+    }
+
+    if (isset($_SESSION['cart'][$product_id])) {
+      $_SESSION['cart'][$product_id] = max(1, $new_quantity);  // Ensure quantity doesn't go below 1
+    }
   }
 }
 // print_r($_SESSION['cart']);
@@ -46,6 +81,12 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         <?php
         $product = getProductByID($product_id);
         $basePrice = $product['discount_percentage'] > 0 ? calculateDiscountPrice($product['price'], $product['discount_percentage']) : $product['price'];
+        $subtotal += $basePrice * $quantity;
+        $shipping = 0.10 * $subtotal;
+        $total = $subtotal + $shipping;
+        $_SESSION['cart_totals'] = ['subtotal' => $subtotal, 'shipping' => $shipping, 'total' => $total];
+        // print_r($_SESSION['cart_totals']);
+
         // echo '<pre>';
         // print_r($product);
         // echo '</pre>';
@@ -55,16 +96,18 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             <img style="margin-right: 8px;" class="small-img" src="<?= '../' . $product['images'][0] ?>" alt="">
             <a href="<?= ROOT ?>/views/products/product.php?id=<?= $product['id'] ?>" class="product-title"><?= strlen($product['title']) >= 15 ? substr($product['title'], 0, 15) . '...' : $product['title'] ?></a>
           </div>
-          <div class="product-qty">
-            <button class="icon-button plus"><i style="color: #080100;" class="fa-solid fa-plus fa-xl"></i></button>
-            <input type="text" value="<?= $quantity ?>" class="qty-input">
-            <!-- <input type="text" value="<?= $quantity ?>" class="qty-input" data-price="<?= $unit_price ?>"> -->
+          <form method="post" class="product-qty">
+            <button type="button" class="icon-button plus"><i style="color: #080100;" class="fa-solid fa-plus fa-xl"></i></button>
+            <input type="text" name="quantity" value="<?= $quantity ?>" class="qty-input" onchange="this.form.submit()">
+            <button type="button" style="margin-right: 8px;" class="icon-button minus"><i style="color: #080100;" class="fa-solid fa-minus fa-xl"></i></button>
 
-            <button style="margin-right: 8px;" class="icon-button minus"><i style="color: #080100;" class="fa-solid fa-minus fa-xl"></i></button>
-          </div>
+            <input type="hidden" name="product_id" value="<?= $product_id ?>">
+            <input type="hidden" name="update_quantity" value="1">
+            <button type="submit" style="display:none;">Update</button>
+          </form>
           <div class="product-price-cart">
             <p class="product-price">
-            <?= $basePrice * $quantity ?>dh
+              <?= number_format($basePrice * $quantity, 2) ?>dh
             </p>
           </div>
           <div>
@@ -77,7 +120,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
       <?php endforeach; ?>
     <?php else : ?>
       <div style="height:26vh; width: 100%; display:flex; align-items: center; justify-content: center;">
-        <p>Aucun produit trouvé !</p>
+        <p>Votre panier est vide !</p>
       </div>
     <?php endif; ?>
   </div>
@@ -86,20 +129,21 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     <div style="margin: 16px 0px 8px;" class="hr"></div>
     <div class="total thin">
       <p>Sous-total</p>
-      <p>250 dh</p>
+      <p><?= number_format($subtotal, 2) ?>dh</p>
     </div>
     <div style="margin-top: 4px;" class="total thin">
       <p>Livraison</p>
-      <p>0 dh</p>
+      <p><?= number_format($shipping, 2) ?>dh</p>
     </div>
     <div style="margin: 8px 0px 8px;" class="hr"></div>
     <div style="font-weight: 700;" class="total">
       <p>Total</p>
-      <p>250 dh</p>
+      <p><?= number_format($total, 2) ?>dh</p>
     </div>
     <button style="width: 100%;margin-top: 16px;" class="primary-btn">Passer à la caisse</button>
   </div>
 </main>
-<script src="<?= ROOT ?>/js/quantity.js" defer></script>
+<script src="<?= ROOT ?>/js/cart.js" defer></script>
+
 
 <?php require '../../inc/footer.php' ?>

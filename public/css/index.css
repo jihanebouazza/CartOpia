@@ -60,7 +60,7 @@ a {
 .nav-list li {
   padding-right: 16px;
 }
-.nav-link{
+.nav-link {
   transition: border-bottom 0.3s ease, color 0.3s ease;
 }
 .nav-link:hover {
@@ -218,4 +218,28 @@ footer hr {
 ::placeholder {
   font-family: "Space Grotesk", sans-serif;
   font-size: 16px;
+}
+
+.toast {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  padding: 16px;
+  border-radius: 8px;
+  z-index: 10000;
+  background-color: #FFFDFD;
+  border-width: 2px;
+  border-style: solid;
+}
+.toast.success {
+  border-color: #3BCC08;
+  color: #3BCC08;
+}
+.toast.error {
+  border-color: #F56262;
+  color: #F56262;
+}
+.toast.warning {
+  border-color: #FAA364;
+  color: #FAA364;
 }

@@ -7,13 +7,17 @@
   <?php require 'logo.php' ?>
   <div>
     <ul class="nav-list">
-      <li><a class="nav-link <?=$_SERVER['PHP_SELF']==='/cartopia/public/index.php'?'active':''?>" href="<?= ROOT ?>/">Accueil</a></li>
-      <li><a class="nav-link <?=$_SERVER['PHP_SELF']==='/cartopia/public/views/products/index.php'?'active':''?>" href="<?= ROOT ?>/views/products/">Produits</a></li>
+      <li><a class="nav-link <?= $_SERVER['PHP_SELF'] === '/cartopia/public/index.php' ? 'active' : '' ?>" href="<?= ROOT ?>/">Accueil</a></li>
+      <li><a class="nav-link <?= $_SERVER['PHP_SELF'] === '/cartopia/public/views/products/index.php' ? 'active' : '' ?>" href="<?= ROOT ?>/views/products/">Produits</a></li>
       <li><a class="nav-link" href="">Accueil</a></li>
       <li class="vr"></li>
       <li id="geolocation"><i style="padding-right: 4px;" class="fa-solid fa-location-dot fa-xs"></i></li>
       <li class="vr"></li>
-      <li><a style="padding: 6px 8px;" href="<?= ROOT ?>/views/products/cart.php" class="icon-button"><i style="color: #080100;" class="fa-solid fa-cart-shopping fa-lg"></i></a></li>
+      <li><a style="padding: 6px 8px; position: relative;" href="<?= ROOT ?>/views/products/cart.php" class="icon-button">
+          <i style="color: #080100;" class="fa-solid fa-cart-shopping fa-lg"></i>
+          <div class="count"><?= count($_SESSION['cart'] ?? []) ?> </div>
+        </a>
+      </li>
       <li><button class="icon-button"><i style="color: #080100;" class="fa-solid fa-heart fa-xl"></i></button></li>
       <li>
         <div class="dropdown">

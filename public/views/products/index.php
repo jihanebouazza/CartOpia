@@ -132,7 +132,7 @@ $products_with_images = getAllProducts($search, $minPrice, $maxPrice, $brands, $
                 <button name="add" type="submit" class="icon-button"><i style="color: #080100;" class="fa-solid fa-cart-shopping fa-xl"></i></button>
               </form>
               <div class="product-price-container">
-                <?= $product['discount_percentage'] > 0 ? ' <p class="discount-price">' . $product['price'] . 'dh</p>' . '<p class="product-price">' . calculateDiscountPrice($product['price'],  $product['discount_percentage']) . 'dh</p>'  : '<p class="product-price">' . $product['price'] . 'dh</p>' ?>
+                <?= $product['discount_percentage'] > 0 ? ' <p class="discount-price">' . number_format($product['price'], 2) . 'dh</p>' . '<p class="product-price">' . number_format(calculateDiscountPrice($product['price'],  $product['discount_percentage']), 2) . 'dh</p>'  : '<p class="product-price">' . number_format($product['price'],2) . 'dh</p>' ?>
               </div>
             </div>
           </div>

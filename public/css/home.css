@@ -130,10 +130,20 @@
   border-radius: 8px;
 }
 
-.active{
-  border-bottom: 4px solid #EE786B;
+.active {
+  border-bottom: 4px solid #ee786b;
   padding-bottom: 4px;
-  color: #EE786B;
+  color: #ee786b;
   font-weight: 700;
 }
-
+.count {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background-color: #ee786b;
+  color: #fffdfd;
+  z-index: 9000;
+  border-radius: 100%;
+  font-size: 12px;
+  padding: 2px 6px;
+}
