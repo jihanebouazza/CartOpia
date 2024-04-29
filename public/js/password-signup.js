@@ -5,7 +5,7 @@ function validatePassword(password) {
 
   const hasDigits = /\d/.test(password);
   const hasUppercase = /[A-Z]/.test(password);
-  const hasSpecialChars = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+  const hasSpecialChars = /[!@#$%^&*(),.?":{}|]/.test(password);
   const isMinLength = password.length >= 8;
 
   passwordDivs[0].classList.toggle('password-div-error', !hasDigits);

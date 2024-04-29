@@ -13,12 +13,19 @@
       <li class="vr"></li>
       <li id="geolocation"><i style="padding-right: 4px;" class="fa-solid fa-location-dot fa-xs"></i></li>
       <li class="vr"></li>
-      <li><a style="padding: 6px 8px; position: relative;" href="<?= ROOT ?>/views/products/cart.php" class="icon-button">
+      <li>
+        <a style="padding: 6px 8px; position: relative;" href="<?= ROOT ?>/views/products/cart.php" class="icon-button">
           <i style="color: #080100;" class="fa-solid fa-cart-shopping fa-lg"></i>
           <div class="count"><?= count($_SESSION['cart'] ?? []) ?> </div>
         </a>
       </li>
-      <li><button class="icon-button"><i style="color: #080100;" class="fa-solid fa-heart fa-xl"></i></button></li>
+      <li>
+        <a style="padding: 6px 8px;position: relative;" href="<?= ROOT ?>/views/products/wishlist.php" class="icon-button">
+          <i style="color: #080100;" class="fa-solid fa-heart fa-lg"></i>
+          <div class="count"><?= count($_SESSION['wishlist'] ?? []) ?> </div>
+
+        </a>
+      </li>
       <li>
         <div class="dropdown">
           <button class="user-btn icon-button">

@@ -54,8 +54,20 @@ if ($product_id > 0) {
             <button type="button" style="margin-right: 8px;" class="icon-button minus"><i style="color: #080100;" class="fa-solid fa-minus fa-xl"></i></button>
             <button name="add" type="submit" class="secondary-btn-small"><i style="color: #ff988d;" class="fa-solid fa-cart-shopping fa-lg"></i> Ajouter au panier</button>
           </form>
-          <button class="icon-button" style="border-color: #C51818;">
-            <i style="color: #C51818;" class="fa-regular fa-heart fa-xl"></i></button>
+          <form style="display: inline-block;" method="post" action="wishlist.php">
+            <input type="hidden" name="product_id" value="<?= $product_details['id'] ?>">
+            <!-- <button name="add-to-wishlist" type="submit" class="icon-button" style="border-color: #C51818;">
+              <i style="color: #C51818;" class="fa-regular fa-heart fa-xl"></i></button> -->
+            <?php if (isInWishlist($product_details['id'])) : ?>
+              <button style="border-color: #C51818;" type="submit" name="remove-from-wishlist" class="icon-button">
+                <i style="color: #C51818; opacity: 1;" class="fa-solid fa-heart fa-xl"></i> <!-- Solid heart if in wishlist -->
+              </button>
+            <?php else : ?>
+              <button style="border-color: #C51818;" type="submit" name="add-to-wishlist" class="icon-button">
+                <i style="color: #C51818; opacity: 1;" class="fa-regular fa-heart fa-xl"></i> <!-- Regular heart if not in wishlist -->
+              </button>
+            <?php endif; ?>
+          </form>
         </div>
       </div>
       <p style="font-weight: 700; padding: 8px 0px;">Description</p>

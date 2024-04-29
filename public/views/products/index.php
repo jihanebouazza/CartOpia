@@ -118,9 +118,18 @@ $products_with_images = getAllProducts($search, $minPrice, $maxPrice, $brands, $
             <div class="product-img-div">
               <img class="product-img" src="<?= '../' . $product['images'][0] ?>" alt="">
               <div class="category"><i class="fa-solid fa-circle fa-2xs"></i> <?= $product['category_title'] ?></div>
-              <div class="product-img-icon">
-                <button class="icon-button"><i style="color: #C51818; opacity: 1;" class="fa-regular fa-heart fa-xl"></i></button>
-              </div>
+              <form method="post" action="wishlist.php" class="product-img-icon">
+                <input type="hidden" name="product_id" value="<?= $product['id'] ?>">
+                <?php if (isInWishlist($product['id'])) : ?>
+                  <button type="submit" name="remove-from-wishlist" class="icon-button">
+                    <i style="color: #C51818; opacity: 1;" class="fa-solid fa-heart fa-xl"></i> <!-- Solid heart if in wishlist -->
+                  </button>
+                <?php else : ?>
+                  <button type="submit" name="add-to-wishlist" class="icon-button">
+                    <i style="color: #C51818; opacity: 1;" class="fa-regular fa-heart fa-xl"></i> <!-- Regular heart if not in wishlist -->
+                  </button>
+                <?php endif; ?>
+              </form>
             </div>
             <a href="<?= ROOT ?>/views/products/product.php?id=<?= $product['id'] ?>" class="product-title"><?= strlen($product['title']) >= 50 ? substr($product['title'], 0, 50) . '...' :  $product['title']  ?></a>
             <p class="review"><i style="color:#FAE264" class="fa-solid fa-star"></i>
@@ -132,7 +141,7 @@ $products_with_images = getAllProducts($search, $minPrice, $maxPrice, $brands, $
                 <button name="add" type="submit" class="icon-button"><i style="color: #080100;" class="fa-solid fa-cart-shopping fa-xl"></i></button>
               </form>
               <div class="product-price-container">
-                <?= $product['discount_percentage'] > 0 ? ' <p class="discount-price">' . number_format($product['price'], 2) . 'dh</p>' . '<p class="product-price">' . number_format(calculateDiscountPrice($product['price'],  $product['discount_percentage']), 2) . 'dh</p>'  : '<p class="product-price">' . number_format($product['price'],2) . 'dh</p>' ?>
+                <?= $product['discount_percentage'] > 0 ? ' <p class="discount-price">' . number_format($product['price'], 2) . 'dh</p>' . '<p class="product-price">' . number_format(calculateDiscountPrice($product['price'],  $product['discount_percentage']), 2) . 'dh</p>'  : '<p class="product-price">' . number_format($product['price'], 2) . 'dh</p>' ?>
               </div>
             </div>
           </div>

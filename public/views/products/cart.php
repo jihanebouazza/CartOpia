@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     // Add the product to the cart
     if (!isset($_SESSION['cart'][$product_id])) {
       $_SESSION['cart'][$product_id] = $quantity;
-      set_message('Ce produit a été ajouté à votre panier.', 'success');
+      set_message('Le produit sélectionné a été ajouté à votre panier.', 'success');
     } else {
       // $_SESSION['cart'][$product_id] = min($stock, $_SESSION['cart'][$product_id] + $quantity);
       // set_message('La quantité de ce produit dans votre panier a été mise à jour.', 'success');
@@ -49,6 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     }
   } elseif (isset($_POST['empty_cart'])) {
     $_SESSION['cart'] = [];  // Empty the cart
+    $_SESSION['cart_totals'] = ['subtotal' => 0, 'shipping' => 0, 'total' => 0];
   } else if (isset($_POST['update_quantity'])) {
     $product_id = $_POST['product_id'];
     $new_quantity = $_POST['quantity'];
@@ -129,16 +130,16 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     <div style="margin: 16px 0px 8px;" class="hr"></div>
     <div class="total thin">
       <p>Sous-total</p>
-      <p><?= number_format($subtotal, 2) ?>dh</p>
+      <p><?= number_format($_SESSION['cart_totals']['subtotal'], 2) ?>dh</p>
     </div>
     <div style="margin-top: 4px;" class="total thin">
       <p>Livraison</p>
-      <p><?= number_format($shipping, 2) ?>dh</p>
+      <p><?= number_format($_SESSION['cart_totals']['shipping'], 2) ?>dh</p>
     </div>
     <div style="margin: 8px 0px 8px;" class="hr"></div>
     <div style="font-weight: 700;" class="total">
       <p>Total</p>
-      <p><?= number_format($total, 2) ?>dh</p>
+      <p><?= number_format($_SESSION['cart_totals']['total'], 2) ?>dh</p>
     </div>
     <button style="width: 100%;margin-top: 16px;" class="primary-btn">Passer à la caisse</button>
   </div>

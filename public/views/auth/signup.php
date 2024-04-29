@@ -6,10 +6,51 @@ Ne tardez pas, achetez maintenant !
 -->
 <?php
 require '../../inc/header.php';
+$errors = [];
+
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+  $first_name = htmlspecialchars($_POST['first_name']);
+  $last_name = htmlspecialchars($_POST['last_name']);
+  $email = htmlspecialchars($_POST['email']);
+  $password = htmlspecialchars($_POST['password']);
+  $confirm_password = htmlspecialchars($_POST['confirm_password']);
+
+  if (!preg_match("/^[a-zA-Z]{3,}$/", trim($first_name))) {
+    $errors['first_name'] = "Prénom invalide!";
+  }
+  if (!preg_match("/^[a-zA-Z]{3,}$/", trim($last_name))) {
+    $errors['last_name'] = "Nom invalide!";
+  }
+  if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    $errors['email'] = "Le format de l'email est invalide!";
+  }
+  if (!preg_match("/^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?\":{}|])[A-Za-z\d!@#$%^&*(),.?\":{}|]{8,}$/", $password)) {
+    $errors['password'] = "Le mot de passe doit comporter 8+ caractères, 1 majuscule, 1 chiffre, 1 caractère spécial!";
+  }
+  if (($password !== $confirm_password)) {
+    $errors['confirm_password'] = "Les mots de passe ne correspondent pas!";
+  }
+  // if (!empty($errors)) {
+  //   foreach ($errors as $error) {
+  //     set_message($error, "error"); // Set message for each error
+  //   }
+  // } 
+  // else {
+  //   // Proceed with form processing, such as saving data or sending email
+  //   // Redirect or display success message
+  //   set_message("Inscription réussie.", "success");
+  //   header('Location: success.php'); // Redirect to a success page
+  //   exit;
+  // }
+  // echo '<pre>';
+  // print_r($errors);
+  // echo '</pre>';
+}
+
 ?>
 
 <main class="login_container">
-
   <div class="login_form">
     <div class="back-home">
       <a href="<?= ROOT ?>/">
@@ -17,30 +58,35 @@ require '../../inc/header.php';
         Retour à la page d'accueil
       </a>
     </div>
-    <form class="" method="post">
+    <form method="post">
       <h1>Rejoignez-nous !</h1>
       <h2>Inscrivez-vous pour profiter de tous nos services.</h2>
       <div class="double-input">
         <div>
-          <label class="login_label">
-            Prénom
-          </label>
-          <input value="" placeholder="" type="text" name="fist_name" class="input">
+          <div class="flex">
+            <label class="login_label">
+              Prénom
+            </label>
+          </div>
+          <input value="<?= post_old_value('first_name') ?>" placeholder="" type="text" name="first_name" class="input">
         </div>
         <div>
           <label class="login_label">
             Nom
           </label>
-          <input value="" placeholder="" type="text" name="last_name" class="input">
+          <input value="<?= post_old_value('last_name') ?>" placeholder="" type="text" name="last_name" class="input">
         </div>
       </div>
+      <?= isset($errors['first_name']) ? '<div class="error">'.$errors['first_name'].'</div>' : '' ?>
+      <?= isset($errors['last_name']) ? '<div class="error">'.$errors['last_name'].'</div>' : '' ?>
 
       <div>
         <label class="login_label">
           Email
         </label>
-        <input value="" placeholder="" type="text" name="email" class="input">
+        <input value="<?= post_old_value('email') ?>" placeholder="" type="text" name="email" class="input">
       </div>
+      <?= isset($errors['email']) ? '<div class="error">'.$errors['email'].'</div>' : '' ?>
       <!-- <div>
         <label class="login_label">
           Numéro de téléphone
@@ -53,7 +99,7 @@ require '../../inc/header.php';
             Mot de passe
           </label>
           <div class="password_div">
-            <input class="input" value="" placeholder="" type="password" name="password">
+            <input class="input" value="<?= post_old_value('password') ?>" placeholder="" type="password" name="password">
           </div>
         </div>
         <div>
@@ -61,10 +107,13 @@ require '../../inc/header.php';
             Confirmer le mot de passe
           </label>
           <div class="password_div">
-            <input class="input" value="" placeholder="" type="confirm_password" name="password">
+            <input class="input" value="<?= post_old_value('confirm_password') ?>" placeholder="" name="confirm_password" name="password">
           </div>
         </div>
       </div>
+      <?= isset($errors['password']) ? '<div class="error">'.$errors['password'].'</div>' : '' ?>
+      <?= isset($errors['confirm_password']) ? '<div class="error">'.$errors['confirm_password'].'</div>' : '' ?>
+
       <div class="password-validation">
         <div class="password-div-error password-init"><i class="fa-solid fa-x fa-xs"></i> 1 Chiffre</div>
         <div class="password-div-error password-init"><i class="fa-solid fa-x fa-xs"></i> 1 Majuscule</div>

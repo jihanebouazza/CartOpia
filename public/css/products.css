@@ -284,6 +284,7 @@ input[type="range" i] {
   gap: 16px;
 }
 .cart-container,
+.wishlist-container,
 .total-container,
 .cart-product {
   padding: 24px 32px;
@@ -293,7 +294,7 @@ input[type="range" i] {
 .cart-container {
   width: 70%;
 }
-.cart-container span {
+.cart-container span, .number {
   font-weight: 300;
   font-size: 14px;
 }
@@ -327,4 +328,7 @@ input[type="range" i] {
 }
 .thin{
   font-weight: 300;
+}
+.wishlist-container{
+  margin: 24px 32px;
 }

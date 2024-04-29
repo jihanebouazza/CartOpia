@@ -257,6 +257,13 @@ function get_old_value($key, $default = "")
   }
   return $default;
 }
+function post_old_value($key, $default = "")
+{
+  if (isset($_POST[$key]) && !empty($_POST[$key])) {
+    return $_POST[$key];
+  }
+  return $default;
+}
 
 function consolidateRatingRange(array $ratingRanges)
 {
@@ -271,4 +278,8 @@ function consolidateRatingRange(array $ratingRanges)
   }
 
   return [$minRating, $maxRating];
+}
+
+function isInWishlist($product_id) {
+  return in_array($product_id, $_SESSION['wishlist'] ?? []);
 }

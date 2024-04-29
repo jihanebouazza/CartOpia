@@ -243,3 +243,15 @@ footer hr {
   border-color: #FAA364;
   color: #FAA364;
 }
+.error{
+  color: #f56262;
+  font-size: 14px;
+  font-weight: 300;
+  /* display: inline-block; */
+  margin-bottom: -4px;
+}
+.flex{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
