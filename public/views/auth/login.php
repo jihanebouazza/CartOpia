@@ -1,6 +1,35 @@
 <?php
 require '../../inc/header.php';
+$errors = [];
+global $con;
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+  $email = htmlspecialchars($_POST['email']);
+  $password = htmlspecialchars($_POST['password']);
+
+  if ($stmt = $con->prepare("SELECT * FROM users WHERE email = ? LIMIT 1")) {
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+      $row = $result->fetch_assoc();
+      if (password_verify($password, $row['password'])) {
+        // Authenticate user
+        auth($row);
+        set_message('Vous êtes maintenant connecté(e).', 'success');
+        redirect('index');
+      } else {
+        set_message("Identifiant ou mot de passe incorrect!", "error");
+      }
+    } else {
+      set_message("Identifiant ou mot de passe incorrect!", "error");
+    }
+    $stmt->close();
+  }
+}
 ?>
+
 
 <main class="login_container">
   <div class="login_side">

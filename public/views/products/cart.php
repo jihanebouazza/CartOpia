@@ -64,6 +64,8 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     if (isset($_SESSION['cart'][$product_id])) {
       $_SESSION['cart'][$product_id] = max(1, $new_quantity);  // Ensure quantity doesn't go below 1
     }
+  } elseif (isset($_POST['checkout'])) {
+    redirect('views/products/checkout');
   }
 }
 // print_r($_SESSION['cart']);
@@ -125,24 +127,33 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
       </div>
     <?php endif; ?>
   </div>
+
   <div class="total-container">
     <h2>Résumé de la commande</h2>
     <div style="margin: 16px 0px 8px;" class="hr"></div>
     <div class="total thin">
       <p>Sous-total</p>
-      <p><?= number_format($_SESSION['cart_totals']['subtotal'], 2) ?>dh</p>
+      <p><?= !empty($_SESSION['cart_totals']) ? number_format($_SESSION['cart_totals']['subtotal'], 2) : '0.00' ?>dh</p>
     </div>
     <div style="margin-top: 4px;" class="total thin">
       <p>Livraison</p>
-      <p><?= number_format($_SESSION['cart_totals']['shipping'], 2) ?>dh</p>
+      <p><?= !empty($_SESSION['cart_totals']) ? number_format($_SESSION['cart_totals']['shipping'], 2) : '0.00' ?>dh</p>
     </div>
     <div style="margin: 8px 0px 8px;" class="hr"></div>
     <div style="font-weight: 700;" class="total">
       <p>Total</p>
-      <p><?= number_format($_SESSION['cart_totals']['total'], 2) ?>dh</p>
+      <p><?= !empty($_SESSION['cart_totals']) ? number_format($_SESSION['cart_totals']['total'], 2) : '0.00' ?>dh</p>
     </div>
-    <button style="width: 100%;margin-top: 16px;" class="primary-btn">Passer à la caisse</button>
+    <!-- <button style="width: 100%;margin-top: 16px;" class="primary-btn">Passer à la caisse</button> -->
+    <?php if (!empty($_SESSION['cart'])) : ?>
+      <form action="" method="post">
+        <button style="width: 100%;margin-top: 16px;" type="submit" name="checkout" class="primary-btn">Passer à la caisse</button>
+      </form>
+    <?php else : ?>
+      <button style="width: 100%;margin-top: 16px;" type="button" onclick="alert('Votre panier est vide, ajoutez des produits pour continuer');" class="primary-btn">Passer à la caisse</button>
+    <?php endif; ?>
   </div>
+
 </main>
 <script src="<?= ROOT ?>/js/cart.js" defer></script>
 

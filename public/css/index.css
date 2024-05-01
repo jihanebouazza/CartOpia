@@ -97,12 +97,19 @@ a {
   transition: opacity 150ms ease-in-out, transform 150ms ease-in-out;
 }
 
-.dropdown-menu a {
+.dropdown-menu a, .dropdown-menu p, .dropdown-menu form button {
   padding: 16px 24px;
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
 }
+ .dropdown-menu form button{
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0px;
+  font-size: 16px;
+ }
 .hr {
   /* border-: 0.2px solid #bab3b2; */
   border-bottom: 0.2px solid #bab3b2;
@@ -247,7 +254,7 @@ footer hr {
   color: #f56262;
   font-size: 14px;
   font-weight: 300;
-  /* display: inline-block; */
+  display: block;
   margin-bottom: -4px;
 }
 .flex{
