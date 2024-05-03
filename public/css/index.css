@@ -97,19 +97,21 @@ a {
   transition: opacity 150ms ease-in-out, transform 150ms ease-in-out;
 }
 
-.dropdown-menu a, .dropdown-menu p, .dropdown-menu form button {
+.dropdown-menu a,
+.dropdown-menu p,
+.dropdown-menu form button {
   padding: 16px 24px;
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
 }
- .dropdown-menu form button{
+.dropdown-menu form button {
   background: none;
   border: none;
   cursor: pointer;
   padding: 0px;
   font-size: 16px;
- }
+}
 .hr {
   /* border-: 0.2px solid #bab3b2; */
   border-bottom: 0.2px solid #bab3b2;
@@ -234,31 +236,56 @@ footer hr {
   padding: 16px;
   border-radius: 8px;
   z-index: 10000;
-  background-color: #FFFDFD;
+  background-color: #fffdfd;
   border-width: 2px;
   border-style: solid;
 }
 .toast.success {
-  border-color: #3BCC08;
-  color: #3BCC08;
+  border-color: #3bcc08;
+  color: #3bcc08;
 }
 .toast.error {
-  border-color: #F56262;
-  color: #F56262;
+  border-color: #f56262;
+  color: #f56262;
 }
 .toast.warning {
-  border-color: #FAA364;
-  color: #FAA364;
+  border-color: #faa364;
+  color: #faa364;
 }
-.error{
+.error {
   color: #f56262;
   font-size: 14px;
   font-weight: 300;
   display: block;
   margin-bottom: -4px;
 }
-.flex{
+.flex {
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px white inset !important;
+}
+.table {
+  /* min-width: 100%; */
+  font-size: 16px;
+  /* border-bottom: 1px solid #bab3b2; */
+  width: 100%;
+
+}
+.table thead{
+  text-align: left;
+  /* border-bottom: 1px solid #bab3b2; */
+}
+.table thead th,
+.table tbody td {
+  padding: 6px 4px;
+}
+.table th, .table td {
+  border-bottom: 1px solid #bab3b2;
 }

@@ -60,16 +60,14 @@ if (isset($_POST['logout'])) {
                 <span><?= user('email') ?></span>
               </p>
               <div class="hr"></div>
-              <a href="<?= ROOT ?>/views/auth/signup.php">Log out</a>
-              <a style="padding-top: 0px;" href="<?= ROOT ?>/views/auth/signup.php">Log out</a>
-
+              <a href="<?= ROOT ?>/views/user/index.php">Dashboard</a>
+              <a style="padding-top: 0px;" href="<?= ROOT ?>/views/user/settings.php">Profile</a>
               <div class="hr"></div>
               <form method="post" action="">
                 <button type="submit" name="logout">
                   <p>Log out</p>
                 </button>
               </form>
-
             </div>
           <?php endif ?>
         </div>

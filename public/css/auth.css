@@ -21,11 +21,13 @@
 .login_form form h1,
 .login_form form h2,
 .checkout-form h1,
-.checkout-form h2 {
+.checkout-form h2,
+.user-content form h1,
+.user-content form h2 {
   text-align: center;
   /* line-height: 1; */
 }
-.login_form form h2, .checkout-form h2 {
+.login_form form h2, .checkout-form h2, .user-content form h2 {
   text-align: center;
   color: #615959;
   font-weight: 300;

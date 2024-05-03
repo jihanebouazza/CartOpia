@@ -387,6 +387,14 @@ $brands = query("SELECT DISTINCT brand FROM products ORDER BY brand");
 // products:id,title	,description	,brand	,stock	,price	,category_id
 // reviews:id,user_id,product_id,text,rating
 <!-- users: id,firstname,lastname	,email,password	,phone_number	,address	,city	,postal_code	,role -->
+categories:id,title
+ images:id,title	,product_id	
+products:id,title	,description	,brand	,stock	,price	,category_id
+ reviews:id,user_id,product_id,text,rating
+orders:id	,user_id	,total	,status	,payment_type	,payment_status	,date
+order_items:id,order_id,product_id,quantity,price
+
+
 
 
 

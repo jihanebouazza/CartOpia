@@ -1,5 +1,6 @@
 {
     "require": {
-        "stripe/stripe-php": "^14.4"
+        "stripe/stripe-php": "^14.4",
+        "dompdf/dompdf": "^2.0"
     }
 }

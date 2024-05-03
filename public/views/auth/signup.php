@@ -128,7 +128,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             Mot de passe
           </label>
           <div class="password_div">
-            <input class="input" value="<?= post_old_value('password') ?>" placeholder="" type="password" name="password">
+            <input class="input password-name" value="<?= post_old_value('password') ?>" placeholder="" type="password" name="password">
           </div>
         </div>
         <div>

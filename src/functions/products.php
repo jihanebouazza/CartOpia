@@ -367,3 +367,235 @@ function insertOrderItem($order_id, $product_id, $quantity, $price)
     return false;
   }
 }
+
+function getAllOrdersByUserId($userId)
+{
+  global $con;  // Ensure that $con is your database connection variable
+
+  // Prepare SQL to fetch all orders for a specific user
+  $sql = "SELECT id, user_id, total, status, payment_type, payment_status, date
+          FROM orders
+          WHERE user_id = ?";
+
+  // Prepare the SQL statement
+  $stmt = $con->prepare($sql);
+  if (!$stmt) {
+    echo "Error preparing statement: " . $con->error;
+    return null;
+  }
+
+  // Bind the user_id parameter
+  $stmt->bind_param("i", $userId);
+  $stmt->execute();
+
+  // Get the result
+  $result = $stmt->get_result();
+
+  $orders = [];
+  while ($row = $result->fetch_assoc()) {
+    $orders[] = [
+      'id' => $row['id'],
+      'user_id' => $row['user_id'],
+      'total' => $row['total'],
+      'status' => $row['status'],
+      'payment_type' => $row['payment_type'],
+      'payment_status' => $row['payment_status'],
+      'date' => $row['date']
+    ];
+  }
+
+  $stmt->close();
+  return $orders;
+}
+
+// function getAllOrdersByUserId($userId)
+// {
+//   global $con;  // Ensure that $con is your database connection variable
+
+//   // Prepare SQL to fetch orders with associated order items and product details, filtered by user_id
+//   $sql = "SELECT o.id AS order_id, o.user_id, o.total, o.status, o.payment_type, o.payment_status, o.date,
+//                  oi.id AS order_item_id, oi.quantity, oi.price,
+//                  p.id AS product_id, p.title, p.description, p.brand, p.stock, p.price AS product_price, c.title AS category_title
+//           FROM orders o
+//           JOIN order_items oi ON o.id = oi.order_id
+//           JOIN products p ON oi.product_id = p.id
+//           JOIN categories c ON p.category_id = c.id
+//           WHERE o.user_id = ?
+//           ORDER BY o.date DESC";  // Sorting by the most recent orders first
+
+//   // Prepare the SQL statement
+//   $stmt = $con->prepare($sql);
+//   if (!$stmt) {
+//     echo "Error preparing statement: " . $con->error;
+//     return [];
+//   }
+
+//   // Bind the user_id parameter
+//   $stmt->bind_param("i", $userId);
+//   $stmt->execute();
+
+//   // Get the result
+//   $result = $stmt->get_result();
+
+//   $orders = [];
+//   while ($row = $result->fetch_assoc()) {
+//     $order_id = $row['order_id'];
+
+//     // Initialize order if not already set
+//     if (!isset($orders[$order_id])) {
+//       $orders[$order_id] = [
+//         'order_id' => $order_id,
+//         'user_id' => $row['user_id'],
+//         'total' => $row['total'],
+//         'status' => $row['status'],
+//         'payment_type' => $row['payment_type'],
+//         'payment_status' => $row['payment_status'],
+//         'date' => $row['date'],
+//         'order_items' => []
+//       ];
+//     }
+
+//     // Append order item and product details to the order
+//     $orders[$order_id]['order_items'][] = [
+//       'order_item_id' => $row['order_item_id'],
+//       'quantity' => $row['quantity'],
+//       'price' => $row['price'],
+//       'product' => [
+//         'product_id' => $row['product_id'],
+//         'title' => $row['title'],
+//         'description' => $row['description'],
+//         'brand' => $row['brand'],
+//         'stock' => $row['stock'],
+//         'price' => $row['product_price'],
+//         'category_title' => $row['category_title']
+//       ]
+//     ];
+//   }
+
+//   $stmt->close();
+//   return $orders;
+// }
+
+// function getAllOrders() {
+//   global $con;  // Ensure that $con is your database connection variable
+
+//   // SQL to fetch orders with associated order items and product details
+//   $sql = "SELECT o.id AS order_id, o.user_id, o.total, o.status, o.payment_type, o.payment_status, o.date,
+//                  oi.id AS order_item_id, oi.quantity, oi.price,
+//                  p.id AS product_id, p.title, p.description, p.brand, p.stock, p.price AS product_price, c.title AS category_title
+//           FROM orders o
+//           JOIN order_items oi ON o.id = oi.order_id
+//           JOIN products p ON oi.product_id = p.id
+//           JOIN categories c ON p.category_id = c.id
+//           ORDER BY o.date DESC";  // Assuming you want the most recent orders first
+
+//   $result = $con->query($sql);
+
+//   if (!$result) {
+//       // Handle error - the SQL query failed
+//       echo "Error: " . $con->error;
+//       return [];
+//   }
+
+//   $orders = [];
+//   while ($row = $result->fetch_assoc()) {
+//       $order_id = $row['order_id'];
+
+//       // Initialize order if not already set
+//       if (!isset($orders[$order_id])) {
+//           $orders[$order_id] = [
+//               'order_id' => $order_id,
+//               'user_id' => $row['user_id'],
+//               'total' => $row['total'],
+//               'status' => $row['status'],
+//               'payment_type' => $row['payment_type'],
+//               'payment_status' => $row['payment_status'],
+//               'date' => $row['date'],
+//               'order_items' => []
+//           ];
+//       }
+
+//       // Append order item and product details to the order
+//       $orders[$order_id]['order_items'][] = [
+//           'order_item_id' => $row['order_item_id'],
+//           'quantity' => $row['quantity'],
+//           'price' => $row['price'],
+//           'product' => [
+//               'product_id' => $row['product_id'],
+//               'title' => $row['title'],
+//               'description' => $row['description'],
+//               'brand' => $row['brand'],
+//               'stock' => $row['stock'],
+//               'price' => $row['product_price'],
+//               'category_title' => $row['category_title']
+//           ]
+//       ];
+//   }
+
+//   return $orders;
+// }
+
+function getOrderById($orderId)
+{
+  global $con;  // Ensure that $con is your database connection variable
+
+  // Prepare SQL to fetch a specific order with associated order items and product details
+  $sql = "SELECT o.id AS order_id, o.user_id, o.total, o.status, o.payment_type, o.payment_status, o.date,
+                 oi.id AS order_item_id, oi.quantity, oi.price,
+                 p.id AS product_id, p.title, p.description, p.brand, p.stock, p.price AS product_price, c.title AS category_title
+          FROM orders o
+          JOIN order_items oi ON o.id = oi.order_id
+          JOIN products p ON oi.product_id = p.id
+          JOIN categories c ON p.category_id = c.id
+          WHERE o.id = ?
+          ORDER BY o.date DESC";
+
+  // Prepare the SQL statement
+  $stmt = $con->prepare($sql);
+  if (!$stmt) {
+    echo "Error preparing statement: " . $con->error;
+    return null;
+  }
+
+  // Bind the order_id parameter
+  $stmt->bind_param("i", $orderId);
+  $stmt->execute();
+
+  // Get the result
+  $result = $stmt->get_result();
+
+  $order = null;
+  while ($row = $result->fetch_assoc()) {
+    if ($order === null) {
+      $order = [
+        'order_id' => $row['order_id'],
+        'user_id' => $row['user_id'],
+        'total' => $row['total'],
+        'status' => $row['status'],
+        'payment_type' => $row['payment_type'],
+        'payment_status' => $row['payment_status'],
+        'date' => $row['date'],
+        'order_items' => []
+      ];
+    }
+
+    // Append order item and product details to the order
+    $order['order_items'][] = [
+      'order_item_id' => $row['order_item_id'],
+      'quantity' => $row['quantity'],
+      'price' => $row['price'],
+      'product' => [
+        'product_id' => $row['product_id'],
+        'title' => $row['title'],
+        'description' => $row['description'],
+        'brand' => $row['brand'],
+        'stock' => $row['stock'],
+        'price' => $row['product_price'],
+        'category_title' => $row['category_title']
+      ]
+    ];
+  }
+
+  $stmt->close();
+  return $order;
+}

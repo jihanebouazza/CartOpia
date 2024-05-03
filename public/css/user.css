@@ -1,0 +1,59 @@
+/* .dashboard-container { */
+/* display: flex;
+  gap: 24px;
+  align-items: flex-start; */
+/* } */
+.user-sidebar {
+  width: calc(15% + 48px);
+  height: 100vh;
+  position: fixed;
+  /* background-color: aquamarine; */
+  top: 0;
+  padding: 24px;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+.user-content {
+  /* background-color: brown; */
+  margin-left: calc(15% + 96px);
+  padding: 24px;
+}
+.dashboard-link {
+  font-weight: 600;
+  padding-top: 24px;
+  display: block;
+  /* transition: background-color 0.2s ease; */
+}
+.dashboard-link i {
+  margin-right: 4px;
+}
+.active-dashboard-link,
+.dashboard-link:hover {
+  background-color: #ee786b;
+  color: #fffdfd;
+  margin: 16px 0px -8px -16px;
+  padding: 8px 16px;
+  border-radius: 8px;
+}
+.sidebar-row {
+  padding-top: 16px;
+}
+.sidebar-row button {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  padding-bottom: 0px;
+  padding-left: 0px;
+  padding-right: 0px;
+  width: 100%;
+  text-align: left;
+}
+
+.settings-form {
+  width: 60%;
+}
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

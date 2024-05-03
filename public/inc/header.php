@@ -9,6 +9,7 @@ require_once dirname(__DIR__) . '/../' . 'src/init.php';
   <meta charset="UTF-8">
   <link rel="stylesheet" href="<?= ROOT ?>/css/index.css">
   <link rel="stylesheet" href="<?= ROOT ?>/css/auth.css">
+  <link rel="stylesheet" href="<?= ROOT ?>/css/user.css">
   <link rel="stylesheet" href="<?= ROOT ?>/css/404.css">
   <link rel="stylesheet" href="<?= ROOT ?>/css/home.css">
   <link rel="stylesheet" href="<?= ROOT ?>/css/products.css">
