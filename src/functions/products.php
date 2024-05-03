@@ -56,20 +56,20 @@ function getAllProducts($search = '', $minPrice = 0, $maxPrice = 0, $brands = []
   //   $query .= " WHERE " . implode(' AND ', $conditions);
   // }
   // $query .= " ORDER BY p.id;";
-      // Rating filter - applying the consolidated rating range
-      if (!empty($ratings) && count($ratings) == 2) {
-        $conditions[] = "(SELECT AVG(r.rating) FROM reviews r WHERE r.product_id = p.id) BETWEEN ? AND ?";
-        $params[] = $ratings[0]; // Minimum rating
-        $params[] = $ratings[1]; // Maximum rating
-        $param_types .= 'dd'; // Adding two double parameters
-    }
+  // Rating filter - applying the consolidated rating range
+  if (!empty($ratings) && count($ratings) == 2) {
+    $conditions[] = "(SELECT AVG(r.rating) FROM reviews r WHERE r.product_id = p.id) BETWEEN ? AND ?";
+    $params[] = $ratings[0]; // Minimum rating
+    $params[] = $ratings[1]; // Maximum rating
+    $param_types .= 'dd'; // Adding two double parameters
+  }
 
-    // Assemble the query
-    $query = "SELECT p.*, c.title AS category_title FROM products p LEFT JOIN categories c ON p.category_id = c.id";
-    if (!empty($conditions)) {
-        $query .= " WHERE " . implode(' AND ', $conditions);
-    }
-    $query .= " ORDER BY p.id;";
+  // Assemble the query
+  $query = "SELECT p.*, c.title AS category_title FROM products p LEFT JOIN categories c ON p.category_id = c.id";
+  if (!empty($conditions)) {
+    $query .= " WHERE " . implode(' AND ', $conditions);
+  }
+  $query .= " ORDER BY p.id;";
 
   // Prepare the query
   $stmt = $con->prepare($query);
@@ -280,6 +280,90 @@ function consolidateRatingRange(array $ratingRanges)
   return [$minRating, $maxRating];
 }
 
-function isInWishlist($product_id) {
+function isInWishlist($product_id)
+{
   return in_array($product_id, $_SESSION['wishlist'] ?? []);
+}
+
+function getProductPrice($product_id)
+{
+  global $con; // Ensure you have a global connection variable available
+
+  // Prepare the SQL statement to select the price and discount percentage
+  $stmt = $con->prepare("SELECT price, discount_percentage FROM products WHERE id = ?");
+  $stmt->bind_param("i", $product_id);
+  $stmt->execute();
+  $result = $stmt->get_result();
+
+  if ($row = $result->fetch_assoc()) {
+    $price = (float)$row['price'];
+    $discount_percentage = (float)$row['discount_percentage'];
+
+    // Calculate the final price after applying the discount
+    if ($discount_percentage > 0) {
+      $discount_amount = ($discount_percentage / 100) * $price;
+      $price -= $discount_amount;
+    }
+
+    return $price;  // Return the price after applying discount
+  }
+  return null;  // Return null if no product is found
+}
+
+function insertOrder($user_id, $total, $payment_type, $payment_status)
+{
+  global $con; // Database connection variable
+
+  // Corrected SQL statement: removed an extra placeholder and matched the parameters
+  $stmt = $con->prepare("INSERT INTO orders (user_id, total, payment_type,payment_status, date) VALUES (?, ?, ?,?, NOW())");
+
+  // Ensure the correct types are used in bind_param:
+  // 'i' for integer, 'd' for double (float), 's' for string
+  $stmt->bind_param("idss", $user_id, $total, $payment_type, $payment_status);
+
+  $stmt->execute();
+
+  if ($stmt->affected_rows === 0) {
+    return false; // Order not inserted
+  }
+  return $con->insert_id; // Return the new order ID
+}
+
+function updateProductStock($product_id, $quantity_sold)
+{
+  global $con;
+  $stmt = $con->prepare("UPDATE products SET stock = stock - ? WHERE id = ?");
+  $stmt->bind_param("ii", $quantity_sold, $product_id);
+  $stmt->execute();
+  return $stmt->affected_rows > 0;
+}
+function insertOrderItem($order_id, $product_id, $quantity, $price)
+{
+  global $con; // Ensure that $con is your database connection variable
+
+  // Prepare the SQL query to insert an order item
+  $sql = "INSERT INTO order_items (order_id, product_id, quantity, price) VALUES (?, ?, ?, ?)";
+  $stmt = $con->prepare($sql);
+
+  if (!$stmt) {
+    // Handle error here if prepare failed
+    echo "Error preparing statement: " . $con->error;
+    return false;
+  }
+
+  // Bind the parameters to the SQL query
+  $stmt->bind_param("iiid", $order_id, $product_id, $quantity, $price);
+
+  // Execute the query
+  $stmt->execute();
+
+  if ($stmt->affected_rows > 0) {
+    $stmt->close();
+    return true; // Return true on success
+  } else {
+    // Handle error here if insertion failed
+    echo "Error inserting order item: " . $stmt->error;
+    $stmt->close();
+    return false;
+  }
 }

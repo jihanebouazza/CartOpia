@@ -21,9 +21,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         redirect('index');
       } else {
         set_message("Identifiant ou mot de passe incorrect!", "error");
+        header('Location: ' . $_SERVER['HTTP_REFERER']);
+        exit;
       }
     } else {
       set_message("Identifiant ou mot de passe incorrect!", "error");
+      header('Location: ' . $_SERVER['HTTP_REFERER']);
+      exit;
     }
     $stmt->close();
   }

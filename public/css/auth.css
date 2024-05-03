@@ -19,11 +19,13 @@
   width: 65%;
 }
 .login_form form h1,
-.login_form form h2 {
+.login_form form h2,
+.checkout-form h1,
+.checkout-form h2 {
   text-align: center;
   /* line-height: 1; */
 }
-.login_form form h2 {
+.login_form form h2, .checkout-form h2 {
   text-align: center;
   color: #615959;
   font-weight: 300;
@@ -69,7 +71,8 @@
   color: #fffdfd;
 }
 
-.login_label, .label {
+.login_label,
+.label {
   display: block;
   padding: 8px 0px;
   font-weight: 700;
@@ -130,6 +133,9 @@
 }
 
 .password-div-error {
-  background-color: #FFD7D7;
+  background-color: #ffd7d7;
   color: #760101;
+}
+.checkout-form{
+  width: 50%;
 }

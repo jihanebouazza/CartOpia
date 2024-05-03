@@ -1,7 +1,7 @@
 <?php
 function redirect($page)
 {
-  header("Location: ".ROOT."/$page.php");
+  header("Location: " . ROOT . "/$page.php");
   die;
 }
 
@@ -35,4 +35,18 @@ function is_admin(): bool
   }
 
   return false;
+}
+
+function updateUserDetails($user_id, $phone_number, $address, $city, $postal_code)
+{
+  global $con; // Database connection variable
+
+  $stmt = $con->prepare("UPDATE users SET phone_number = ?, address = ?, city = ?, postal_code = ? WHERE id = ?");
+  $stmt->bind_param("ssssi", $phone_number, $address, $city, $postal_code, $user_id);
+  $stmt->execute();
+
+  if ($stmt->affected_rows === 0) {
+    return false; // No rows updated
+  }
+  return true; // Details updated successfully
 }

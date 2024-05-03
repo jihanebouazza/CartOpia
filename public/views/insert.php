@@ -386,6 +386,7 @@ $brands = query("SELECT DISTINCT brand FROM products ORDER BY brand");
 // images:id,title	,product_id	
 // products:id,title	,description	,brand	,stock	,price	,category_id
 // reviews:id,user_id,product_id,text,rating
+<!-- users: id,firstname,lastname	,email,password	,phone_number	,address	,city	,postal_code	,role -->
 
 
 
@@ -586,3 +587,95 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 <script src="<?= ROOT ?>/js/cart.js" defer></script>
 
 <?php require '../../inc/footer.php' ?>
+
+
+
+
+
+
+
+
+
+
+<!-- 
+<?php
+require '../../inc/header.php';
+require_once dirname(__DIR__) . '/../../' . 'vendor/autoload.php';
+\Stripe\Stripe::setApiKey(STRIPE_API_KEY);
+
+if (isset($_SESSION['cart']) && !empty($_SESSION['cart'])) {
+  $line_items = [];
+  $subtotal = 0;
+
+  // First, create the order in your database
+  $user_id = $_SESSION['USER']['id'];
+  foreach ($_SESSION['cart'] as $product_id => $quantity) {
+    $product_details = getProductByID($product_id);
+    if ($product_details) {
+      $product_price_in_mad = getProductPrice($product_id); // Ensure this returns the price in MAD
+      $product_price_in_centimes = intval($product_price_in_mad * 100); // Convert price to centimes for Stripe
+      $subtotal += $product_price_in_centimes * $quantity;
+
+      $line_items[] = [
+        "quantity" => $quantity,
+        "price_data" => [
+          "currency" => "mad",
+          "unit_amount" => $product_price_in_centimes,
+          "product_data" => [
+            "name" => $product_details['title']
+          ],
+        ],
+      ];
+    }
+  }
+
+  // Calculate delivery fee as 10% of the subtotal (ensure integer conversion for Stripe)
+  $delivery_fee = intval(0.10 * $subtotal);
+  $total = $subtotal + $delivery_fee;
+
+  // Insert the order into the database
+  $order_id = insertOrder($user_id, $total / 100, 'Par carte', 'Payé'); // Convert back to MAD for database storage
+
+  if ($order_id) {
+    $all_items_processed = true;
+    foreach ($_SESSION['cart'] as $product_id => $quantity) {
+      $product_details = getProductByID($product_id);
+      $product_price_in_mad = getProductPrice($product_id);
+      if (insertOrderItem($order_id, $product_id, $quantity, $product_price_in_mad) && updateProductStock($product_id, $quantity)) {
+        unset($_SESSION['cart']);
+        unset($_SESSION['cart_totals']);
+        continue; // Continue processing other items
+      } else {
+        $all_items_processed = false;
+        echo "Failed to update order item or stock.";
+        break; // Exit the loop if there's a failure
+      }
+    }
+
+    // If all items are processed successfully
+    if ($all_items_processed) {
+      if (!empty($line_items)) {
+        $checkout_session = \Stripe\Checkout\Session::create([
+          "payment_method_types" => ["card"],
+          "mode" => "payment",
+          "success_url" => STRIPE_SUCCESS_URL,
+          "cancel_url" => STRIPE_CANCEL_URL,
+          "locale" => "fr",
+          "line_items" => $line_items
+        ]);
+
+        http_response_code(303);
+        header("Location: " . $checkout_session->url);
+        exit;
+      } else {
+        echo "Cart is empty or products could not be loaded.";
+      }
+    }
+  } else {
+    echo "Failed to create order.";
+  }
+} else {
+  echo "Cart is empty.";
+}
+?>
+<?php require '../../inc/footer.php'; ?> -->

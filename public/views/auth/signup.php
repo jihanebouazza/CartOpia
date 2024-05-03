@@ -58,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       $stmt->close();
 
       // Fetch the newly created user data for authentication
-      $stmt = $con->prepare("SELECT id, firstname, lastname, email, role FROM users WHERE id = ?");
+      $stmt = $con->prepare("SELECT * FROM users WHERE id = ?");
       $stmt->bind_param("i", $user_id);
       $stmt->execute();
       $result = $stmt->get_result();
