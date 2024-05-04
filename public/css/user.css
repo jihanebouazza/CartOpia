@@ -28,8 +28,8 @@
 }
 .active-dashboard-link,
 .dashboard-link:hover {
-  background-color: #ee786b;
-  color: #fffdfd;
+  color: #ee786b;
+  background-color: #ffeeea;
   margin: 16px 0px -8px -16px;
   padding: 8px 16px;
   border-radius: 8px;
@@ -56,4 +56,59 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+.user-dashboard-numbers,
+.bar-chart-numbers {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.user-dashboard-numbers {
+  margin-top: 32px;
+}
+.bar-chart-numbers{
+  margin-top: 16px;
+
+}
+.user-dashboard-numbers .number {
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  border-radius: 8px;
+  width: 100%;
+  /* height: 100px; */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100px;
+  padding: 16px 24px;
+}
+.user-dashboard-numbers .number p {
+  font-size: 16px;
+  font-weight: 700;
+}
+.number-div {
+  display: flex;
+  /* align-items: center; */
+  gap: 8px;
+}
+.digit {
+  font-weight: 300;
+  font-size: 16px;
+  margin-left: 42px;
+  /* margin-top: 8px; */
+}
+.digit a {
+  font-weight: 500;
+  color: #ee786b;
+}
+.bar-chart {
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  border-radius: 8px;
+  width: 61%;
+  padding: 16px 24px;
+}
+.pie-chart {
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  border-radius: 8px;
+  width: 30%;
+  padding: 16px 24px;
 }

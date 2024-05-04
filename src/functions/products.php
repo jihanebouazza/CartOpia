@@ -535,18 +535,85 @@ function getAllOrdersByUserId($userId)
 //   return $orders;
 // }
 
+// function getOrderById($orderId)
+// {
+//   global $con;  // Ensure that $con is your database connection variable
+
+//   // Prepare SQL to fetch a specific order with associated order items and product details
+//   $sql = "SELECT o.id AS order_id, o.user_id, o.total, o.status, o.payment_type, o.payment_status, o.date,
+//                  oi.id AS order_item_id, oi.quantity, oi.price,
+//                  p.id AS product_id, p.title, p.description, p.brand, p.stock, p.price AS product_price, c.title AS category_title
+//           FROM orders o
+//           JOIN order_items oi ON o.id = oi.order_id
+//           JOIN products p ON oi.product_id = p.id
+//           JOIN categories c ON p.category_id = c.id
+//           WHERE o.id = ?
+//           ORDER BY o.date DESC";
+
+//   // Prepare the SQL statement
+//   $stmt = $con->prepare($sql);
+//   if (!$stmt) {
+//     echo "Error preparing statement: " . $con->error;
+//     return null;
+//   }
+
+//   // Bind the order_id parameter
+//   $stmt->bind_param("i", $orderId);
+//   $stmt->execute();
+
+//   // Get the result
+//   $result = $stmt->get_result();
+
+//   $order = null;
+//   while ($row = $result->fetch_assoc()) {
+//     if ($order === null) {
+//       $order = [
+//         'order_id' => $row['order_id'],
+//         'user_id' => $row['user_id'],
+//         'total' => $row['total'],
+//         'status' => $row['status'],
+//         'payment_type' => $row['payment_type'],
+//         'payment_status' => $row['payment_status'],
+//         'date' => $row['date'],
+//         'order_items' => []
+//       ];
+//     }
+
+//     // Append order item and product details to the order
+//     $order['order_items'][] = [
+//       'order_item_id' => $row['order_item_id'],
+//       'quantity' => $row['quantity'],
+//       'price' => $row['price'],
+//       'product' => [
+//         'product_id' => $row['product_id'],
+//         'title' => $row['title'],
+//         'description' => $row['description'],
+//         'brand' => $row['brand'],
+//         'stock' => $row['stock'],
+//         'price' => $row['product_price'],
+//         'category_title' => $row['category_title']
+//       ]
+//     ];
+//   }
+
+//   $stmt->close();
+//   return $order;
+// }
+
 function getOrderById($orderId)
 {
   global $con;  // Ensure that $con is your database connection variable
 
-  // Prepare SQL to fetch a specific order with associated order items and product details
+  // Prepare SQL to fetch a specific order with associated order items, product details, and user details
   $sql = "SELECT o.id AS order_id, o.user_id, o.total, o.status, o.payment_type, o.payment_status, o.date,
                  oi.id AS order_item_id, oi.quantity, oi.price,
-                 p.id AS product_id, p.title, p.description, p.brand, p.stock, p.price AS product_price, c.title AS category_title
+                 p.id AS product_id, p.title, p.description, p.brand, p.stock, p.discount_percentage, p.price AS product_price, c.title AS category_title,
+                 u.firstname, u.lastname, u.email, u.address, u.city,u.phone_number, u.postal_code
           FROM orders o
           JOIN order_items oi ON o.id = oi.order_id
           JOIN products p ON oi.product_id = p.id
           JOIN categories c ON p.category_id = c.id
+          JOIN users u ON o.user_id = u.id
           WHERE o.id = ?
           ORDER BY o.date DESC";
 
@@ -575,6 +642,15 @@ function getOrderById($orderId)
         'payment_type' => $row['payment_type'],
         'payment_status' => $row['payment_status'],
         'date' => $row['date'],
+        'user_details' => [
+          'firstname' => $row['firstname'],
+          'lastname' => $row['lastname'],
+          'email' => $row['email'],
+          'address' => $row['address'],
+          'city' => $row['city'],
+          'phone_number' => $row['phone_number'],
+          'postal_code' => $row['postal_code'],
+        ],
         'order_items' => []
       ];
     }
@@ -591,11 +667,77 @@ function getOrderById($orderId)
         'brand' => $row['brand'],
         'stock' => $row['stock'],
         'price' => $row['product_price'],
-        'category_title' => $row['category_title']
+        'category_title' => $row['category_title'],
+        'discount_percentage' => $row['discount_percentage'],
       ]
     ];
   }
 
   $stmt->close();
   return $order;
+}
+
+function getNumberOfOrdersByUser($userId)
+{
+  global $con; // Make sure you have defined your $con variable as your database connection
+
+  // Prepare the SQL statement to count orders by user ID
+  $stmt = $con->prepare("SELECT COUNT(*) as order_count FROM orders WHERE user_id = ?");
+  $stmt->bind_param("i", $userId);
+  $stmt->execute();
+
+  // Bind result variables
+  $stmt->bind_result($orderCount);
+  $stmt->fetch(); // Fetch the count result
+
+  $stmt->close();
+
+  return $orderCount; // Return the number of orders
+}
+
+function getUserSpendingPerCategory($userId)
+{
+  global $con;  // Your database connection variable
+
+  $sql = "SELECT c.title AS category, SUM(oi.price * oi.quantity) AS total_spent
+          FROM orders o
+          JOIN order_items oi ON o.id = oi.order_id
+          JOIN products p ON oi.product_id = p.id
+          JOIN categories c ON p.category_id = c.id
+          WHERE o.user_id = ?
+          GROUP BY c.title
+          ORDER BY total_spent DESC";
+
+  $stmt = $con->prepare($sql);
+  if (!$stmt) {
+    echo "Error preparing statement: " . $con->error;
+    return [];
+  }
+  $stmt->bind_param("i", $userId);
+  $stmt->execute();
+  $result = $stmt->get_result();
+
+  $categorySpending = [];
+  while ($row = $result->fetch_assoc()) {
+    $categorySpending[] = [
+      'category' => $row['category'],
+      'total_spent' => $row['total_spent']
+    ];
+  }
+  $stmt->close();
+  return $categorySpending;
+}
+function getOrderStatusCounts($userId)
+{
+  global $con; // Assuming $con is your mysqli database connection variable
+  $sql = "SELECT status, COUNT(*) as count FROM orders WHERE user_id = ? GROUP BY status";
+  $stmt = $con->prepare($sql);
+  $stmt->bind_param("i", $userId);
+  $stmt->execute();
+  $result = $stmt->get_result();
+  $data = [];
+  while ($row = $result->fetch_assoc()) {
+    $data[$row['status']] = $row['count'];
+  }
+  return $data;
 }

@@ -20,6 +20,7 @@ require_once dirname(__DIR__) . '/../' . 'src/init.php';
   <link rel="icon" type="image/png" href="<?= ROOT ?>/images/logo.png" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
   <script src="https://unpkg.com/@dotlottie/player-component@latest/dist/dotlottie-player.mjs" type="module"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <title>Cartopia</title>
 </head>
 

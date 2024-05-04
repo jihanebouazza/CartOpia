@@ -7,10 +7,10 @@ if (!is_logged_in()) {
 
 $user_id = user("id");
 $user_orders = getAllOrdersByUserId($user_id);
-$order = getOrderById(1);
-echo '<pre>';
-print_r($order);
-echo '</pre>';
+// $order = getOrderById(1);
+// echo '<pre>';
+// print_r($order);
+// echo '</pre>';
 ?>
 <main>
   <?php require '../../inc/user_sidebar.php'; ?>

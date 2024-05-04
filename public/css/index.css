@@ -289,3 +289,7 @@ input:-webkit-autofill:active {
 .table th, .table td {
   border-bottom: 1px solid #bab3b2;
 }
+.icon-dahsboard{
+  height: 32px;
+ width: 34px; 
+}

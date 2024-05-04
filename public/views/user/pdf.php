@@ -1,5 +1,7 @@
 <?php
 require_once dirname(__DIR__) . '/../../' . 'vendor/autoload.php';
+require_once dirname(__DIR__) . '/../../' . 'src/config.php';
+require_once dirname(__DIR__) . '/../../' . 'src/connection.php';
 require_once dirname(__DIR__) . '/../../' . 'src/functions/products.php';
 
 use Dompdf\Dompdf;

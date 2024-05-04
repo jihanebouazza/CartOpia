@@ -28,7 +28,7 @@ if (empty($_SERVER['HTTP_REFERER'])) {
   <div>
     <h1>Commande Confirmée</h1>
     <h2>Votre commande a été traitée avec succès. Merci de votre achat !</h2>
-    <p>Pour consulter les détails de cette commande ou suivre son statut, veuillez visiter votre <a style="text-decoration: underline; color:#EE786B" href="<?= ROOT ?>/views/user/order.php">historique de commandes</a>.</p>
+    <p>Pour consulter les détails de cette commande ou suivre son statut, veuillez visiter votre <a style="text-decoration: underline; color:#EE786B" href="<?= ROOT ?>/views/user/orders.php">historique de commandes</a>.</p>
   </div>
   <dotlottie-player src="https://lottie.host/99290e75-e0b3-47b3-972a-55701e24e5c6/1xvRbthtb7.json" background="transparent" speed="1" style="width:250px; height:250px" loop autoplay></dotlottie-player>
 </main>
