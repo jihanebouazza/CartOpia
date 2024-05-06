@@ -1,8 +1,11 @@
 <?php
 require '../../inc/navbar.php';
-$title = "title";
+
+
+
 $product_id = $_GET['id'] ?? 0;
 $product_id = (int)$product_id;
+$errors = [];
 
 if ($product_id > 0) {
   $product_details = getProductByID($product_id);
@@ -12,6 +15,36 @@ if ($product_id > 0) {
     $product_details['reviews'] = getProductReviews($product_id);
     $product_details['similar_products'] = getSimilarProducts($product_details['category_id'], $product_id);
     $product_details['rating_details'] = getProductRatingDetails($product_id);
+    if (is_logged_in()) {
+      $user_id = user('id');
+      $canReview = userCanReview($user_id, $product_id);
+    }
+  }
+}
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+  $p_id = htmlspecialchars($_POST['p_id']);
+  $u_id = htmlspecialchars($_POST['u_id']);
+  $rating = htmlspecialchars($_POST['rating']);
+  $rating_text = htmlspecialchars($_POST['rating_text']);
+
+  if (empty($rating) || $rating > 5 || $rating < 1) {
+    $errors['rating'] = 'Veuillez fournir une note entre 1 et 5.';
+    set_message($errors['rating'], 'error');
+    header('Location: ' . $_SERVER['HTTP_REFERER']);
+    exit;
+  }
+  if (!preg_match("/^[\w\s.,'éàèùâêîôûäëïöüç-]{10,}$/", $rating_text)) {
+    $errors['rating_text'] = 'Le texte de l\'avis doit contenir au moins 10 caractères.';
+    set_message($errors['rating_text'], 'error');
+    header('Location: ' . $_SERVER['HTTP_REFERER']);
+    exit;
+  }
+  if (empty($errors)) {
+    if (insertReview($p_id, $u_id, $rating, $rating_text)) {
+      set_message('Votre avis a été ajouté avec succès.', 'success');
+      header('Location: ' . $_SERVER['HTTP_REFERER']);
+      exit;
+    }
   }
 }
 
@@ -75,11 +108,16 @@ if ($product_id > 0) {
       <p style="text-align: justify;"><?= $product_details['description'] ?></p>
     </div>
   </div>
-  <?php if (!empty($product_details['reviews'])) : ?>
-    <div class="reviews-section">
+  <div class="reviews-section">
+    <div class="flex">
       <h2>Ce que disent nos clients</h2>
-      <div class="reviews-container">
+      <?php if (is_logged_in() && $canReview) : ?>
+        <button class="secondary-btn-small-review modal-btn"><i style="color:#FAE264" class="fa-solid fa-star"></i> Donner un avis</button>
+      <?php endif; ?>
+    </div>
 
+    <?php if (!empty($product_details['reviews'])) : ?>
+      <div class="reviews-container">
         <?php foreach ($product_details['reviews'] as $review) : ?>
           <div class="single-review">
             <p style="font-weight: 700;"><?= $review['firstname'] . ' ' . $review['lastname'] ?></p>
@@ -90,8 +128,13 @@ if ($product_id > 0) {
           </div>
         <?php endforeach; ?>
       </div>
-    </div>
-  <?php endif; ?>
+    <?php else : ?>
+      <div style="height:30vh; width: 100%; display:flex; align-items: center; justify-content: center;">
+        <p>Pas encore d'avis.</p>
+      </div>
+    <?php endif; ?>
+
+  </div>
   <?php if (!empty($product_details['similar_products'])) : ?>
     <div class="suggestions-section">
       <h2>Vous aimerez peut-être aussi</h2>
@@ -125,6 +168,35 @@ if ($product_id > 0) {
   <?php endif; ?>
 
 </main>
+
+<div class="modal-bg">
+  <div class="modal">
+    <button class="close modal-close"><i style="color: #080100;" class="fa-solid fa-x fa-lg"></i></button>
+    <form method="post">
+      <h1>Évaluez Votre Achat!</h1>
+      <h2>Aidez-Nous à Améliorer.</h2>
+      <input type="hidden" name="p_id" value="<?= $product_id ?>">
+      <input type="hidden" name="u_id" value="<?= $user_id ?>">
+      <div>
+        <label class="login_label">
+          Évaluation
+        </label>
+        <input value="<?= post_old_value('rating') ?>" placeholder="Notez de 1 à 5 étoiles" type="text" name="rating" class="input">
+      </div>
+      <div>
+        <label class="login_label">
+          Votre Avis
+        </label>
+        <textarea class="input" name="rating_text" id=""><?= post_old_value('rating_text') ?></textarea>
+      </div>
+      <button class="primary-btn" style="width: 100%; margin-top: 8px;" type="submit">Soumettre</button>
+
+    </form>
+  </div>
+</div>
+
+<script src="<?= ROOT ?>/js/modal.js" defer></script>
+
 
 <script src="<?= ROOT ?>/js/quantity.js" defer></script>
 <script src="<?= ROOT ?>/js/image.js" defer></script>

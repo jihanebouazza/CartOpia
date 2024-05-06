@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $errors['phone_number'] = "Le numéro de téléphone doit commencer par 06, 07 ou +212 suivi de 8 chiffres.";
   }
 
-  if (!preg_match("/^[a-zA-Z0-9\s]{8,}$/", $address)) {
+  if (!preg_match("/^[\w\s.,'éàèùâêîôûäëïöüç-]{10,}$/", $address)) {
     $errors['address'] = "L'adresse est invalide.";
   }
 
@@ -104,7 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       <label class="label">
         Numéro de téléphone
       </label>
-      <input value="<?=post_old_value('phone_number') ? post_old_value('phone_number') : user('phone_number') ?>" placeholder="" type="text" name="phone_number" class="input">
+      <input value="<?= post_old_value('phone_number') ? post_old_value('phone_number') : user('phone_number') ?>" placeholder="" type="text" name="phone_number" class="input">
     </div>
     <?= isset($errors['phone_number']) ? '<div class="error">' . $errors['phone_number'] . '</div>' : '' ?>
 
@@ -112,7 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       <label class="label">
         Adresse
       </label>
-      <textarea placeholder="" name="address" class="input"><?=post_old_value('address') ? post_old_value('address') : user('address')   ?></textarea>
+      <textarea placeholder="" name="address" class="input"><?= post_old_value('address') ? post_old_value('address') : user('address')   ?></textarea>
     </div>
     <?= isset($errors['address']) ? '<div class="error">' . $errors['address'] . '</div>' : '' ?>
 
@@ -129,7 +129,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <label class="label">
           Code Postal
         </label>
-        <input value="<?= post_old_value('postal_code')? post_old_value('postal_code') : user('postal_code') ?>" placeholder="" type="text" name="postal_code" class="input">
+        <input value="<?= post_old_value('postal_code') ? post_old_value('postal_code') : user('postal_code') ?>" placeholder="" type="text" name="postal_code" class="input">
       </div>
     </div>
     <?= isset($errors['city']) ? '<div class="error">' . $errors['city'] . '</div>' : '' ?>

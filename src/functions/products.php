@@ -741,3 +741,29 @@ function getOrderStatusCounts($userId)
   }
   return $data;
 }
+
+function insertReview($product_id, $user_id, $rating, $rating_text)
+{
+
+  global $con;
+  $stmt = $con->prepare('INSERT INTO reviews (product_id,user_id,rating,text) VALUES(?, ?, ?, ?)');
+
+  if (!$stmt) {
+    // Handle error here if prepare failed
+    echo "Error preparing statement: " . $con->error;
+    return false;
+  }
+
+  $stmt->bind_param('iiss', $product_id, $user_id, $rating, $rating_text);
+  $stmt->execute();
+
+  if ($stmt->affected_rows > 0) {
+    $stmt->close();
+    return true; // Return true on success
+  } else {
+    // Handle error here if insertion failed
+    echo "Error inserting order item: " . $stmt->error;
+    $stmt->close();
+    return false;
+  }
+}

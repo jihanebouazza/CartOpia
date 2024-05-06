@@ -95,6 +95,64 @@ function updateUserPassword($user_id, $hashed_password)
 }
 
 
+// function userCanReview($userId, $productId)
+// {
+//   global $con; // Assuming $con is your database connection
+
+//   $sql = "SELECT o.id
+//           FROM orders o
+//           JOIN order_items oi ON o.id = oi.order_id
+//           WHERE o.user_id = ? AND oi.product_id = ? AND o.status = 'Livré'
+//           LIMIT 1";
+
+//   $stmt = $con->prepare($sql);
+//   if (!$stmt) {
+//     echo "Error preparing statement: " . $con->error;
+//     return false;
+//   }
+
+//   $stmt->bind_param("ii", $userId, $productId);
+//   $stmt->execute();
+//   $result = $stmt->get_result();
+
+//   $canReview = $result->num_rows > 0;
+
+//   $stmt->close();
+//   return $canReview;
+// }
+
+function userCanReview($userId, $productId)
+{
+  global $con; // Assuming $con is your database connection
+
+  // Check if the user has received the product and has not yet left a review
+  $sql = "SELECT o.id
+          FROM orders o
+          JOIN order_items oi ON o.id = oi.order_id
+          WHERE o.user_id = ? AND oi.product_id = ? AND o.status = 'Livré'
+          AND NOT EXISTS (
+          SELECT 1 FROM reviews r WHERE r.product_id = oi.product_id AND r.user_id = o.user_id
+          )
+          LIMIT 1";
+
+  $stmt = $con->prepare($sql);
+  if (!$stmt) {
+    echo "Error preparing statement: " . $con->error;
+    return false;
+  }
+
+  $stmt->bind_param("ii", $userId, $productId);
+  $stmt->execute();
+  $result = $stmt->get_result();
+
+  $canReview = $result->num_rows > 0;
+
+  $stmt->close();
+  return $canReview;
+}
+
+
+
 // function getUserByID($user_id)
 // {
 //   global $con; // Ensure you have a global database connection variable
