@@ -113,7 +113,7 @@ function getAllProductsAdmin()
     $row['images'] = fetchProductImages($row['id']);
     $products[] = $row;
   }
-  $stmt->close();
+  // $stmt->close();
 
   return $products;
 }
@@ -160,7 +160,7 @@ function getProductReviews($product_id)
 {
   global $con;
   $reviews = [];
-  $review_stmt = $con->prepare("SELECT r.text, r.rating, u.firstname, u.lastname FROM reviews r JOIN users u ON r.user_id = u.id WHERE r.product_id = ?");
+  $review_stmt = $con->prepare("SELECT r.id,r.text, r.rating, u.firstname, u.lastname FROM reviews r JOIN users u ON r.user_id = u.id WHERE r.product_id = ?");
   $review_stmt->bind_param("i", $product_id);
   $review_stmt->execute();
   $review_result = $review_stmt->get_result();
@@ -223,7 +223,6 @@ function getProductRatingDetails($product_id)
 {
   global $con;
 
-  // Prepare the SQL statement to compute the average rating and count the ratings
   $stmt = $con->prepare("SELECT AVG(rating) AS average_rating, COUNT(rating) AS rating_count FROM reviews WHERE product_id = ?");
   $stmt->bind_param("i", $product_id);
   $stmt->execute();
@@ -281,9 +280,8 @@ function isInWishlist($product_id)
 
 function getProductPrice($product_id)
 {
-  global $con; // Ensure you have a global connection variable available
+  global $con; 
 
-  // Prepare the SQL statement to select the price and discount percentage
   $stmt = $con->prepare("SELECT price, discount_percentage FROM products WHERE id = ?");
   $stmt->bind_param("i", $product_id);
   $stmt->execute();
@@ -306,21 +304,18 @@ function getProductPrice($product_id)
 
 function insertOrder($user_id, $total, $payment_type, $payment_status)
 {
-  global $con; // Database connection variable
+  global $con; 
 
-  // Corrected SQL statement: removed an extra placeholder and matched the parameters
   $stmt = $con->prepare("INSERT INTO orders (user_id, total, payment_type,payment_status, date) VALUES (?, ?, ?,?, NOW())");
 
-  // Ensure the correct types are used in bind_param:
-  // 'i' for integer, 'd' for double (float), 's' for string
   $stmt->bind_param("idss", $user_id, $total, $payment_type, $payment_status);
 
   $stmt->execute();
 
   if ($stmt->affected_rows === 0) {
-    return false; // Order not inserted
+    return false; 
   }
-  return $con->insert_id; // Return the new order ID
+  return $con->insert_id; 
 }
 
 function updateProductStock($product_id, $quantity_sold)
@@ -333,29 +328,24 @@ function updateProductStock($product_id, $quantity_sold)
 }
 function insertOrderItem($order_id, $product_id, $quantity, $price)
 {
-  global $con; // Ensure that $con is your database connection variable
+  global $con; 
 
-  // Prepare the SQL query to insert an order item
   $sql = "INSERT INTO order_items (order_id, product_id, quantity, price) VALUES (?, ?, ?, ?)";
   $stmt = $con->prepare($sql);
 
   if (!$stmt) {
-    // Handle error here if prepare failed
     echo "Error preparing statement: " . $con->error;
     return false;
   }
 
-  // Bind the parameters to the SQL query
   $stmt->bind_param("iiid", $order_id, $product_id, $quantity, $price);
 
-  // Execute the query
   $stmt->execute();
 
   if ($stmt->affected_rows > 0) {
     $stmt->close();
-    return true; // Return true on success
+    return true; 
   } else {
-    // Handle error here if insertion failed
     echo "Error inserting order item: " . $stmt->error;
     $stmt->close();
     return false;
@@ -364,25 +354,21 @@ function insertOrderItem($order_id, $product_id, $quantity, $price)
 
 function getAllOrdersByUserId($userId)
 {
-  global $con;  // Ensure that $con is your database connection variable
+  global $con;  
 
-  // Prepare SQL to fetch all orders for a specific user
   $sql = "SELECT id, user_id, total, status, payment_type, payment_status, date
           FROM orders
           WHERE user_id = ?";
 
-  // Prepare the SQL statement
   $stmt = $con->prepare($sql);
   if (!$stmt) {
     echo "Error preparing statement: " . $con->error;
     return null;
   }
 
-  // Bind the user_id parameter
   $stmt->bind_param("i", $userId);
   $stmt->execute();
 
-  // Get the result
   $result = $stmt->get_result();
 
   $orders = [];
@@ -402,203 +388,65 @@ function getAllOrdersByUserId($userId)
   return $orders;
 }
 
-// function getAllOrdersByUserId($userId)
-// {
-//   global $con;  // Ensure that $con is your database connection variable
+function getAllOrders()
+{
+  global $con;  
+  $sql = "SELECT o.id AS order_id, o.user_id, o.total, o.status, o.payment_type, o.payment_status, o.date,
+                 oi.id AS order_item_id, oi.quantity, oi.price,
+                 p.id AS product_id, p.title, p.description, p.brand, p.stock, p.price AS product_price, c.title AS category_title
+          FROM orders o
+          JOIN order_items oi ON o.id = oi.order_id
+          JOIN products p ON oi.product_id = p.id
+          JOIN categories c ON p.category_id = c.id
+          "; 
 
-//   // Prepare SQL to fetch orders with associated order items and product details, filtered by user_id
-//   $sql = "SELECT o.id AS order_id, o.user_id, o.total, o.status, o.payment_type, o.payment_status, o.date,
-//                  oi.id AS order_item_id, oi.quantity, oi.price,
-//                  p.id AS product_id, p.title, p.description, p.brand, p.stock, p.price AS product_price, c.title AS category_title
-//           FROM orders o
-//           JOIN order_items oi ON o.id = oi.order_id
-//           JOIN products p ON oi.product_id = p.id
-//           JOIN categories c ON p.category_id = c.id
-//           WHERE o.user_id = ?
-//           ORDER BY o.date DESC";  // Sorting by the most recent orders first
+  $result = $con->query($sql);
 
-//   // Prepare the SQL statement
-//   $stmt = $con->prepare($sql);
-//   if (!$stmt) {
-//     echo "Error preparing statement: " . $con->error;
-//     return [];
-//   }
+  if (!$result) {
+    echo "Error: " . $con->error;
+    return [];
+  }
 
-//   // Bind the user_id parameter
-//   $stmt->bind_param("i", $userId);
-//   $stmt->execute();
+  $orders = [];
+  while ($row = $result->fetch_assoc()) {
+    $order_id = $row['order_id'];
 
-//   // Get the result
-//   $result = $stmt->get_result();
+    if (!isset($orders[$order_id])) {
+      $orders[$order_id] = [
+        'order_id' => $order_id,
+        'user_id' => $row['user_id'],
+        'total' => $row['total'],
+        'status' => $row['status'],
+        'payment_type' => $row['payment_type'],
+        'payment_status' => $row['payment_status'],
+        'date' => $row['date'],
+        'order_items' => []
+      ];
+    }
 
-//   $orders = [];
-//   while ($row = $result->fetch_assoc()) {
-//     $order_id = $row['order_id'];
+    $orders[$order_id]['order_items'][] = [
+      'order_item_id' => $row['order_item_id'],
+      'quantity' => $row['quantity'],
+      'price' => $row['price'],
+      'product' => [
+        'product_id' => $row['product_id'],
+        'title' => $row['title'],
+        'description' => $row['description'],
+        'brand' => $row['brand'],
+        'stock' => $row['stock'],
+        'price' => $row['product_price'],
+        'category_title' => $row['category_title']
+      ]
+    ];
+  }
 
-//     // Initialize order if not already set
-//     if (!isset($orders[$order_id])) {
-//       $orders[$order_id] = [
-//         'order_id' => $order_id,
-//         'user_id' => $row['user_id'],
-//         'total' => $row['total'],
-//         'status' => $row['status'],
-//         'payment_type' => $row['payment_type'],
-//         'payment_status' => $row['payment_status'],
-//         'date' => $row['date'],
-//         'order_items' => []
-//       ];
-//     }
-
-//     // Append order item and product details to the order
-//     $orders[$order_id]['order_items'][] = [
-//       'order_item_id' => $row['order_item_id'],
-//       'quantity' => $row['quantity'],
-//       'price' => $row['price'],
-//       'product' => [
-//         'product_id' => $row['product_id'],
-//         'title' => $row['title'],
-//         'description' => $row['description'],
-//         'brand' => $row['brand'],
-//         'stock' => $row['stock'],
-//         'price' => $row['product_price'],
-//         'category_title' => $row['category_title']
-//       ]
-//     ];
-//   }
-
-//   $stmt->close();
-//   return $orders;
-// }
-
-// function getAllOrders() {
-//   global $con;  // Ensure that $con is your database connection variable
-
-//   // SQL to fetch orders with associated order items and product details
-//   $sql = "SELECT o.id AS order_id, o.user_id, o.total, o.status, o.payment_type, o.payment_status, o.date,
-//                  oi.id AS order_item_id, oi.quantity, oi.price,
-//                  p.id AS product_id, p.title, p.description, p.brand, p.stock, p.price AS product_price, c.title AS category_title
-//           FROM orders o
-//           JOIN order_items oi ON o.id = oi.order_id
-//           JOIN products p ON oi.product_id = p.id
-//           JOIN categories c ON p.category_id = c.id
-//           ORDER BY o.date DESC";  // Assuming you want the most recent orders first
-
-//   $result = $con->query($sql);
-
-//   if (!$result) {
-//       // Handle error - the SQL query failed
-//       echo "Error: " . $con->error;
-//       return [];
-//   }
-
-//   $orders = [];
-//   while ($row = $result->fetch_assoc()) {
-//       $order_id = $row['order_id'];
-
-//       // Initialize order if not already set
-//       if (!isset($orders[$order_id])) {
-//           $orders[$order_id] = [
-//               'order_id' => $order_id,
-//               'user_id' => $row['user_id'],
-//               'total' => $row['total'],
-//               'status' => $row['status'],
-//               'payment_type' => $row['payment_type'],
-//               'payment_status' => $row['payment_status'],
-//               'date' => $row['date'],
-//               'order_items' => []
-//           ];
-//       }
-
-//       // Append order item and product details to the order
-//       $orders[$order_id]['order_items'][] = [
-//           'order_item_id' => $row['order_item_id'],
-//           'quantity' => $row['quantity'],
-//           'price' => $row['price'],
-//           'product' => [
-//               'product_id' => $row['product_id'],
-//               'title' => $row['title'],
-//               'description' => $row['description'],
-//               'brand' => $row['brand'],
-//               'stock' => $row['stock'],
-//               'price' => $row['product_price'],
-//               'category_title' => $row['category_title']
-//           ]
-//       ];
-//   }
-
-//   return $orders;
-// }
-
-// function getOrderById($orderId)
-// {
-//   global $con;  // Ensure that $con is your database connection variable
-
-//   // Prepare SQL to fetch a specific order with associated order items and product details
-//   $sql = "SELECT o.id AS order_id, o.user_id, o.total, o.status, o.payment_type, o.payment_status, o.date,
-//                  oi.id AS order_item_id, oi.quantity, oi.price,
-//                  p.id AS product_id, p.title, p.description, p.brand, p.stock, p.price AS product_price, c.title AS category_title
-//           FROM orders o
-//           JOIN order_items oi ON o.id = oi.order_id
-//           JOIN products p ON oi.product_id = p.id
-//           JOIN categories c ON p.category_id = c.id
-//           WHERE o.id = ?
-//           ORDER BY o.date DESC";
-
-//   // Prepare the SQL statement
-//   $stmt = $con->prepare($sql);
-//   if (!$stmt) {
-//     echo "Error preparing statement: " . $con->error;
-//     return null;
-//   }
-
-//   // Bind the order_id parameter
-//   $stmt->bind_param("i", $orderId);
-//   $stmt->execute();
-
-//   // Get the result
-//   $result = $stmt->get_result();
-
-//   $order = null;
-//   while ($row = $result->fetch_assoc()) {
-//     if ($order === null) {
-//       $order = [
-//         'order_id' => $row['order_id'],
-//         'user_id' => $row['user_id'],
-//         'total' => $row['total'],
-//         'status' => $row['status'],
-//         'payment_type' => $row['payment_type'],
-//         'payment_status' => $row['payment_status'],
-//         'date' => $row['date'],
-//         'order_items' => []
-//       ];
-//     }
-
-//     // Append order item and product details to the order
-//     $order['order_items'][] = [
-//       'order_item_id' => $row['order_item_id'],
-//       'quantity' => $row['quantity'],
-//       'price' => $row['price'],
-//       'product' => [
-//         'product_id' => $row['product_id'],
-//         'title' => $row['title'],
-//         'description' => $row['description'],
-//         'brand' => $row['brand'],
-//         'stock' => $row['stock'],
-//         'price' => $row['product_price'],
-//         'category_title' => $row['category_title']
-//       ]
-//     ];
-//   }
-
-//   $stmt->close();
-//   return $order;
-// }
+  return $orders;
+}
 
 function getOrderById($orderId)
 {
-  global $con;  // Ensure that $con is your database connection variable
+  global $con;  
 
-  // Prepare SQL to fetch a specific order with associated order items, product details, and user details
   $sql = "SELECT o.id AS order_id, o.user_id, o.total, o.status, o.payment_type, o.payment_status, o.date,
                  oi.id AS order_item_id, oi.quantity, oi.price,
                  p.id AS product_id, p.title, p.description, p.brand, p.stock, p.discount_percentage, p.price AS product_price, c.title AS category_title,
@@ -611,18 +459,15 @@ function getOrderById($orderId)
           WHERE o.id = ?
           ORDER BY o.date DESC";
 
-  // Prepare the SQL statement
   $stmt = $con->prepare($sql);
   if (!$stmt) {
     echo "Error preparing statement: " . $con->error;
     return null;
   }
 
-  // Bind the order_id parameter
   $stmt->bind_param("i", $orderId);
   $stmt->execute();
 
-  // Get the result
   $result = $stmt->get_result();
 
   $order = null;
@@ -649,7 +494,6 @@ function getOrderById($orderId)
       ];
     }
 
-    // Append order item and product details to the order
     $order['order_items'][] = [
       'order_item_id' => $row['order_item_id'],
       'quantity' => $row['quantity'],
@@ -673,25 +517,23 @@ function getOrderById($orderId)
 
 function getNumberOfOrdersByUser($userId)
 {
-  global $con; // Make sure you have defined your $con variable as your database connection
+  global $con; 
 
-  // Prepare the SQL statement to count orders by user ID
   $stmt = $con->prepare("SELECT COUNT(*) as order_count FROM orders WHERE user_id = ?");
   $stmt->bind_param("i", $userId);
   $stmt->execute();
 
-  // Bind result variables
   $stmt->bind_result($orderCount);
-  $stmt->fetch(); // Fetch the count result
+  $stmt->fetch(); 
 
   $stmt->close();
 
-  return $orderCount; // Return the number of orders
+  return $orderCount; 
 }
 
 function getUserSpendingPerCategory($userId)
 {
-  global $con;  // Your database connection variable
+  global $con;  
 
   $sql = "SELECT c.title AS category, SUM(oi.price * oi.quantity) AS total_spent
           FROM orders o
@@ -723,7 +565,7 @@ function getUserSpendingPerCategory($userId)
 }
 function getOrderStatusCounts($userId)
 {
-  global $con; // Assuming $con is your mysqli database connection variable
+  global $con; 
   $sql = "SELECT status, COUNT(*) as count FROM orders WHERE user_id = ? GROUP BY status";
   $stmt = $con->prepare($sql);
   $stmt->bind_param("i", $userId);
@@ -743,7 +585,6 @@ function insertReview($product_id, $user_id, $rating, $rating_text)
   $stmt = $con->prepare('INSERT INTO reviews (product_id,user_id,rating,text) VALUES(?, ?, ?, ?)');
 
   if (!$stmt) {
-    // Handle error here if prepare failed
     echo "Error preparing statement: " . $con->error;
     return false;
   }
@@ -753,9 +594,8 @@ function insertReview($product_id, $user_id, $rating, $rating_text)
 
   if ($stmt->affected_rows > 0) {
     $stmt->close();
-    return true; // Return true on success
+    return true; 
   } else {
-    // Handle error here if insertion failed
     echo "Error inserting order item: " . $stmt->error;
     $stmt->close();
     return false;
@@ -822,11 +662,10 @@ function updateProductImages($folder, $images, $product_id)
     $stmt_insert->execute();
   }
 
-  // Check if any images were updated
   if ($stmt_insert->affected_rows > 0) {
-    return true; // Images updated successfully
+    return true; 
   } else {
-    return false; // No images updated
+    return false;
   }
 }
 
@@ -862,25 +701,148 @@ function deleteProduct($id)
   return false;
 }
 
-// function deleteProduct($id)
-// {
-//   global $con;
-//   $stmt = $con->prepare("DELETE from products where id = ?");
-//   $stmt->bind_param('i', $id);
-//   $stmt->execute();
-//   if ($stmt->affected_rows > 0) {
-//     $stmt2 = $con->prepare("delete from images where product_id = ?");
-//     $stmt2->bind_param('i', $id);
-//     $stmt2->execute();
-//     if ($stmt2->affected_rows > 0) {
-//       $images =  fetchProductImages($id);
-//       foreach ($images as $image) {
-//         $arr = explode('/',$image);
-//         unlink($arr[3].'/'.$arr[4]);
-//         // echo '../'. $image.'<br>';
-//       }
-//       return true;
-//     }
-//   }
-//   return false;
-// }
+
+function deleteOrderByID($id)
+{
+  global $con;
+  $stmt = $con->prepare("DELETE from orders where id = ?");
+  $stmt->bind_param('i', $id);
+  $stmt->execute();
+  if ($stmt->affected_rows > 0) {
+    $stmt2 = $con->prepare("delete from order_items where order_id = ?");
+    $stmt2->bind_param('i', $id);
+    $stmt2->execute();
+    if ($stmt2->affected_rows > 0) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function updateOrderStatus($id, $order_status, $payment_status)
+{
+  global $con;
+
+  $stmt = $con->prepare("UPDATE orders set status= ?, payment_status = ? WHERE id = ?");
+  $stmt->bind_param('ssi', $order_status, $payment_status, $id);
+  $stmt->execute();
+
+  if ($stmt->affected_rows == 0) {
+    return false;
+  }
+  return true;
+}
+
+function deleteCategory($id)
+{
+  global $con;
+  $stmt = $con->prepare("DELETE from categories where id = ?");
+  $stmt->bind_param('i', $id);
+  $stmt->execute();
+  if ($stmt->affected_rows == 0)  return false;
+  return true;
+}
+
+function insertCategory($title, $description)
+{
+  global $con;
+  $stmt = $con->prepare("INSERT into categories (title, category_description) VALUES (?,?)");
+  $stmt->bind_param('ss', $title, $description);
+  $stmt->execute();
+  if ($stmt->affected_rows == 0)  return false;
+  return true;
+}
+
+function updateCategory($id, $title, $description)
+{
+  global $con;
+
+  $stmt = $con->prepare("UPDATE categories SET title = ?, category_description = ? WHERE id = ?");
+  $stmt->bind_param('ssi', $title, $description, $id);
+  $stmt->execute();
+
+  if ($stmt->affected_rows == 0) {
+    return false;
+  }
+  return true;
+}
+
+
+function getCategoryById($id)
+{
+  global $con;
+
+  $stmt = $con->prepare("SELECT * FROM categories WHERE id = ?");
+  $stmt->bind_param('i', $id);
+  $stmt->execute();
+
+  $result = $stmt->get_result();
+
+  return $result->fetch_assoc();
+}
+
+function getAllUsers()
+{
+  global $con;
+  $users = [];
+
+  $res = $con->query("SELECT * FROM users");
+  while ($row = $res->fetch_assoc()) {
+    $users[] = $row;
+  }
+  
+  return $users;
+}
+
+
+function getCategoryDistributionData() {
+    global $con;
+    
+    $data =[];
+
+    $sql = "SELECT c.title AS category, COUNT(p.id) AS product_count
+            FROM categories c
+            LEFT JOIN products p ON c.id = p.category_id
+            GROUP BY c.title";
+
+    $result = $con->query($sql);
+
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $data[$row['category']] = $row['product_count'];
+        }
+    }
+
+    return $data;
+}
+
+function getProductStockLevelsData() {
+    global $con;
+    
+    $data = [];
+
+    $sql = "SELECT c.title AS category, SUM(p.stock) AS total_stock
+            FROM categories c
+            LEFT JOIN products p ON c.id = p.category_id
+            GROUP BY c.title";
+
+    $result = $con->query($sql);
+
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $data[$row['category']] = $row['total_stock'];
+        }
+    }
+
+    return $data;
+}
+
+function deleteReview($id)
+{
+  global $con;
+  $stmt = $con->prepare("DELETE from reviews where id = ?");
+  $stmt->bind_param('i', $id);
+  $stmt->execute();
+  if ($stmt->affected_rows == 0)  return false;
+  return true;
+}

@@ -37,6 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <th>Categorie</th>
             <th>Stock</th>
             <th>Prix</th>
+            <th></th>
             <th>Action</th>
           </tr>
         </thead>
@@ -48,12 +49,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
               <td><?= strlen($product['title']) >= 20 ? substr($product['title'], 0, 20) . '...' :  $product['title']  ?></td>
               <td><?= $product['category_title'] ?></td>
               <td><?= $product['stock'] ?></td>
-              <td><?= $product['discount_percentage'] > 0 ? number_format(calculateDiscountPrice($product['price'], $product['discount_percentage']), 2) : number_format($product['price'], 2) ?></td>
+              <td>
+                <?= $product['discount_percentage'] > 0 ? number_format(calculateDiscountPrice($product['price'], $product['discount_percentage']), 2) : number_format($product['price'], 2) ?>
+              </td>
+              <td style="width:6%;">
+                <?php if ($product['discount_percentage'] > 0) : ?>
+                  <div style="padding: 4px; border-radius: 8px; border: 1px solid #f56262; color: #f56262; display: inline-block; font-size: 14px;">-<?= $product['discount_percentage'] ?>%</div>
+                <?php endif ?>
+              </td>
               <td>
                 <a style="color: #A19796; border-color: #A19796; padding: 4px 4px 4px 6px;" href="<?= ROOT ?>/views/products/product.php?id=<?= $product['id'] ?>" class="icon-button">
                   <i style="color: #A19796;" class="fa-solid fa-eye fa-sm"></i>
                 </a>
-                <a href="<?= ROOT ?>/views/admin/product_edit.php?id=<?= $product['id'] ?>" style="margin: 0px 4px; color: #A19796; border-color: #A19796;padding: 4px 4px 4px 6px;" href="<?= ROOT ?>/views/products/cart.php" class="icon-button">
+                <a href="<?= ROOT ?>/views/admin/product_edit.php?id=<?= $product['id'] ?>" style="margin: 0px 4px; color: #A19796; border-color: #A19796;padding: 4px 4px 4px 6px;" class="icon-button">
                   <i style="color: #A19796;" class="fa-solid fa-pen-to-square fa-sm"></i>
                 </a>
                 <form method="post" style="display: inline-block;" action="">

@@ -42,6 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     ['total' => $total] = $_SESSION['cart_totals'];
 
     if (updateUserDetails($user_id, $phone_number, $address, $city, $postal_code)) {
+      echo 'here';
       $order_id = insertOrder($user_id, $total, $payment_method, 'En attente');
       if ($order_id) {
         $all_items_processed = true;

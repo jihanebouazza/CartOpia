@@ -10,6 +10,7 @@ if (isset($_POST['logout'])) {
     redirect('index');
   }
 }
+$is_admin = is_admin();
 ?>
 
 <script src="<?= ROOT ?>/js/geolocation.js" defer></script>
@@ -60,7 +61,7 @@ if (isset($_POST['logout'])) {
                 <span><?= user('email') ?></span>
               </p>
               <div class="hr"></div>
-              <a href="<?= ROOT ?>/views/user/index.php">Dashboard</a>
+              <a href="<?= $is_admin ? ROOT . '/views/admin/index.php' : ROOT . '/views/user/index.php' ?>">Dashboard</a>
               <a style="padding-top: 0px;" href="<?= ROOT ?>/views/user/settings.php">Profile</a>
               <div class="hr"></div>
               <form method="post" action="">

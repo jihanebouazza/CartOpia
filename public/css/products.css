@@ -258,6 +258,7 @@ input[type="range" i] {
   max-width: 30.5%;
   padding: 16px;
   text-align: center;
+  position: relative;
   /* height: 100%; */
 }
 .suggestions-section {

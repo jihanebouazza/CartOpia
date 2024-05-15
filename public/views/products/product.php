@@ -22,39 +22,48 @@ if ($product_id > 0) {
   }
 }
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-  $p_id = htmlspecialchars($_POST['p_id']);
-  $u_id = htmlspecialchars($_POST['u_id']);
-  $rating = htmlspecialchars($_POST['rating']);
-  $rating_text = htmlspecialchars($_POST['rating_text']);
+  if (isset($_POST['add_review'])) {
+    $p_id = htmlspecialchars($_POST['p_id']);
+    $u_id = htmlspecialchars($_POST['u_id']);
+    $rating = htmlspecialchars($_POST['rating']);
+    $rating_text = htmlspecialchars($_POST['rating_text']);
 
-  if (empty($rating) || $rating > 5 || $rating < 1) {
-    $errors['rating'] = 'Veuillez fournir une note entre 1 et 5.';
-    set_message($errors['rating'], 'error');
-    header('Location: ' . $_SERVER['HTTP_REFERER']);
-    exit;
-  }
-  if (!preg_match("/^[\w\s.,'éàèùâêîôûäëïöüç-]{10,}$/", $rating_text)) {
-    $errors['rating_text'] = 'Le texte de l\'avis doit contenir au moins 10 caractères.';
-    set_message($errors['rating_text'], 'error');
-    header('Location: ' . $_SERVER['HTTP_REFERER']);
-    exit;
-  }
-  if (empty($errors)) {
-    if (insertReview($p_id, $u_id, $rating, $rating_text)) {
-      set_message('Votre avis a été ajouté avec succès.', 'success');
+    if (empty($rating) || $rating > 5 || $rating < 1) {
+      $errors['rating'] = 'Veuillez fournir une note entre 1 et 5.';
+      set_message($errors['rating'], 'error');
       header('Location: ' . $_SERVER['HTTP_REFERER']);
       exit;
     }
+    if (!preg_match("/^[\p{L}0-9 ,.'\"\-\–éèêëàâûôîçü]+$/u", $rating_text) && !strlen($rating_text) >= 10) {
+      $errors['rating_text'] = 'Le texte de l\'avis doit contenir au moins 10 caractères.';
+      set_message($errors['rating_text'], 'error');
+      header('Location: ' . $_SERVER['HTTP_REFERER']);
+      exit;
+    }
+    if (empty($errors)) {
+      if (insertReview($p_id, $u_id, $rating, $rating_text)) {
+        set_message('Votre avis a été ajouté avec succès.', 'success');
+        header('Location: ' . $_SERVER['HTTP_REFERER']);
+        exit;
+      }
+    }
   }
+
+  if (isset($_POST['delete_review'])) {
+    $id = $_POST['id']; // No need to use htmlspecialchars here
+    if (deleteReview($id)) {
+        set_message('Avis supprimé avec succès!', 'success');
+        header('Location:' . $_SERVER['HTTP_REFERER']);
+        exit; // Add an exit statement after redirection
+    } else {
+        set_message('Erreur lors de la suppression de l\'avis.' . $id, 'error'); // Handle error case
+        header('Location:' . $_SERVER['HTTP_REFERER']);
+        exit; // Add an exit statement after redirection
+    }
+}
 }
 
-// if (!empty($product_details)) {
-//   echo '<pre>';
-//   print_r($product_details);
-//   echo '</pre>';
-// } else {
-//   echo "No product found!";
-// }
+
 ?>
 
 <main>
@@ -120,6 +129,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       <div class="reviews-container">
         <?php foreach ($product_details['reviews'] as $review) : ?>
           <div class="single-review">
+            <?php if (is_admin()) : ?>
+              <div style="position: absolute; top:8px; right:8px">
+                <form method="post" style="display: inline-block;" action="">
+                  <input type="hidden" name="id" value="<?= $review['id'] ?>">
+                  <button name="delete_review" style="cursor:pointer; background: none; border:solid 1px #f56262;padding: 6px 10px;" type="submit" class="icon-button">
+                    <i style="color: #f56262;" class="fa-solid fa-trash fa-sm"></i>
+                  </button>
+                </form>
+              </div>
+            <?php endif; ?>
             <p style="font-weight: 700;"><?= $review['firstname'] . ' ' . $review['lastname'] ?></p>
             <p style="margin-top: 4px;" class="review">
               <i style="color:#FAE264" class="fa-solid fa-star"></i> <?= $review['rating'] ?>/5
@@ -189,7 +208,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </label>
         <textarea class="input" name="rating_text" id=""><?= post_old_value('rating_text') ?></textarea>
       </div>
-      <button class="primary-btn" style="width: 100%; margin-top: 8px;" type="submit">Soumettre</button>
+      <button name="add_review" class="primary-btn" style="width: 100%; margin-top: 8px;" type="submit">Soumettre</button>
 
     </form>
   </div>
