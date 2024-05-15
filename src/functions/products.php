@@ -1,7 +1,7 @@
 <?php
 function getAllProducts($search = '', $minPrice = 0, $maxPrice = 0, $brands = [], $ratings = [])
 {
-  global $con; // Assuming $con is your mysqli connection
+  global $con;
 
   $conditions = [];
   $params = [];
@@ -34,29 +34,6 @@ function getAllProducts($search = '', $minPrice = 0, $maxPrice = 0, $brands = []
     $param_types .= str_repeat('s', count($brands));
   }
 
-  // // Rating filter
-  // if (!empty($ratings)) {
-  //   $ratingConditions = [];
-  //   foreach ($ratings as $rating) {
-  //     if (is_array($rating) && count($rating) == 2) { // Ensure the array has exactly two elements
-  //       $ratingConditions[] = "(SELECT AVG(rating) FROM reviews WHERE product_id = p.id) BETWEEN ? AND ?";
-  //       $params[] = $rating[0]; // Min rating
-  //       $params[] = $rating[1]; // Max rating
-  //       $param_types .= 'dd'; // Two decimal parameters
-  //     }
-  //   }
-  //   if (!empty($ratingConditions)) {
-  //     $conditions[] = '(' . implode(' OR ', $ratingConditions) . ')';
-  //   }
-  // }
-
-  // // Assemble the query
-  // $query = "SELECT p.*, c.title AS category_title FROM products p LEFT JOIN categories c ON p.category_id = c.id";
-  // if (!empty($conditions)) {
-  //   $query .= " WHERE " . implode(' AND ', $conditions);
-  // }
-  // $query .= " ORDER BY p.id;";
-  // Rating filter - applying the consolidated rating range
   if (!empty($ratings) && count($ratings) == 2) {
     $conditions[] = "(SELECT AVG(r.rating) FROM reviews r WHERE r.product_id = p.id) BETWEEN ? AND ?";
     $params[] = $ratings[0]; // Minimum rating
@@ -122,7 +99,24 @@ function getAllProducts($search = '', $minPrice = 0, $maxPrice = 0, $brands = []
   return $products_with_images;
 }
 
+function getAllProductsAdmin()
+{
+  global $con;
+  $products = [];
+  $sql = "SELECT * FROM products";
+  $res = $con->query($sql);
+  while ($row = $res->fetch_assoc()) {
+    $stmt = $con->prepare('SELECT title FROM categories where id = ?');
+    $stmt->bind_param('i', $row['category_id']);
+    $stmt->execute();
+    $row['category_title'] = $stmt->get_result()->fetch_assoc()['title'];
+    $row['images'] = fetchProductImages($row['id']);
+    $products[] = $row;
+  }
+  $stmt->close();
 
+  return $products;
+}
 
 function fetchProductImages($product_id)
 {
@@ -767,3 +761,126 @@ function insertReview($product_id, $user_id, $rating, $rating_text)
     return false;
   }
 }
+
+function getAllCategories()
+{
+  global $con;
+  $categories = [];
+
+  $sql = "select * from categories";
+  $res = $con->query($sql);
+  while ($row = $res->fetch_assoc()) {
+    $categories[] = $row;
+  }
+  return $categories;
+}
+
+function insertProduct($title, $description, $category, $brand, $stock, $price)
+{
+  global $con;
+
+  $stmt = $con->prepare("INSERT into products (title, description, category_id, brand, stock, price) VALUES (?,?,?,?,?,?)");
+  $stmt->bind_param('ssisid', $title, $description, $category, $brand, $stock, $price);
+  $stmt->execute();
+
+  if ($stmt->affected_rows == 0) {
+    return false;
+  }
+  return $con->insert_id;
+}
+
+function insertProductImages($folder, $images, $product_id)
+{
+  global $con;
+
+  foreach ($images as $image) {
+    $stmt = $con->prepare("INSERT into images (title, product_id) VALUES (?,?)");
+    $title = $folder . $image;
+    $stmt->bind_param('si', $title, $product_id);
+    $stmt->execute();
+  }
+
+  if ($stmt->affected_rows == 0) {
+    return false;
+  }
+  return $con->insert_id;
+}
+function updateProductImages($folder, $images, $product_id)
+{
+  global $con;
+
+  // Delete old images for the product
+  $stmt_delete = $con->prepare("DELETE FROM images WHERE product_id = ?");
+  $stmt_delete->bind_param('i', $product_id);
+  $stmt_delete->execute();
+
+  // Insert new images for the product
+  foreach ($images as $image) {
+    $stmt_insert = $con->prepare("INSERT INTO images (title, product_id) VALUES (?, ?)");
+    $title = $folder . $image;
+    $stmt_insert->bind_param('si', $title, $product_id);
+    $stmt_insert->execute();
+  }
+
+  // Check if any images were updated
+  if ($stmt_insert->affected_rows > 0) {
+    return true; // Images updated successfully
+  } else {
+    return false; // No images updated
+  }
+}
+
+
+function updateProduct($id, $title, $description, $category, $brand, $stock, $price, $discount_percentage)
+{
+  global $con;
+
+  $stmt = $con->prepare("UPDATE products set title= ?, description = ?, category_id = ?, brand=?, stock=?, price =?, discount_percentage = ? WHERE id = ?");
+  $stmt->bind_param('ssisiddi', $title, $description, $category, $brand, $stock, $price, $discount_percentage, $id);
+  $stmt->execute();
+
+  if ($stmt->affected_rows == 0) {
+    return false;
+  }
+  return true;
+}
+
+function deleteProduct($id)
+{
+  global $con;
+  $stmt = $con->prepare("DELETE from products where id = ?");
+  $stmt->bind_param('i', $id);
+  $stmt->execute();
+  if ($stmt->affected_rows > 0) {
+    $stmt2 = $con->prepare("delete from images where product_id = ?");
+    $stmt2->bind_param('i', $id);
+    $stmt2->execute();
+    if ($stmt2->affected_rows > 0) {
+      return true;
+    }
+  }
+  return false;
+}
+
+// function deleteProduct($id)
+// {
+//   global $con;
+//   $stmt = $con->prepare("DELETE from products where id = ?");
+//   $stmt->bind_param('i', $id);
+//   $stmt->execute();
+//   if ($stmt->affected_rows > 0) {
+//     $stmt2 = $con->prepare("delete from images where product_id = ?");
+//     $stmt2->bind_param('i', $id);
+//     $stmt2->execute();
+//     if ($stmt2->affected_rows > 0) {
+//       $images =  fetchProductImages($id);
+//       foreach ($images as $image) {
+//         $arr = explode('/',$image);
+//         unlink($arr[3].'/'.$arr[4]);
+//         // echo '../'. $image.'<br>';
+//       }
+//       return true;
+//     }
+//   }
+//   return false;
+// }
