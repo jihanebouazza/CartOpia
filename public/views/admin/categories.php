@@ -38,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <tr>
               <td><?= $category['id'] ?></td>
               <td><?= $category['title'] ?></td>
-              <td><?= $category['category_description'] ?></td>
+              <td style="width: 60%;"><?= $category['category_description'] ?></td>
               <td  style="text-align: center;">
                 <a href="<?= ROOT ?>/views/admin/category_edit.php?id=<?= $category['id'] ?>" style="margin: 0px 4px 0px 0px; color: #A19796; border-color: #A19796; padding: 4px 4px 4px 6px;" class="icon-button">
                   <i style="color: #A19796;" class="fa-solid fa-pen-to-square fa-sm"></i>

@@ -58,27 +58,32 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
   if (empty($errors)) {
     if (updateProduct($id, $title, $description, $category, $brand, $stock, $price, $discount_percentage)) {
-      if (!empty($images['name'][0])) {
-        // remove the old images from the upload file
-        foreach ($old_images as $old_image) {
-          unlink('../' . $old_image);
-        }
-        // update the new images with the updateImages($folder,$images, $product_id)
-        for ($i = 0; $i < count($images['tmp_name']); $i++) {
-          $tmp_name = $images['tmp_name'][$i];
-          $filename = $images['name'][$i];
-          move_uploaded_file($tmp_name, '../' . $folder . $filename);
-        }
-        if (updateProductImages($folder, $images['name'], $id)) {
-          // success
-          set_message("Le produit a été modifié avec succès !", "success");
-          redirect('views/admin/products');
-        }
-      } else {
+      set_message("Le produit a été modifié avec succès !", "success");
+    } else {
+      set_message("Échec de la mise à jour du produit.", "error");
+    }
+
+    if (!empty($images['name'][0])) {
+      // Remove the old images from the upload folder
+      foreach ($old_images as $old_image) {
+        unlink('../' . $old_image);
+      }
+
+      // Upload new images
+      for ($i = 0; $i < count($images['tmp_name']); $i++) {
+        $tmp_name = $images['tmp_name'][$i];
+        $filename = $images['name'][$i];
+        move_uploaded_file($tmp_name, '../' . $folder . $filename);
+      }
+
+      if (updateProductImages($folder, $images['name'], $id)) {
         set_message("Le produit a été modifié avec succès !", "success");
-        redirect('views/admin/products');
+      } else {
+        set_message("Échec de la mise à jour du produit.", "error");
       }
     }
+
+    redirect('views/admin/products');
   }
 }
 ?>

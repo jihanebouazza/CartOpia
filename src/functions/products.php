@@ -132,7 +132,6 @@ function fetchProductImages($product_id)
   return $images;
 }
 
-
 function getProductByID($product_id)
 {
   global $con;
@@ -143,15 +142,7 @@ function getProductByID($product_id)
   $product_details = $stmt->get_result()->fetch_assoc();
 
   if ($product_details) {
-    // Fetch images for the product
-    $image_stmt = $con->prepare("SELECT title FROM images WHERE product_id = ?");
-    $image_stmt->bind_param("i", $product_id);
-    $image_stmt->execute();
-    $image_result = $image_stmt->get_result();
-    $product_details['images'] = [];
-    while ($row = $image_result->fetch_assoc()) {
-      $product_details['images'][] = $row['title'];
-    }
+    $product_details['images'] = fetchProductImages($product_id);
   }
   return $product_details;
 }
@@ -160,7 +151,7 @@ function getProductReviews($product_id)
 {
   global $con;
   $reviews = [];
-  $review_stmt = $con->prepare("SELECT r.id,r.text, r.rating, u.firstname, u.lastname FROM reviews r JOIN users u ON r.user_id = u.id WHERE r.product_id = ?");
+  $review_stmt = $con->prepare("SELECT r.id, r.text, r.rating, u.firstname, u.lastname FROM reviews r JOIN users u ON r.user_id = u.id WHERE r.product_id = ?");
   $review_stmt->bind_param("i", $product_id);
   $review_stmt->execute();
   $review_result = $review_stmt->get_result();
@@ -169,7 +160,6 @@ function getProductReviews($product_id)
   }
   return $reviews;
 }
-
 
 function getSimilarProducts($category_id, $product_id)
 {
@@ -182,36 +172,13 @@ function getSimilarProducts($category_id, $product_id)
 
   $similar_product_ids = [];
   while ($similar = $similar_result->fetch_assoc()) {
-    $similar['images'] = [];
-    $similar['rating_details'] = ['average_rating' => null, 'rating_count' => 0];
+    $similar['images'] = fetchProductImages($similar['id']);
+    $similar['rating_details'] = getProductRatingDetails($similar['id']);
     $similar_products[$similar['id']] = $similar;
     $similar_product_ids[] = $similar['id'];
   }
-
-  // Fetch images for each similar product
-  if (!empty($similar_product_ids)) {
-    $id_list = implode(',', $similar_product_ids);
-    $image_query = "SELECT product_id, title FROM images WHERE product_id IN ($id_list)";
-    $images = query($image_query);
-    foreach ($images as $image) {
-      $similar_products[$image['product_id']]['images'][] = $image['title'];
-    }
-
-    // Fetch rating details for each similar product
-    $rating_query = "SELECT product_id, AVG(rating) AS average_rating, COUNT(*) AS rating_count FROM reviews WHERE product_id IN ($id_list) GROUP BY product_id";
-    $ratings = query($rating_query);
-    foreach ($ratings as $rating) {
-      $similar_products[$rating['product_id']]['rating_details'] = [
-        'average_rating' => round($rating['average_rating'], 1),
-        'rating_count' => (int) $rating['rating_count']
-      ];
-    }
-  }
-
-  // Re-index the array to return only the values, without product_ids as keys
-  return array_values($similar_products);
+  return $similar_products;
 }
-
 
 function calculateDiscountPrice($originalPrice, $discountPercentage)
 {
@@ -250,6 +217,7 @@ function get_old_value($key, $default = "")
   }
   return $default;
 }
+
 function post_old_value($key, $default = "")
 {
   if (isset($_POST[$key]) && !empty($_POST[$key])) {
@@ -280,7 +248,7 @@ function isInWishlist($product_id)
 
 function getProductPrice($product_id)
 {
-  global $con; 
+  global $con;
 
   $stmt = $con->prepare("SELECT price, discount_percentage FROM products WHERE id = ?");
   $stmt->bind_param("i", $product_id);
@@ -302,22 +270,6 @@ function getProductPrice($product_id)
   return null;  // Return null if no product is found
 }
 
-function insertOrder($user_id, $total, $payment_type, $payment_status)
-{
-  global $con; 
-
-  $stmt = $con->prepare("INSERT INTO orders (user_id, total, payment_type,payment_status, date) VALUES (?, ?, ?,?, NOW())");
-
-  $stmt->bind_param("idss", $user_id, $total, $payment_type, $payment_status);
-
-  $stmt->execute();
-
-  if ($stmt->affected_rows === 0) {
-    return false; 
-  }
-  return $con->insert_id; 
-}
-
 function updateProductStock($product_id, $quantity_sold)
 {
   global $con;
@@ -326,261 +278,9 @@ function updateProductStock($product_id, $quantity_sold)
   $stmt->execute();
   return $stmt->affected_rows > 0;
 }
-function insertOrderItem($order_id, $product_id, $quantity, $price)
-{
-  global $con; 
-
-  $sql = "INSERT INTO order_items (order_id, product_id, quantity, price) VALUES (?, ?, ?, ?)";
-  $stmt = $con->prepare($sql);
-
-  if (!$stmt) {
-    echo "Error preparing statement: " . $con->error;
-    return false;
-  }
-
-  $stmt->bind_param("iiid", $order_id, $product_id, $quantity, $price);
-
-  $stmt->execute();
-
-  if ($stmt->affected_rows > 0) {
-    $stmt->close();
-    return true; 
-  } else {
-    echo "Error inserting order item: " . $stmt->error;
-    $stmt->close();
-    return false;
-  }
-}
-
-function getAllOrdersByUserId($userId)
-{
-  global $con;  
-
-  $sql = "SELECT id, user_id, total, status, payment_type, payment_status, date
-          FROM orders
-          WHERE user_id = ?";
-
-  $stmt = $con->prepare($sql);
-  if (!$stmt) {
-    echo "Error preparing statement: " . $con->error;
-    return null;
-  }
-
-  $stmt->bind_param("i", $userId);
-  $stmt->execute();
-
-  $result = $stmt->get_result();
-
-  $orders = [];
-  while ($row = $result->fetch_assoc()) {
-    $orders[] = [
-      'id' => $row['id'],
-      'user_id' => $row['user_id'],
-      'total' => $row['total'],
-      'status' => $row['status'],
-      'payment_type' => $row['payment_type'],
-      'payment_status' => $row['payment_status'],
-      'date' => $row['date']
-    ];
-  }
-
-  $stmt->close();
-  return $orders;
-}
-
-function getAllOrders()
-{
-  global $con;  
-  $sql = "SELECT o.id AS order_id, o.user_id, o.total, o.status, o.payment_type, o.payment_status, o.date,
-                 oi.id AS order_item_id, oi.quantity, oi.price,
-                 p.id AS product_id, p.title, p.description, p.brand, p.stock, p.price AS product_price, c.title AS category_title
-          FROM orders o
-          JOIN order_items oi ON o.id = oi.order_id
-          JOIN products p ON oi.product_id = p.id
-          JOIN categories c ON p.category_id = c.id
-          "; 
-
-  $result = $con->query($sql);
-
-  if (!$result) {
-    echo "Error: " . $con->error;
-    return [];
-  }
-
-  $orders = [];
-  while ($row = $result->fetch_assoc()) {
-    $order_id = $row['order_id'];
-
-    if (!isset($orders[$order_id])) {
-      $orders[$order_id] = [
-        'order_id' => $order_id,
-        'user_id' => $row['user_id'],
-        'total' => $row['total'],
-        'status' => $row['status'],
-        'payment_type' => $row['payment_type'],
-        'payment_status' => $row['payment_status'],
-        'date' => $row['date'],
-        'order_items' => []
-      ];
-    }
-
-    $orders[$order_id]['order_items'][] = [
-      'order_item_id' => $row['order_item_id'],
-      'quantity' => $row['quantity'],
-      'price' => $row['price'],
-      'product' => [
-        'product_id' => $row['product_id'],
-        'title' => $row['title'],
-        'description' => $row['description'],
-        'brand' => $row['brand'],
-        'stock' => $row['stock'],
-        'price' => $row['product_price'],
-        'category_title' => $row['category_title']
-      ]
-    ];
-  }
-
-  return $orders;
-}
-
-function getOrderById($orderId)
-{
-  global $con;  
-
-  $sql = "SELECT o.id AS order_id, o.user_id, o.total, o.status, o.payment_type, o.payment_status, o.date,
-                 oi.id AS order_item_id, oi.quantity, oi.price,
-                 p.id AS product_id, p.title, p.description, p.brand, p.stock, p.discount_percentage, p.price AS product_price, c.title AS category_title,
-                 u.firstname, u.lastname, u.email, u.address, u.city,u.phone_number, u.postal_code
-          FROM orders o
-          JOIN order_items oi ON o.id = oi.order_id
-          JOIN products p ON oi.product_id = p.id
-          JOIN categories c ON p.category_id = c.id
-          JOIN users u ON o.user_id = u.id
-          WHERE o.id = ?
-          ORDER BY o.date DESC";
-
-  $stmt = $con->prepare($sql);
-  if (!$stmt) {
-    echo "Error preparing statement: " . $con->error;
-    return null;
-  }
-
-  $stmt->bind_param("i", $orderId);
-  $stmt->execute();
-
-  $result = $stmt->get_result();
-
-  $order = null;
-  while ($row = $result->fetch_assoc()) {
-    if ($order === null) {
-      $order = [
-        'order_id' => $row['order_id'],
-        'user_id' => $row['user_id'],
-        'total' => $row['total'],
-        'status' => $row['status'],
-        'payment_type' => $row['payment_type'],
-        'payment_status' => $row['payment_status'],
-        'date' => $row['date'],
-        'user_details' => [
-          'firstname' => $row['firstname'],
-          'lastname' => $row['lastname'],
-          'email' => $row['email'],
-          'address' => $row['address'],
-          'city' => $row['city'],
-          'phone_number' => $row['phone_number'],
-          'postal_code' => $row['postal_code'],
-        ],
-        'order_items' => []
-      ];
-    }
-
-    $order['order_items'][] = [
-      'order_item_id' => $row['order_item_id'],
-      'quantity' => $row['quantity'],
-      'price' => $row['price'],
-      'product' => [
-        'product_id' => $row['product_id'],
-        'title' => $row['title'],
-        'description' => $row['description'],
-        'brand' => $row['brand'],
-        'stock' => $row['stock'],
-        'price' => $row['product_price'],
-        'category_title' => $row['category_title'],
-        'discount_percentage' => $row['discount_percentage'],
-      ]
-    ];
-  }
-
-  $stmt->close();
-  return $order;
-}
-
-function getNumberOfOrdersByUser($userId)
-{
-  global $con; 
-
-  $stmt = $con->prepare("SELECT COUNT(*) as order_count FROM orders WHERE user_id = ?");
-  $stmt->bind_param("i", $userId);
-  $stmt->execute();
-
-  $stmt->bind_result($orderCount);
-  $stmt->fetch(); 
-
-  $stmt->close();
-
-  return $orderCount; 
-}
-
-function getUserSpendingPerCategory($userId)
-{
-  global $con;  
-
-  $sql = "SELECT c.title AS category, SUM(oi.price * oi.quantity) AS total_spent
-          FROM orders o
-          JOIN order_items oi ON o.id = oi.order_id
-          JOIN products p ON oi.product_id = p.id
-          JOIN categories c ON p.category_id = c.id
-          WHERE o.user_id = ?
-          GROUP BY c.title
-          ORDER BY total_spent DESC";
-
-  $stmt = $con->prepare($sql);
-  if (!$stmt) {
-    echo "Error preparing statement: " . $con->error;
-    return [];
-  }
-  $stmt->bind_param("i", $userId);
-  $stmt->execute();
-  $result = $stmt->get_result();
-
-  $categorySpending = [];
-  while ($row = $result->fetch_assoc()) {
-    $categorySpending[] = [
-      'category' => $row['category'],
-      'total_spent' => $row['total_spent']
-    ];
-  }
-  $stmt->close();
-  return $categorySpending;
-}
-function getOrderStatusCounts($userId)
-{
-  global $con; 
-  $sql = "SELECT status, COUNT(*) as count FROM orders WHERE user_id = ? GROUP BY status";
-  $stmt = $con->prepare($sql);
-  $stmt->bind_param("i", $userId);
-  $stmt->execute();
-  $result = $stmt->get_result();
-  $data = [];
-  while ($row = $result->fetch_assoc()) {
-    $data[$row['status']] = $row['count'];
-  }
-  return $data;
-}
 
 function insertReview($product_id, $user_id, $rating, $rating_text)
 {
-
   global $con;
   $stmt = $con->prepare('INSERT INTO reviews (product_id,user_id,rating,text) VALUES(?, ?, ?, ?)');
 
@@ -594,25 +294,12 @@ function insertReview($product_id, $user_id, $rating, $rating_text)
 
   if ($stmt->affected_rows > 0) {
     $stmt->close();
-    return true; 
+    return true;
   } else {
     echo "Error inserting order item: " . $stmt->error;
     $stmt->close();
     return false;
   }
-}
-
-function getAllCategories()
-{
-  global $con;
-  $categories = [];
-
-  $sql = "select * from categories";
-  $res = $con->query($sql);
-  while ($row = $res->fetch_assoc()) {
-    $categories[] = $row;
-  }
-  return $categories;
 }
 
 function insertProduct($title, $description, $category, $brand, $stock, $price)
@@ -645,6 +332,7 @@ function insertProductImages($folder, $images, $product_id)
   }
   return $con->insert_id;
 }
+
 function updateProductImages($folder, $images, $product_id)
 {
   global $con;
@@ -654,21 +342,12 @@ function updateProductImages($folder, $images, $product_id)
   $stmt_delete->bind_param('i', $product_id);
   $stmt_delete->execute();
 
-  // Insert new images for the product
-  foreach ($images as $image) {
-    $stmt_insert = $con->prepare("INSERT INTO images (title, product_id) VALUES (?, ?)");
-    $title = $folder . $image;
-    $stmt_insert->bind_param('si', $title, $product_id);
-    $stmt_insert->execute();
-  }
-
-  if ($stmt_insert->affected_rows > 0) {
-    return true; 
+  if (insertProductImages($folder, $images, $product_id) > 0) {
+    return true;
   } else {
     return false;
   }
 }
-
 
 function updateProduct($id, $title, $description, $category, $brand, $stock, $price, $discount_percentage)
 {
@@ -687,154 +366,38 @@ function updateProduct($id, $title, $description, $category, $brand, $stock, $pr
 function deleteProduct($id)
 {
   global $con;
-  $stmt = $con->prepare("DELETE from products where id = ?");
-  $stmt->bind_param('i', $id);
-  $stmt->execute();
-  if ($stmt->affected_rows > 0) {
-    $stmt2 = $con->prepare("delete from images where product_id = ?");
-    $stmt2->bind_param('i', $id);
-    $stmt2->execute();
-    if ($stmt2->affected_rows > 0) {
-      return true;
-    }
+  $image_stmt = $con->prepare("DELETE from images where product_id = ?");
+  $image_stmt->bind_param('i', $id);
+  $image_stmt->execute();
+  if ($image_stmt->affected_rows > 0) {
+    $product_stmt = $con->prepare("DELETE FROM products where id = ?");
+    $product_stmt->bind_param('i', $id);
+    $product_stmt->execute();
+    if ($product_stmt->affected_rows > 0) return true;
   }
   return false;
 }
 
-
-function deleteOrderByID($id)
+function getProductStockLevelsData()
 {
   global $con;
-  $stmt = $con->prepare("DELETE from orders where id = ?");
-  $stmt->bind_param('i', $id);
-  $stmt->execute();
-  if ($stmt->affected_rows > 0) {
-    $stmt2 = $con->prepare("delete from order_items where order_id = ?");
-    $stmt2->bind_param('i', $id);
-    $stmt2->execute();
-    if ($stmt2->affected_rows > 0) {
-      return true;
+
+  $data = [];
+
+  $sql = "SELECT c.title AS category, SUM(p.stock) AS total_stock
+          FROM categories c
+          LEFT JOIN products p ON c.id = p.category_id
+          GROUP BY c.title";
+
+  $result = $con->query($sql);
+
+  if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+      $data[$row['category']] = $row['total_stock'];
     }
   }
-  return false;
-}
 
-function updateOrderStatus($id, $order_status, $payment_status)
-{
-  global $con;
-
-  $stmt = $con->prepare("UPDATE orders set status= ?, payment_status = ? WHERE id = ?");
-  $stmt->bind_param('ssi', $order_status, $payment_status, $id);
-  $stmt->execute();
-
-  if ($stmt->affected_rows == 0) {
-    return false;
-  }
-  return true;
-}
-
-function deleteCategory($id)
-{
-  global $con;
-  $stmt = $con->prepare("DELETE from categories where id = ?");
-  $stmt->bind_param('i', $id);
-  $stmt->execute();
-  if ($stmt->affected_rows == 0)  return false;
-  return true;
-}
-
-function insertCategory($title, $description)
-{
-  global $con;
-  $stmt = $con->prepare("INSERT into categories (title, category_description) VALUES (?,?)");
-  $stmt->bind_param('ss', $title, $description);
-  $stmt->execute();
-  if ($stmt->affected_rows == 0)  return false;
-  return true;
-}
-
-function updateCategory($id, $title, $description)
-{
-  global $con;
-
-  $stmt = $con->prepare("UPDATE categories SET title = ?, category_description = ? WHERE id = ?");
-  $stmt->bind_param('ssi', $title, $description, $id);
-  $stmt->execute();
-
-  if ($stmt->affected_rows == 0) {
-    return false;
-  }
-  return true;
-}
-
-
-function getCategoryById($id)
-{
-  global $con;
-
-  $stmt = $con->prepare("SELECT * FROM categories WHERE id = ?");
-  $stmt->bind_param('i', $id);
-  $stmt->execute();
-
-  $result = $stmt->get_result();
-
-  return $result->fetch_assoc();
-}
-
-function getAllUsers()
-{
-  global $con;
-  $users = [];
-
-  $res = $con->query("SELECT * FROM users");
-  while ($row = $res->fetch_assoc()) {
-    $users[] = $row;
-  }
-  
-  return $users;
-}
-
-
-function getCategoryDistributionData() {
-    global $con;
-    
-    $data =[];
-
-    $sql = "SELECT c.title AS category, COUNT(p.id) AS product_count
-            FROM categories c
-            LEFT JOIN products p ON c.id = p.category_id
-            GROUP BY c.title";
-
-    $result = $con->query($sql);
-
-    if ($result->num_rows > 0) {
-        while ($row = $result->fetch_assoc()) {
-            $data[$row['category']] = $row['product_count'];
-        }
-    }
-
-    return $data;
-}
-
-function getProductStockLevelsData() {
-    global $con;
-    
-    $data = [];
-
-    $sql = "SELECT c.title AS category, SUM(p.stock) AS total_stock
-            FROM categories c
-            LEFT JOIN products p ON c.id = p.category_id
-            GROUP BY c.title";
-
-    $result = $con->query($sql);
-
-    if ($result->num_rows > 0) {
-        while ($row = $result->fetch_assoc()) {
-            $data[$row['category']] = $row['total_stock'];
-        }
-    }
-
-    return $data;
+  return $data;
 }
 
 function deleteReview($id)

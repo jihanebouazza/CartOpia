@@ -1,14 +1,15 @@
 <?php
 require '../../inc/navbar.php';
 
-
-
 $product_id = $_GET['id'] ?? 0;
 $product_id = (int)$product_id;
 $errors = [];
 
 if ($product_id > 0) {
   $product_details = getProductByID($product_id);
+  // echo '<pre>';
+  // print_r($product_details);
+  // echo '</pre>';
   $product_rating_details = getProductRatingDetails($product_id);
 
   if (!empty($product_details)) {
