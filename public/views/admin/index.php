@@ -42,9 +42,11 @@ $products_number = count(getAllProducts() ?? []);
     </div>
     <div class="bar-chart-numbers">
       <div class="bar-chart">
+        <h3>Stock par catégorie</h3>
         <canvas id="productStockLevelsChart"></canvas>
       </div>
       <div class="pie-chart">
+        <h3>Nombre de produits par catégorie</h3>
         <canvas id="categoryDistributionChart"></canvas>
       </div>
     </div>

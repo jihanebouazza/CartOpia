@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     $errors['postal_code'] = "Le code postal doit contenir exactement 5 chiffres.";
   }
 
-  if ($role !== 'admin' && $role !== 'user') {
+  if (empty($role)) {
     $errors['role'] = "Le role est invalide!";
   }
 
@@ -130,7 +130,11 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         <label class="login_label">
           Role
         </label>
-        <input value="<?= post_old_value('role') ? post_old_value('role') : $user['role'] ?>" placeholder="" type="text" name="role" class="input">
+        <select name="role" class="input">
+          <option value="">Veuillez sélectionner un rôle</option>
+          <option value="admin" <?= post_old_value('role') == 'admin' || $user['role'] == 'admin' ? 'selected' : '' ?>>Admin</option>
+          <option value="user" <?= post_old_value('role') == 'user' || $user['role'] == 'user' ? 'selected' : '' ?>>Utilisateur</option>
+        </select>
       </div>
       <?= isset($errors['role']) ? '<div class="error">' . $errors['role'] . '</div>' : '' ?>
       <button class="primary-btn" style="width: 100%; margin-top:16px" type="submit">Modifier</button>

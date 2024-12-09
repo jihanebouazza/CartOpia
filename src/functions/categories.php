@@ -1,4 +1,5 @@
 <?php
+
 function getUserSpendingPerCategory($userId)
 {
   global $con;
@@ -37,7 +38,7 @@ function getAllCategories()
   global $con;
   $categories = [];
 
-  $sql = "select * from categories";
+  $sql = "SELECT * FROM categories";
   $res = $con->query($sql);
   while ($row = $res->fetch_assoc()) {
     $categories[] = $row;
@@ -79,7 +80,6 @@ function updateCategory($id, $title, $description)
   return true;
 }
 
-
 function getCategoryById($id)
 {
   global $con;
@@ -101,9 +101,9 @@ function getCategoryDistributionData()
   $data = [];
 
   $sql = "SELECT c.title AS category, COUNT(p.id) AS product_count
-            FROM categories c
-            LEFT JOIN products p ON c.id = p.category_id
-            GROUP BY c.title";
+          FROM categories c
+          LEFT JOIN products p ON c.id = p.category_id
+          GROUP BY c.title";
 
   $result = $con->query($sql);
 
