@@ -4,11 +4,7 @@ require '../../inc/navbar.php';
 if (!is_logged_in()) {
   redirect('views/auth/login');
 }
-// echo '<pre>';
-// print_r($_SESSION['USER']);
-// echo '</pre>';
 $errors = [];
-global $con;
 $user_id = $_SESSION['USER']['id'];
 
 
@@ -37,41 +33,32 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   if (empty($payment_method)) {
     $errors['payment_method'] = "Veuillez sélectionner une méthode de paiement.";
   }
-  if (empty($errors) && !empty($_SESSION['cart']) && !empty($_SESSION['cart_totals']) && $payment_method == 'A la livraison') {
-    // if ($payment_method = 'A la livraison') {
-    ['total' => $total] = $_SESSION['cart_totals'];
+  if (empty($errors) && !empty($_SESSION['cart']) && !empty($_SESSION['cart_totals'])) {
+    if ($payment_method == 'A la livraison') {
+      ['total' => $total] = $_SESSION['cart_totals'];
 
-    if (updateUserDetails($user_id, $phone_number, $address, $city, $postal_code)) {
-      echo 'here';
-      $order_id = insertOrder($user_id, $total, $payment_method, 'En attente');
-      if ($order_id) {
-        $all_items_processed = true;
-        foreach ($_SESSION['cart'] as $product_id => $quantity) {
-          $product_price = getProductPrice($product_id);
-          insertOrderItem($order_id, $product_id, $quantity, $product_price);
-          updateProductStock($product_id, $quantity);
+      if (updateUserDetails($user_id, $phone_number, $address, $city, $postal_code)) {
+        $order_id = insertOrder($user_id, $total, $payment_method, 'En attente');
+        if ($order_id) {
+          foreach ($_SESSION['cart'] as $product_id => $quantity) {
+            $product_price = getProductPrice($product_id);
+            insertOrderItem($order_id, $product_id, $quantity, $product_price);
+            updateProductStock($product_id, $quantity);
+          }
+          unset($_SESSION['cart']);
+          unset($_SESSION['cart_totals']);
+          redirect('views/products/success');
         }
-        // if ($all_items_processed) {
-        unset($_SESSION['cart']);
-        unset($_SESSION['cart_totals']);
-        redirect('views/products/success');
-        // }
+      }
+    } elseif ($payment_method == 'Par carte') {
+      if (updateUserDetails($user_id, $phone_number, $address, $city, $postal_code)) {
+        redirect('views/products/payment');
       }
     }
-  } elseif (empty($errors) && !empty($_SESSION['cart']) && !empty($_SESSION['cart_totals']) && $payment_method == 'Par carte') {
-    if (updateUserDetails($user_id, $phone_number, $address, $city, $postal_code)) {
-      redirect('views/products/payment');
-    }
-    // If cart is empty
   } elseif (empty($_SESSION['cart'])) {
     set_message("Votre panier est vide, ajoutez des produits pour continuer.", "error");
   }
 }
-
-// Traitée (Processed): La commande a été confirmée et est en cours de préparation.
-// Expédiée (Shipped): Les produits ont été envoyés au client.
-// Livré (Delivered): La commande est arrivée à destination.
-// Annulée (Cancelled): La commande a été annulée par l'utilisateur ou par le système en raison d'un problème.
 ?>
 <main class="checkout">
   <form method="post" class="checkout-form">

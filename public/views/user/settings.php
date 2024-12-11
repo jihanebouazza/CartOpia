@@ -22,15 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     $errors['email'] = "Le format de l'email est invalide!";
   } else {
-    // Check for email uniqueness
-    $stmt = $con->prepare("SELECT COUNT(*) FROM users WHERE email = ?");
-    $stmt->bind_param("s", $email);
-    $stmt->execute();
-    $stmt->bind_result($count);
-    $stmt->fetch();
-    $stmt->close();
-
-    if ($count > 0) {
+    if (emailExists($email) > 0) {
       $errors['email'] = "Cet email est déjà utilisé!";
     }
   }

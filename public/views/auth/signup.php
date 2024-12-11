@@ -1,13 +1,6 @@
-<!-- Explorez Notre Monde de Produits
-Économisez gros aujourd'hui !
-Économisez dès maintenant !
-Inscrivez-vous pour des avantages exclusifs !
-Ne tardez pas, achetez maintenant !
--->
 <?php
 require '../../inc/header.php';
 $errors = [];
-global $con;
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   $first_name = htmlspecialchars($_POST['first_name']);
@@ -25,15 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     $errors['email'] = "Le format de l'email est invalide!";
   } else {
-    // Check for email uniqueness
-    $stmt = $con->prepare("SELECT COUNT(*) FROM users WHERE email = ?");
-    $stmt->bind_param("s", $email);
-    $stmt->execute();
-    $stmt->bind_result($count);
-    $stmt->fetch();
-    $stmt->close();
-
-    if ($count > 0) {
+    if (emailExists($email) > 0) {
       $errors['email'] = "Cet email est déjà utilisé!";
     }
   }
@@ -47,36 +32,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
   if (empty($errors)) {
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-
-    // Prepare SQL
-    $stmt = $con->prepare("INSERT INTO users (firstname, lastname, email, password) VALUES (?, ?, ?, ?)");
-    $stmt->bind_param("ssss", $first_name, $last_name, $email, $hashed_password);
-    $stmt->execute();
-
-    if ($stmt->affected_rows === 1) {
-      $user_id = $stmt->insert_id;
-      $stmt->close();
-
-      // Fetch the newly created user data for authentication
-      $stmt = $con->prepare("SELECT * FROM users WHERE id = ?");
-      $stmt->bind_param("i", $user_id);
-      $stmt->execute();
-      $result = $stmt->get_result();
-      if ($user = $result->fetch_assoc()) {
+    if ($user_id = signup($first_name, $last_name, $email, $hashed_password)) {
+      if ($user = getUserByID($user_id)) {
         auth($user); // Log the user in by setting session variables
         set_message("Inscription réussie. Vous êtes maintenant connecté(e) !", "success");
         redirect('index');
       }
-      //  else {
-      //   $errors['auth'] = "Authentication failed after signup.";
-      // }
     }
-    // else {
-    //   $errors['db_error'] = "Erreur de base de données: impossible d'enregistrer l'utilisateur.";
-    // }
   }
 }
-// $_SESSION['user'] = [];
 ?>
 
 <main class="login_container">

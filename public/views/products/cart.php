@@ -1,9 +1,6 @@
 <?php
 require '../../inc/navbar.php';
 $subtotal = 0;
-// out of stock tag
-// Le produit sélectionné n'est plus en stock
-// Votre panier est vide, ajoutez des produits pour continuer
 
 // Cart operations
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
@@ -35,14 +32,8 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     if (!isset($_SESSION['cart'][$product_id])) {
       $_SESSION['cart'][$product_id] = $quantity;
       set_message('Le produit sélectionné a été ajouté à votre panier.', 'success');
-      // header('Location: ' . $_SERVER['HTTP_REFERER']);  // Redirect back to the previous page
-      // exit;
     } else {
-      // $_SESSION['cart'][$product_id] = min($stock, $_SESSION['cart'][$product_id] + $quantity);
-      // set_message('La quantité de ce produit dans votre panier a été mise à jour.', 'success');
       set_message('Ce produit existe déjà dans votre panier!', 'error');
-      // header('Location: ' . $_SERVER['HTTP_REFERER']);  // Redirect back to the previous page
-      // exit;
     }
     header('Location: ' . $_SERVER['HTTP_REFERER']);  // Redirect back to the previous page
     exit;
@@ -72,7 +63,6 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     redirect('views/products/checkout');
   }
 }
-// print_r($_SESSION['cart']);
 ?>
 
 <main class="cart">

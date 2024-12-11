@@ -1,7 +1,5 @@
 <?php
-// include dirname(__DIR__) .'/public/inc/navbar.php'
 require './inc/navbar.php';
-// require_once dirname(__DIR__)  . '/src/init.php';
 ?>
 
 <div class="hero">

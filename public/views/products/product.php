@@ -7,9 +7,6 @@ $errors = [];
 
 if ($product_id > 0) {
   $product_details = getProductByID($product_id);
-  // echo '<pre>';
-  // print_r($product_details);
-  // echo '</pre>';
   $product_rating_details = getProductRatingDetails($product_id);
 
   if (!empty($product_details)) {
@@ -51,15 +48,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   }
 
   if (isset($_POST['delete_review'])) {
-    $id = $_POST['id']; // No need to use htmlspecialchars here
+    $id = $_POST['id']; 
     if (deleteReview($id)) {
         set_message('Avis supprimé avec succès!', 'success');
         header('Location:' . $_SERVER['HTTP_REFERER']);
-        exit; // Add an exit statement after redirection
+        exit; 
     } else {
-        set_message('Erreur lors de la suppression de l\'avis.' . $id, 'error'); // Handle error case
+        set_message('Erreur lors de la suppression de l\'avis.' . $id, 'error'); 
         header('Location:' . $_SERVER['HTTP_REFERER']);
-        exit; // Add an exit statement after redirection
+        exit; 
     }
 }
 }
@@ -99,8 +96,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
           </form>
           <form style="display: inline-block;" method="post" action="wishlist.php">
             <input type="hidden" name="product_id" value="<?= $product_details['id'] ?>">
-            <!-- <button name="add-to-wishlist" type="submit" class="icon-button" style="border-color: #C51818;">
-              <i style="color: #C51818;" class="fa-regular fa-heart fa-xl"></i></button> -->
             <?php if (isInWishlist($product_details['id'])) : ?>
               <button style="border-color: #C51818;" type="submit" name="remove-from-wishlist" class="icon-button">
                 <i style="color: #C51818; opacity: 1;" class="fa-solid fa-heart fa-xl"></i> <!-- Solid heart if in wishlist -->

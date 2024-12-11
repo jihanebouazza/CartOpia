@@ -6,7 +6,6 @@ if (!isset($_SESSION['wishlist'])) {
   $_SESSION['wishlist'] = [];
 }
 
-// Handling requests
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
   $product_id = $_POST['product_id'] ?? null;  // Get product ID from form submission
 
@@ -14,23 +13,17 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     // Add product to wishlist
     if (!in_array($product_id, $_SESSION['wishlist'])) {
       $_SESSION['wishlist'][] = $product_id;
-      // set_message('Ce produit a été ajouté à votre liste de souhaits.', 'success');
     }
-    // else {
-    //   set_message('Ce produit est déjà dans votre liste de souhaits.', 'error');
-    // }
   } elseif (isset($_POST['remove-from-wishlist'])) {
     // Remove product from wishlist
     if (($key = array_search($product_id, $_SESSION['wishlist'])) !== false) {
       unset($_SESSION['wishlist'][$key]);
-      // set_message('Produit supprimmé de votre liste de souhaits.', 'success');
     }
   } elseif (isset($_POST['empty_wishlist']) && !empty($_SESSION['wishlist'])) {
     // Empty the wishlist
     $_SESSION['wishlist'] = [];
-    // set_message('Votre liste de souhaits a été vidée.', 'success');
   }
-  header('Location: ' . $_SERVER['HTTP_REFERER']);  // Redirect back to the previous page
+  header('Location: ' . $_SERVER['HTTP_REFERER']); 
   exit;
 }
 ?>

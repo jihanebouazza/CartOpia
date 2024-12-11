@@ -1,11 +1,4 @@
 <?php
-// if (!empty($products_with_images)) {
-//   echo '<pre>';
-//   print_r($products_with_images);
-//   echo '</pre>';
-// } else {
-//   echo "No product found!";
-// }
 
 require '../../inc/navbar.php';
 $allBrands = query("SELECT DISTINCT brand FROM products ORDER BY brand");
