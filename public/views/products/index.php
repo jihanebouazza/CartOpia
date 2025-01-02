@@ -16,7 +16,7 @@ if (isset($_GET['rating4to5'])) $ratingFilter[] = [4, 5];
 
 $consolidatedRatingRange = consolidateRatingRange($ratingFilter);
 
-$products_with_images = getAllProducts($search, $minPrice, $maxPrice, $brands, $consolidatedRatingRange);
+$products_with_images = getAllProducts($search, $minPrice, $maxPrice, $brands, $consolidatedRatingRange=[]);
 ?>
 
 <div class="products-main">

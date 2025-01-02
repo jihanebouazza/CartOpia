@@ -1,4 +1,5 @@
 <?php
+ob_start();
 require '../../inc/navbar.php';
 
 // Initialize the session for wishlist if it doesn't exist
@@ -74,3 +75,5 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
 
 <?php require '../../inc/footer.php' ?>
+
+<?php ob_end_flush();  

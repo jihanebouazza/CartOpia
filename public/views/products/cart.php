@@ -1,4 +1,5 @@
 <?php
+ob_start();
 require '../../inc/navbar.php';
 $subtotal = 0;
 
@@ -82,11 +83,6 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         $shipping = 0.10 * $subtotal;
         $total = $subtotal + $shipping;
         $_SESSION['cart_totals'] = ['subtotal' => $subtotal, 'shipping' => $shipping, 'total' => $total];
-        // print_r($_SESSION['cart_totals']);
-
-        // echo '<pre>';
-        // print_r($product);
-        // echo '</pre>';
         ?>
         <div class="cart-product">
           <div class="product-img-title">
@@ -138,7 +134,6 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
       <p>Total</p>
       <p><?= !empty($_SESSION['cart_totals']) ? number_format($_SESSION['cart_totals']['total'], 2) : '0.00' ?>dh</p>
     </div>
-    <!-- <button style="width: 100%;margin-top: 16px;" class="primary-btn">Passer à la caisse</button> -->
     <?php if (!empty($_SESSION['cart'])) : ?>
       <form action="" method="post">
         <button style="width: 100%;margin-top: 16px;" type="submit" name="checkout" class="primary-btn">Passer à la caisse</button>
@@ -151,5 +146,5 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 </main>
 <script src="<?= ROOT ?>/js/cart.js" defer></script>
 
-
 <?php require '../../inc/footer.php' ?>
+<?php ob_end_flush();  

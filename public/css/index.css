@@ -47,8 +47,9 @@ a {
   font-size: 28px;
 }
 .logo-img {
-  height: 28px;
+  height: 30px;
   width: 30px;
+  margin-bottom: -4px;
 }
 .nav-list {
   display: flex;

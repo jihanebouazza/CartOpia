@@ -25,7 +25,9 @@
 }
 
 .hero-img {
-  height: 35vh;
+  height: 55vh;
+  /* height: 35vh; */
+  margin-bottom: -48px;
   width: 100%;
   object-fit: cover;
 }

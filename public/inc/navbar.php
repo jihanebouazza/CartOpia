@@ -1,8 +1,5 @@
 <?php require 'header.php';
-// $_SESSION['USER']=[];
-// echo '<pre>';
-// print_r($_SESSION['USER']);
-// echo '</pre>';
+
 if (isset($_POST['logout'])) {
   if (!empty($_SESSION['USER'])) {
     unset($_SESSION['USER']);

@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <main class="login_container">
   <div class="login_side">
     <div class="login_img_bg">
-      <img src="<?= ROOT ?>/images/login_img.png" alt="">
+      <img src="<?= ROOT ?>/images/login-imageT.png" alt="">
       <h2 style="text-align: center;">Ne tardez pas, achetez maintenant !</h2>
     </div>
   </div>
@@ -63,6 +63,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       </div>
       <button class="primary-btn" style="width: 100%;" type="submit">Se connecter</button>
       <p class="underline" href="">Vous n'avez pas de compte ?<a href="<?= ROOT ?>/views/auth/signup.php" style="color: #EE786B;"> S'inscrire</a></p>
+      <div style="height: 100%; position: relative;">
+        <footer style="position: absolute; top: 32px; left: 72px">
+          <hr />
+          <p> &copy; 2024 <?= APP_NAME ?>. Tous droits réservés. </p>
+          <p><a style="color: #615959;" href="https://storyset.com/web">Web illustrations by Storyset</a></p>
+        </footer>
+      </div>
     </form>
   </div>
 </main>

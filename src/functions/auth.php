@@ -32,6 +32,11 @@ function login($email)
 {
   global $con;
   $stmt = $con->prepare("SELECT * FROM users WHERE email = ? LIMIT 1");
+  if ($stmt === false) {
+    // Output error if query preparation failed
+    die('MySQL prepare error: ' . $con->error);
+  }
+
   $stmt->bind_param("s", $email);
   $stmt->execute();
   $result = $stmt->get_result();

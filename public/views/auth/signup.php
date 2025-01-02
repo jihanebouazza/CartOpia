@@ -80,12 +80,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <input value="<?= post_old_value('email') ?>" placeholder="" type="text" name="email" class="input">
       </div>
       <?= isset($errors['email']) ? '<div class="error">' . $errors['email'] . '</div>' : '' ?>
-      <!-- <div>
-        <label class="login_label">
-          Numéro de téléphone
-        </label>
-        <input value="" placeholder="" type="text" name="phone_number" class="input">
-      </div> -->
       <div class="double-input">
         <div>
           <label class="login_label">
@@ -115,11 +109,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       </div>
       <button class="primary-btn" style="width: 100%; margin-top:16px" type="submit">Se connecter</button>
       <p class="underline" href="">Vous avez déjà un compte ?<a href="<?= ROOT ?>/views/auth/login.php" style="color: #EE786B;"> Se connecter</a></p>
+      <div style="height: 100%; position: relative;">
+        <footer style="position: absolute; top: 2px; left: 72px">
+          <hr />
+          <p style="padding-top: 12px;"> &copy; 2024 <?= APP_NAME ?>. Tous droits réservés. </p>
+          <p style="padding-top: 4px;"><a style="color: #615959;" href="https://storyset.com/web">Web illustrations by Storyset</a></p>
+        </footer>
+      </div>
     </form>
   </div>
   <div class="login_side">
     <div class="login_img_bg">
-      <img src="<?= ROOT ?>/images/signup_img.png" alt="">
+      <img src="<?= ROOT ?>/images/signup-imageT.png" alt="">
       <h2 style="text-align: center;">Inscrivez-vous <br>pour des avantages exclusifs !</h2>
     </div>
   </div>

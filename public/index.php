@@ -10,7 +10,7 @@ require './inc/navbar.php';
   </div>
   <a href="<?= ROOT ?>/views/products/"><button class="primary-btn">Explorez Nos Produits</button></a>
   <div>
-    <img class="hero-img" src="<?= ROOT ?>/images/home222.png" />
+    <img class="hero-img" src="<?= ROOT ?>/images/home-imageT.png" />
   </div>
 </div>
 <section class="first-section">
@@ -59,7 +59,7 @@ require './inc/navbar.php';
   <div class="testemonials">
     <div style="position: relative;" class="testemonial1">
       <div class="client" style="color: #1C0301; background-color: rgba(250, 163, 100, 0.2)">Marie</div>
-      <p>Je suis extrêmement satisfait de mon expérience d'achat chez CartOpia. Non seulement la qualité des produits est exceptionnelle, mais le service clientèle est également au-dessus de mes attentes !
+      <p>Je suis extrêmement satisfaite de mon expérience d'achat chez CartOpia. Non seulement la qualité des produits est exceptionnelle, mais le service clientèle est également au-dessus de mes attentes !
       </p>
     </div>
     <div class="testemonial2">
