@@ -113,8 +113,6 @@ function getAllProductsAdmin()
     $row['images'] = fetchProductImages($row['id']);
     $products[] = $row;
   }
-  // $stmt->close();
-
   return $products;
 }
 

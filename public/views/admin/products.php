@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     foreach ($images as $image) {
       unlink('../' . $image);
     }
-    set_message('Produit supprimmer avec succès!', 'success');
+    set_message('Product successfully deleted!', 'success');
     header('Location:' . $_SERVER['HTTP_REFERER']);
   }
 }
@@ -24,19 +24,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
   <div class="user-content">
     <div class="flex">
-      <h2>Tous les produits</h2>
-      <a href="<?= ROOT ?>/views/admin/product_add.php"><button class="primary-btn-small "><i style="color: #fffdfd;" class="fa-solid fa-circle-plus fa-sm"></i> Ajouter un produit</button></a>
+      <h2>All products</h2>
+      <a href="<?= ROOT ?>/views/admin/product_add.php"><button class="primary-btn-small "><i style="color: #fffdfd;" class="fa-solid fa-circle-plus fa-sm"></i> Add a product</button></a>
     </div>
     <?php if (!empty($products)) : ?>
       <table style="margin-top: 16px;" class="table">
         <thead>
           <tr>
-            <th>Num</th>
+            <th>No.</th>
             <th>Image</th>
-            <th>Titre</th>
-            <th>Categorie</th>
+            <th>Title</th>
+            <th>Category</th>
             <th>Stock</th>
-            <th>Prix</th>
+            <th>Price</th>
             <th></th>
             <th>Action</th>
           </tr>
@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <tr>
               <td><?= $product['id'] ?></td>
               <td><img style="height: 40px; width: 40px; border-radius: 8px; object-fit: cover;" src="<?= '../' . $product['images'][0] ?>" alt=""></td>
-              <td><?= strlen($product['title']) >= 20 ? substr($product['title'], 0, 20) . '...' :  $product['title']  ?></td>
+              <td><?= strlen($product['title']) >= 25 ? substr($product['title'], 0, 25) . '...' :  $product['title']  ?></td>
               <td><?= $product['category_title'] ?></td>
               <td><?= $product['stock'] ?></td>
               <td>

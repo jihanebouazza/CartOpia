@@ -89,9 +89,7 @@ a {
   background-color: #fffdfd;
   border-radius: 0.25rem;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.1);
-  /* border: 0.2px solid #bab3b2; */
   border: 0.2px solid #bab3b2;
-
   opacity: 0;
   pointer-events: none;
   transform: translateY(-10px);

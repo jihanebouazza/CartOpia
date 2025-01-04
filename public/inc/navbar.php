@@ -3,7 +3,7 @@
 if (isset($_POST['logout'])) {
   if (!empty($_SESSION['USER'])) {
     unset($_SESSION['USER']);
-    set_message('Vous avez été déconnecté avec succès.', 'success');
+    set_message('You have been successfully logged out.', 'success');
     redirect('index');
   }
 }
@@ -16,8 +16,8 @@ $is_admin = is_admin();
   <?php require 'logo.php' ?>
   <div>
     <ul class="nav-list">
-      <li><a class="nav-link <?= $_SERVER['PHP_SELF'] === '/cartopia/public/index.php' ? 'active' : '' ?>" href="<?= ROOT ?>/">Accueil</a></li>
-      <li><a class="nav-link <?= $_SERVER['PHP_SELF'] === '/cartopia/public/views/products/index.php' ? 'active' : '' ?>" href="<?= ROOT ?>/views/products/">Produits</a></li>
+      <li><a class="nav-link <?= $_SERVER['PHP_SELF'] === '/cartopia/public/index.php' ? 'active' : '' ?>" href="<?= ROOT ?>/">Home</a></li>
+      <li><a class="nav-link <?= $_SERVER['PHP_SELF'] === '/cartopia/public/views/products/index.php' ? 'active' : '' ?>" href="<?= ROOT ?>/views/products/">Products</a></li>
       <li><a class="nav-link <?= $_SERVER['PHP_SELF'] === '/cartopia/public/views/faq.php' ? 'active' : '' ?>" href="<?= ROOT ?>/views/faq.php">FAQ</a></li>
       <li class="vr"></li>
       <li id="geolocation"><i style="padding-right: 4px;" class="fa-solid fa-location-dot fa-xs"></i></li>

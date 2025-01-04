@@ -16,24 +16,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   $current_password_hash = getUserPassword($user_id);
 
   if (!password_verify($original_password, $current_password_hash)) {
-    $errors['original_password'] = "Le mot de passe original est incorrect.";
+    $errors['original_password'] = "The original password is incorrect!";
   }
 
   if (!preg_match("/^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?\":{}|])[A-Za-z\d!@#$%^&*(),.?\":{}|]{8,}$/", $password)) {
-    $errors['password'] = "Le mot de passe doit comporter 8+ caractères, 1 majuscule, 1 chiffre, 1 caractère spécial!";
+    $errors['password'] = "The password must be at least 8 characters long, contain 1 uppercase letter, 1 digit, and 1 special character!";
   }
   if (($password !== $confirm_password)) {
-    $errors['confirm_password'] = "Les mots de passe ne correspondent pas!";
+    $errors['confirm_password'] = "The passwords do not match!";
   }
   if (empty($errors)) {
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
     if (updateUserPassword($user_id, $hashed_password)) {
-      set_message('Mot de passe mis à jour avec succès.', 'success');
-      header('Location: ' . $_SERVER['HTTP_REFERER']); 
+      set_message('Password successfully updated.', 'success');
+      header('Location: ' . $_SERVER['HTTP_REFERER']);
     } else {
-      set_message('Erreur lors de la mise à jour du mot de passe.', 'error');
-      header('Location: ' . $_SERVER['HTTP_REFERER']); 
-
+      set_message('Error updating the password.', 'error');
+      header('Location: ' . $_SERVER['HTTP_REFERER']);
     }
   }
 }
@@ -43,11 +42,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   <?php require '../../inc/user_sidebar.php'; ?>
   <div class="user-content flex-center" style="height: 90vh;">
     <form class="settings-form" method="post">
-      <h1>Changement de Mot de Passe</h1>
-      <h2>Sécurisez Votre Compte Avec un Nouveau Mot de Passe.</h2>
+      <h1>Change Password</h1>
+      <h2>Secure your account with a new password.</h2>
       <div>
         <label class="login_label">
-          Mot de passe
+          Old password
         </label>
         <div class="password_div">
           <input value="<?= post_old_value('original_password') ?>" placeholder="" type="password" name="original_password" class="password_input input">
@@ -61,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       <div class="double-input">
         <div>
           <label class="login_label">
-            Mot de passe
+            New password
           </label>
           <div class="password_div">
             <input class="input  password-name" value="<?= post_old_value('password') ?>" placeholder="" type="password" name="password">
@@ -69,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </div>
         <div>
           <label class="login_label">
-            Confirmer le mot de passe
+            Confirm password
           </label>
           <div class="password_div">
             <input class="input" type="password" value="<?= post_old_value('confirm_password') ?>" placeholder="" name="confirm_password" name="password">
@@ -80,12 +79,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       <?= isset($errors['confirm_password']) ? '<div class="error">' . $errors['confirm_password'] . '</div>' : '' ?>
 
       <div class="password-validation">
-        <div class="password-div-error password-init"><i class="fa-solid fa-x fa-xs"></i> 1 Chiffre</div>
-        <div class="password-div-error password-init"><i class="fa-solid fa-x fa-xs"></i> 1 Majuscule</div>
-        <div class="password-div-error password-init"><i class="fa-solid fa-x fa-xs"></i> 1 Caractère spéciale</div>
+        <div class="password-div-error password-init"><i class="fa-solid fa-x fa-xs"></i> 1 Digit</div>
+        <div class="password-div-error password-init"><i class="fa-solid fa-x fa-xs"></i> 1 Uppercase letter</div>
+        <div class="password-div-error password-init"><i class="fa-solid fa-x fa-xs"></i> 1 Special character</div>
         <div class="password-div-error password-init"><i class="fa-solid fa-x fa-xs"></i> 8 Characters</div>
       </div>
-      <button class="primary-btn" style="width: 100%; margin-top:16px" type="submit">Modifier</button>
+      <button class="primary-btn" style="width: 100%; margin-top:16px" type="submit">Submit</button>
     </form>
   </div>
 </main>

@@ -21,26 +21,26 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
   $allowed_ext = ['image/jpeg', 'image/png', 'image/webp'];
 
   if (!preg_match("/^[\p{L}0-9 ,.'\"\-\–éèêëàâûôîçü]+$/u", $title) && !strlen($title) >= 3) {
-    $errors['title'] = 'Le titre est Invalide!';
+    $errors['title'] = 'The title is invalid!';
   }
   if (!preg_match("/^[\p{L}0-9 ,.'\"\-\–éèêëàâûôîçü]+$/u", $description) && !strlen($description) >= 10) {
-    $errors['description'] = 'La description est Invalide!';
+    $errors['description'] = 'The description is invalid!';
   }
   if (empty($category)) {
-    $errors['category'] = 'La catégorie est obligatoire!';
+    $errors['category'] = 'The category is required!';
   }
   if (!preg_match("/^[\w\s.,'éàèùâêîôûäëïöüç-]{3,}$/", $brand)) {
-    $errors['brand'] = 'La marque est Invalide!';
+    $errors['brand'] = 'The brand is invalid!';
   }
   if ($stock <= 0) {
-    $errors['stock'] = 'Le stock est Invalide!';
+    $errors['stock'] = 'The stock is invalid!';
   }
   if ($price <= 0) {
-    $errors['price'] = 'Le prix est Invalide!';
+    $errors['price'] = 'The price is invalid!';
   }
   foreach ($images['type'] as $image) {
     if (!in_array($image, $allowed_ext)) {
-      $errors['images'] = 'Le type d\'image est Invalide!';
+      $errors['images'] = 'The image type is invalid!';
     }
   }
 
@@ -54,8 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
       }
       // insert
       if (insertProductImages($folder, $images['name'], $insert_id)) {
-        // success
-        set_message("Le produit a été ajouter avec succès !", "success");
+        set_message("The product has been successfully added!", "success");
         redirect('views/admin/products');
       }
     }
@@ -67,11 +66,11 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
   <div class="user-content flex-center">
     <form class="settings-form" method="post" enctype="multipart/form-data">
-      <h1>Ajouter un Nouveau Produit</h1>
-      <h2>Remplissez les Informations du Produit pour l'Ajouter.</h2>
+      <h1>Add a New Product</h1>
+      <h2>Fill in the Product Information to Add It.</h2>
       <div>
         <label class="label">
-          Titre
+          Title
         </label>
         <input value="<?= post_old_value('title') ?>" placeholder="" type="text" name="title" class="input">
       </div>
@@ -87,10 +86,10 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
       <div>
         <label class="label">
-          Categorie
+          Category
         </label>
         <select style="width: 100%;" name="category" class="input">
-          <option value="">Choisissez une catégorie</option>
+          <option value="">Choose a category</option>
           <?php foreach ($categories as $category) : ?>
             <option value="<?= $category['id'] ?>" <?= $category['id'] == post_old_value('category') ? 'selected' : '' ?>><?= $category['title'] ?></option>
           <?php endforeach; ?>
@@ -100,7 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
       <div>
         <label class="label">
-          Marque
+          Brand
         </label>
         <input value="<?= post_old_value('brand') ?>" placeholder="" type="text" name="brand" class="input">
       </div>
@@ -116,7 +115,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
       <div>
         <label class="label">
-          Prix
+          Price
         </label>
         <input value="<?= post_old_value('price') ?>" placeholder="" type="text" name="price" class="input">
       </div>
@@ -130,7 +129,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
       </div>
       <?= isset($errors['images']) ? '<div class="error">' . $errors['images'] . '</div>' : '' ?>
 
-      <button class="primary-btn" style="width: 100%; margin-top:16px" type="submit">Ajouter</button>
+      <button class="primary-btn" style="width: 100%; margin-top:16px" type="submit">Add</button>
     </form>
 </main>
 </body>

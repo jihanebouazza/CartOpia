@@ -39,6 +39,6 @@ require_once dirname(__DIR__) . '/../' . 'src/init.php';
           toastElement.classList.add('animate__bounceOutUp');
           setTimeout(() => toastElement.remove(), 1000); // Ensure this duration matches the animation duration
         }
-      }, 3000); // Display the toast for 3 seconds before starting the bounce-out animation
+      }, 2000); // Display the toast for 2 seconds before starting the bounce-out animation
     </script>
   <?php endif; ?>

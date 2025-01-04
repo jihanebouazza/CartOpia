@@ -15,15 +15,15 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
   $description = htmlspecialchars($_POST['description']);
 
   if (!preg_match("/^[\p{L}0-9 ,.'\"\-\–éèêëàâûôîçü]+$/u", $title) && !strlen($title) >= 3) {
-    $errors['title'] = 'Le titre est Invalide!';
+    $errors['title'] = 'The title is invalid!';
   }
   if (!preg_match("/^[\p{L}0-9 ,.'\"\-\–éèêëàâûôîçü]+$/u", $description) && !strlen($description) >= 10) {
-    $errors['description'] = 'La description est Invalide!';
+    $errors['description'] = 'The description is invalid!';
   }
 
   if (empty($errors)) {
     if (updateCategory($id, $title, $description)) {
-      set_message("La catégorie a été modifier avec succès !", "success");
+      set_message("The category has been successfully updated!", "success");
       redirect('views/admin/categories');
     }
   }
@@ -34,12 +34,12 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
   <div class="user-content flex-center" style="height: 90vh;">
     <form class="settings-form" method="post" enctype="multipart/form-data">
-      <h1>Modifier une Catégorie</h1>
-      <h2>Mettez à Jour les Détails de la Catégorie Selon Vos Besoins.</h2>
+      <h1>Edit a Category</h1>
+      <h2>Update the category details as needed.</h2>
       <input type="hidden" name="id" value="<?= $id ?>">
       <div>
         <label class="label">
-          Titre
+          Title
         </label>
         <input value="<?= post_old_value('title') ? post_old_value('title') : $category['title'] ?>" placeholder="" type="text" name="title" class="input">
       </div>
@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
       </div>
       <?= isset($errors['description']) ? '<div class="error">' . $errors['description'] . '</div>' : '' ?>
 
-      <button class="primary-btn" style="width: 100%; margin-top:16px" type="submit">Ajouter</button>
+      <button class="primary-btn" style="width: 100%; margin-top:16px" type="submit">Edit</button>
     </form>
 </main>
 </body>

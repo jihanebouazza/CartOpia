@@ -11,12 +11,12 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     $quantity = $_POST['quantity'] ?? 1;
 
     if ($stock < $quantity) {
-      set_message('La quantité demandée dépasse le stock disponible!', 'error');
+      set_message('The requested quantity exceeds the available stock!', 'error');
       header('Location: ' . $_SERVER['HTTP_REFERER']);  // Redirect back to the previous page
       exit;
     }
     if ($stock === 0) {
-      set_message('Le produit sélectionné n\'est plus en stock !', 'error');
+      set_message('The selected product is no longer in stock!', 'error');
       header('Location: ' . $_SERVER['HTTP_REFERER']);
       exit;
     }
@@ -32,9 +32,9 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     // Add the product to the cart
     if (!isset($_SESSION['cart'][$product_id])) {
       $_SESSION['cart'][$product_id] = $quantity;
-      set_message('Le produit sélectionné a été ajouté à votre panier.', 'success');
+      set_message('The selected product has been added to your cart.', 'success');
     } else {
-      set_message('Ce produit existe déjà dans votre panier!', 'error');
+      set_message('This product is already in your cart!', 'error');
     }
     header('Location: ' . $_SERVER['HTTP_REFERER']);  // Redirect back to the previous page
     exit;
@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     ['stock' => $stock] = getProductByID($product_id);
 
     if ($new_quantity > $stock) {
-      set_message('La quantité demandée dépasse le stock disponible!', 'error');
+      set_message('The requested quantity exceeds the available stock!', 'error');
       header('Location: ' . $_SERVER['HTTP_REFERER']);
       exit;
     }
@@ -69,9 +69,9 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 <main class="cart">
   <div class="cart-container">
     <div class="cart-heading">
-      <h2>Panier <span>(<?= count($_SESSION['cart'] ?? []) ?> produit<?= count($_SESSION['cart'] ?? []) > 1 ? 's' : '' ?>)</span></h2>
+      <h2>Cart <span>(<?= count($_SESSION['cart'] ?? []) ?> product<?= count($_SESSION['cart'] ?? []) > 1 ? 's' : '' ?>)</span></h2>
       <form method="post">
-        <button name="empty_cart" class="red-btn-regular"><i class="fa-solid fa-x fa-sm"></i> Vider le panier</button>
+        <button name="empty_cart" class="red-btn-regular"><i class="fa-solid fa-x fa-sm"></i> Empty the cart</button>
       </form>
     </div>
     <?php if (!empty($_SESSION['cart'])) : ?>
@@ -113,20 +113,20 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
       <?php endforeach; ?>
     <?php else : ?>
       <div style="height:26vh; width: 100%; display:flex; align-items: center; justify-content: center;">
-        <p>Votre panier est vide !</p>
+        <p>Your cart is empty!</p>
       </div>
     <?php endif; ?>
   </div>
 
   <div class="total-container">
-    <h2>Résumé de la commande</h2>
+    <h2>Order summary</h2>
     <div style="margin: 16px 0px 8px;" class="hr"></div>
     <div class="total thin">
-      <p>Sous-total</p>
+      <p>Subtotal</p>
       <p><?= !empty($_SESSION['cart_totals']) ? number_format($_SESSION['cart_totals']['subtotal'], 2) : '0.00' ?>dh</p>
     </div>
     <div style="margin-top: 4px;" class="total thin">
-      <p>Livraison</p>
+      <p>Shipping</p>
       <p><?= !empty($_SESSION['cart_totals']) ? number_format($_SESSION['cart_totals']['shipping'], 2) : '0.00' ?>dh</p>
     </div>
     <div style="margin: 8px 0px 8px;" class="hr"></div>
@@ -136,15 +136,17 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     </div>
     <?php if (!empty($_SESSION['cart'])) : ?>
       <form action="" method="post">
-        <button style="width: 100%;margin-top: 16px;" type="submit" name="checkout" class="primary-btn">Passer à la caisse</button>
+        <button style="width: 100%;margin-top: 16px;" type="submit" name="checkout" class="primary-btn">Proceed to checkout</button>
       </form>
     <?php else : ?>
-      <button style="width: 100%;margin-top: 16px;" type="button" onclick="alert('Votre panier est vide, ajoutez des produits pour continuer');" class="primary-btn">Passer à la caisse</button>
+      <button style="width: 100%;margin-top: 16px;" type="button" onclick="alert('Your cart is empty, add products to continue!');" class="primary-btn">Proceed to checkout</button>
     <?php endif; ?>
   </div>
 
 </main>
 <script src="<?= ROOT ?>/js/cart.js" defer></script>
 
-<?php require '../../inc/footer.php' ?>
+</body>
+
+</html>
 <?php ob_end_flush();  

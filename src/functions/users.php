@@ -1,10 +1,14 @@
 <?php
-function getAllUsers()
+function getAllUsers($id = 0)
 {
   global $con;
   $users = [];
 
-  $res = $con->query("SELECT * FROM users");
+  $stmt = $con->prepare("SELECT * FROM users WHERE id != ?");
+  $stmt->bind_param("i", $id);
+  $stmt->execute();
+  $res = $stmt->get_result();
+
   while ($row = $res->fetch_assoc()) {
     $users[] = $row;
   }
@@ -19,10 +23,6 @@ function updateUserDetails($user_id, $phone_number, $address, $city, $postal_cod
   $stmt = $con->prepare("UPDATE users SET phone_number = ?, address = ?, city = ?, postal_code = ? WHERE id = ?");
   $stmt->bind_param("ssssi", $phone_number, $address, $city, $postal_code, $user_id);
   $stmt->execute();
-
-  // if ($stmt->affected_rows === 0) {
-  //   return false; // No rows updated
-  // }
   return true;
 }
 
@@ -76,7 +76,7 @@ function userCanReview($userId, $productId)
   $sql = "SELECT o.id
           FROM orders o
           JOIN order_items oi ON o.id = oi.order_id
-          WHERE o.user_id = ? AND oi.product_id = ? AND o.status = 'Livré'
+          WHERE o.user_id = ? AND oi.product_id = ? AND o.status = 'Shipped'
           AND NOT EXISTS (
           SELECT 1 FROM reviews r WHERE r.product_id = oi.product_id AND r.user_id = o.user_id
           )

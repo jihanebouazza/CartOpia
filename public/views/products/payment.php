@@ -38,7 +38,7 @@ if (isset($_SESSION['cart']) && !empty($_SESSION['cart'])) {
       "currency" => "mad",
       "unit_amount" => $delivery_fee,
       "product_data" => [
-        "name" => "Frais de livraison"
+        "name" => "Shipping fees"
       ],
     ],
   ];
@@ -57,8 +57,8 @@ if (isset($_SESSION['cart']) && !empty($_SESSION['cart'])) {
     header("Location: " . $checkout_session->url);
     exit;
   } else {
-    set_message('Le panier est vide ou les produits n\'ont pas pu être chargés.', 'error');
+    set_message('The cart is empty or the products could not be loaded.', 'error');
   }
 } else {
-  set_message('Le panier est vide.', 'error');
+  set_message('The cart is empty.', 'error');
 }

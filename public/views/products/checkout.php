@@ -1,4 +1,5 @@
 <?php
+ob_start();
 require '../../inc/navbar.php';
 
 if (!is_logged_in()) {
@@ -16,29 +17,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   $payment_method = htmlspecialchars($_POST['payment_method']);
 
   if (!preg_match("/^(06|07|\+212)(\s)?[0-9]{8}$/", $phone_number)) {
-    $errors['phone_number'] = "Le numéro de téléphone doit commencer par 06, 07 ou +212 suivi de 8 chiffres.";
+    $errors['phone_number'] = "The phone number must start with 06, 07, or +212 followed by 8 digits.";
   }
 
   if (!preg_match("/^[\w\s.,'éàèùâêîôûäëïöüç-]{10,}$/", $address)) {
-    $errors['address'] = "L'adresse est invalide.";
+    $errors['address'] = "The address is invalid!";
   }
 
   if (!preg_match("/^[a-zA-Z]{3,}$/", $city)) {
-    $errors['city'] = "La ville doit contenir au moins 3 lettres.";
+    $errors['city'] = "The city must contain at least 3 letters!";
   }
 
   if (!preg_match("/^[0-9]{5}$/", $postal_code)) {
-    $errors['postal_code'] = "Le code postal doit contenir exactement 5 chiffres.";
+    $errors['postal_code'] = "The postal code must contain exactly 5 digits.";
   }
   if (empty($payment_method)) {
-    $errors['payment_method'] = "Veuillez sélectionner une méthode de paiement.";
+    $errors['payment_method'] = "Please select a payment method.";
   }
   if (empty($errors) && !empty($_SESSION['cart']) && !empty($_SESSION['cart_totals'])) {
-    if ($payment_method == 'A la livraison') {
+    if ($payment_method == 'Cash on delivery') {
       ['total' => $total] = $_SESSION['cart_totals'];
 
       if (updateUserDetails($user_id, $phone_number, $address, $city, $postal_code)) {
-        $order_id = insertOrder($user_id, $total, $payment_method, 'En attente');
+        $order_id = insertOrder($user_id, $total, $payment_method, 'Pending');
         if ($order_id) {
           foreach ($_SESSION['cart'] as $product_id => $quantity) {
             $product_price = getProductPrice($product_id);
@@ -50,32 +51,32 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
           redirect('views/products/success');
         }
       }
-    } elseif ($payment_method == 'Par carte') {
+    } elseif ($payment_method == 'By Card') {
       if (updateUserDetails($user_id, $phone_number, $address, $city, $postal_code)) {
         redirect('views/products/payment');
       }
     }
   } elseif (empty($_SESSION['cart'])) {
-    set_message("Votre panier est vide, ajoutez des produits pour continuer.", "error");
+    set_message("Your cart is empty, add products to continue.", "error");
   }
 }
 ?>
 <main class="checkout">
   <form method="post" class="checkout-form">
-    <h1>Finalisation de votre commande</h1>
-    <h2>Veuillez remplir les informations ci-dessous pour compléter votre commande.</h2>
+    <h1>Complete your order</h1>
+    <h2>Please fill in the information below to complete your order.</h2>
     <div class="double-input">
       <div>
         <div class="flex">
           <label class="label">
-            Prénom
+            First name
           </label>
         </div>
         <p><?= user('firstname') ?></p>
       </div>
       <div>
         <label class="label">
-          Nom
+          Last name
         </label>
         <p><?= user('lastname') ?></p>
       </div>
@@ -90,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </div>
     <div>
       <label class="label">
-        Numéro de téléphone
+        Phone number
       </label>
       <input value="<?= post_old_value('phone_number') ? post_old_value('phone_number') : user('phone_number') ?>" placeholder="" type="text" name="phone_number" class="input">
     </div>
@@ -98,7 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     <div>
       <label class="label">
-        Adresse
+        Address
       </label>
       <textarea placeholder="" name="address" class="input"><?= post_old_value('address') ? post_old_value('address') : user('address')   ?></textarea>
     </div>
@@ -108,14 +109,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       <div>
         <div class="flex">
           <label class="label">
-            Ville
+            City
           </label>
         </div>
         <input value="<?= post_old_value('city') ? post_old_value('city') : user('city')   ?>" placeholder="" type="text" name="city" class="input">
       </div>
       <div>
         <label class="label">
-          Code Postal
+          Postal code
         </label>
         <input value="<?= post_old_value('postal_code') ? post_old_value('postal_code') : user('postal_code') ?>" placeholder="" type="text" name="postal_code" class="input">
       </div>
@@ -124,18 +125,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <?= isset($errors['postal_code']) ? '<div style="margin-top: 4px" class="error">' . $errors['postal_code'] . '</div>' : '' ?>
     <div>
       <label class="label">
-        Méthode de Paiement
+        Payment method
       </label>
       <select style="width: 100%;" name="payment_method" class="input">
-        <option value="">Sélectionnez la méthode de paiement</option>
-        <option value="Par carte"> Carte de crédit</option>
-        <option value="A la livraison">Paiement à la livraison</option>
+        <option value="">Select the payment method</option>
+        <option value="By Card">Payment by card</option>
+        <option value="Cash on delivery">Cash on delivery</option>
       </select>
     </div>
     <?= isset($errors['payment_method']) ? '<div class="error">' . $errors['payment_method'] . '</div>' : '' ?>
 
-    <button class="primary-btn" style="width: 100%; margin-top:16px" type="submit">Confirmer la commande</button>
+    <button class="primary-btn" style="width: 100%; margin-top:16px" type="submit">Confirm order</button>
 
   </form>
 </main>
 <?php require '../../inc/footer.php' ?>
+<?php ob_end_flush();

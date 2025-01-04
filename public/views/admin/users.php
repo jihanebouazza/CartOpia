@@ -4,13 +4,14 @@ require '../../inc/header.php';
 if (!is_admin()) {
   redirect('views/user/index');
 }
+$id = user('id');
 
-$users = getAllUsers();
+$users = getAllUsers($id);
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   $id = htmlspecialchars($_POST['id']);
   if (deleteUserById($id)) {
-    set_message('Utilisateur supprimmer avec succès!', 'success');
+    set_message('User successfully deleted!', 'success');
     header('Location:' . $_SERVER['HTTP_REFERER']);
   }
 }
@@ -19,16 +20,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   <?php require '../../inc/admin_sidebar.php'; ?>
 
   <div class="user-content">
-    <h2>Tous les utlisateurs</h2>
+    <h2>All users</h2>
     <?php if (!empty($users)) : ?>
       <table style="margin-top: 16px;" class="table">
         <thead>
           <tr>
-            <th>Num</th>
-            <th>Nom Complet</th>
+            <th>No.</th>
+            <th>Full name</th>
             <th>Email</th>
-            <th>Télephone</th>
-            <th>Adresse</th>
+            <th>Phone number</th>
+            <th>Address</th>
             <th>Role</th>
             <th>Action</th>
           </tr>
@@ -40,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
               <td><?= $user['firstname'] . ' ' . $user['lastname'] ?></td>
               <td><?= $user['email'] ?></td>
               <td><?= $user['phone_number'] ?></td>
-              <td><?= $user['address'] . ', ' . $user['city'] . ', ' . $user['postal_code'] ?></td>
+              <td><?= $user['address'] . ', ' . $user['city'] ?></td>
               <td><?= $user['role'] ?></td>
               <td>
                 <a href="<?= ROOT ?>/views/admin/user_edit.php?id=<?= $user['id'] ?>" style="margin: 0px 4px 0px 0px; color: #A19796; border-color: #A19796;padding: 4px 4px 4px 6px;" class="icon-button">
@@ -59,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       </table>
     <?php else : ?>
       <div style="height:26vh; width: 100%; display:flex; align-items: center; justify-content: center;">
-        <p>Aucun utilisateur trouvé !</p>
+        <p>No users found!</p>
       </div>
     <?php endif; ?>
   </div>

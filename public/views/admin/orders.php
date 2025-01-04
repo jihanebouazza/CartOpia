@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   $id  = htmlspecialchars($_POST['id']);
 
   if (deleteOrderByID($id)) {
-    set_message('Commande supprimmé avec succès !', "success");
+    set_message('Order successfully deleted!', "success");
     header('Location:' . $_SERVER['HTTP_REFERER']);
   }
 }
@@ -20,17 +20,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <main>
   <?php require '../../inc/admin_sidebar.php'; ?>
   <div class="user-content">
-    <h2>Tous les commandes</h2>
+    <h2>All Orders</h2>
     <?php if (!empty($orders)) : ?>
       <table style="margin-top: 16px;" class="table">
         <thead>
           <tr>
-            <th>Num</th>
-            <th>Statut</th>
+            <th>No.</th>
+            <th>Status</th>
             <th>Date</th>
-            <th>Montant Total</th>
-            <th>Mode de Paiement</th>
-            <th>Statut du Paiement</th>
+            <th>Total Amount</th>
+            <th>Payment Method</th>
+            <th>Payment Status</th>
             <th>Action</th>
           </tr>
         </thead>
@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       </table>
     <?php else : ?>
       <div style="height:26vh; width: 100%; display:flex; align-items: center; justify-content: center;">
-        <p>Aucune commande trouvé !</p>
+        <p>No orders found!</p>
       </div>
     <?php endif; ?>
   </div>

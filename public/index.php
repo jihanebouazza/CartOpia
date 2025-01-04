@@ -4,11 +4,11 @@ require './inc/navbar.php';
 
 <div class="hero">
   <div class="hero-text">
-    <h1 class="hero-header">Votre Destination <span>Unique</span> pour Tout ce Dont Vous Avez <br />
-      <span>Besoin</span> et <span>Envie</span>.
+    <h1 class="hero-header">Your <span>Unique</span> Destination for Everything You <br />
+      <span>Need</span> and <span>Desire</span>.
     </h1>
   </div>
-  <a href="<?= ROOT ?>/views/products/"><button class="primary-btn">Explorez Nos Produits</button></a>
+  <a href="<?= ROOT ?>/views/products/"><button class="primary-btn">Explore Our Products</button></a>
   <div>
     <img class="hero-img" src="<?= ROOT ?>/images/home-imageT.png" />
   </div>
@@ -21,8 +21,8 @@ require './inc/navbar.php';
         <i style="color:#6E1309" class="fa-solid fa-truck fa-lg icon"></i>
       </div>
       <div>
-        <p>Livraison rapide</p>
-        <p class="card-description">Rapide et Fiable</p>
+        <p>Fast Delivery</p>
+        <p class="card-description">Quick and Reliable</p>
       </div>
     </div>
     <div class="card">
@@ -30,8 +30,8 @@ require './inc/navbar.php';
         <i style="color:#652C03" class="fa-solid fa-rotate-left fa-lg"></i>
       </div>
       <div>
-        <p>Retours faciles</p>
-        <p class="card-description">Satisfaction Garantie</p>
+        <p>Easy Returns</p>
+        <p class="card-description">Satisfaction Guaranteed</p>
       </div>
     </div>
     <div class="card">
@@ -39,8 +39,8 @@ require './inc/navbar.php';
         <i style="color:#154D01" class="fa-regular fa-credit-card fa-lg"></i>
       </div>
       <div>
-        <p>Paiements sécurisés</p>
-        <p class="card-description">Sécurité Assurée</p>
+        <p>Secure Payments</p>
+        <p class="card-description">Guaranteed Security</p>
       </div>
     </div>
     <div class="card">
@@ -48,26 +48,25 @@ require './inc/navbar.php';
         <i style="color:#760101" class="fa-solid fa-user-tie fa-lg"></i>
       </div>
       <div>
-        <p>Excellent service client</p>
-        <p class="card-description">Support Exceptionnel</p>
+        <p>Excellent customer service</p>
+        <p class="card-description">Exceptional Support</p>
       </div>
     </div>
   </div>
 </section>
 <section class="second-section">
-  <h2>Nos Clients Satisfaits</h2>
+  <h2>Our Satisfied Customers</h2>
   <div class="testemonials">
     <div style="position: relative;" class="testemonial1">
-      <div class="client" style="color: #1C0301; background-color: rgba(250, 163, 100, 0.2)">Marie</div>
-      <p>Je suis extrêmement satisfaite de mon expérience d'achat chez CartOpia. Non seulement la qualité des produits est exceptionnelle, mais le service clientèle est également au-dessus de mes attentes !
-      </p>
+      <div class="client" style="color: #1C0301; background-color: rgba(250, 163, 100, 0.2)">Emily</div>
+      <p>"I am extremely satisfied with my shopping experience at CartOpia. Not only is the product quality exceptional, but the customer service also exceeds my expectations! The fast delivery and hassle-free returns make shopping here a breeze."</p>
     </div>
     <div class="testemonial2">
       <div style="position: relative; height: 100%;">
         <img src="<?= ROOT ?>/images/homebg.jpg" class="bg-img" />
-        <div class="client">Pierre</div>
+        <div class="client">Robert</div>
         <div class="overlay"></div>
-        <p>"Je suis un client fidèle depuis des années et je n'ai jamais été déçu par CartOpia. Des produits de haute qualité, une livraison rapide et un excellent service clientèle font de cette entreprise mon premier choix pour mes achats en ligne."</p>
+        <p>"I've been a loyal customer for years and have never been disappointed by CartOpia. High-quality products, fast delivery, and excellent customer service make this company my first choice for online shopping."</p>
       </div>
     </div>
   </div>

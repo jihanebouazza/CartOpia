@@ -10,7 +10,7 @@ $categories = getAllCategories();
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   $id = htmlspecialchars($_POST['id']);
   if (deleteCategory($id)) {
-    set_message('Catégorie supprimmer avec succès!', 'success');
+    set_message('Category successfully deleted!', 'success');
     header('Location:' . $_SERVER['HTTP_REFERER']);
   }
 }
@@ -20,15 +20,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
   <div class="user-content">
     <div class="flex">
-      <h2>Tous les catégories</h2>
-      <a href="<?= ROOT ?>/views/admin/category_add.php"><button class="primary-btn-small "><i style="color: #fffdfd;" class="fa-solid fa-circle-plus fa-sm"></i> Ajouter une catégorie</button></a>
+      <h2>All categories</h2>
+      <a href="<?= ROOT ?>/views/admin/category_add.php"><button class="primary-btn-small "><i style="color: #fffdfd;" class="fa-solid fa-circle-plus fa-sm"></i> Add a category</button></a>
     </div>
     <?php if (!empty($categories)) : ?>
       <table style="margin-top: 16px;" class="table">
         <thead>
           <tr>
-            <th>Num</th>
-            <th>Titre</th>
+            <th>No.</th>
+            <th>Title</th>
             <th>Description</th>
             <th style="text-align: center;">Action</th>
           </tr>
@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       </table>
     <?php else : ?>
       <div style="height:26vh; width: 100%; display:flex; align-items: center; justify-content: center;">
-        <p>Aucune catégorie trouvé !</p>
+        <p>No category found!</p>
       </div>
     <?php endif; ?>
   </div>

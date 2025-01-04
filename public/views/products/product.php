@@ -1,4 +1,5 @@
 <?php
+ob_start();
 require '../../inc/navbar.php';
 
 $product_id = $_GET['id'] ?? 0;
@@ -27,20 +28,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $rating_text = htmlspecialchars($_POST['rating_text']);
 
     if (empty($rating) || $rating > 5 || $rating < 1) {
-      $errors['rating'] = 'Veuillez fournir une note entre 1 et 5.';
+      $errors['rating'] = 'Please provide a rating between 1 and 5.';
       set_message($errors['rating'], 'error');
       header('Location: ' . $_SERVER['HTTP_REFERER']);
       exit;
     }
     if (!preg_match("/^[\p{L}0-9 ,.'\"\-\–éèêëàâûôîçü]+$/u", $rating_text) && !strlen($rating_text) >= 10) {
-      $errors['rating_text'] = 'Le texte de l\'avis doit contenir au moins 10 caractères.';
+      $errors['rating_text'] = 'The review text must contain at least 10 characters.';
       set_message($errors['rating_text'], 'error');
       header('Location: ' . $_SERVER['HTTP_REFERER']);
       exit;
     }
     if (empty($errors)) {
       if (insertReview($p_id, $u_id, $rating, $rating_text)) {
-        set_message('Votre avis a été ajouté avec succès.', 'success');
+        set_message('Your review has been successfully added.', 'success');
         header('Location: ' . $_SERVER['HTTP_REFERER']);
         exit;
       }
@@ -48,17 +49,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   }
 
   if (isset($_POST['delete_review'])) {
-    $id = $_POST['id']; 
+    $id = $_POST['id'];
     if (deleteReview($id)) {
-        set_message('Avis supprimé avec succès!', 'success');
-        header('Location:' . $_SERVER['HTTP_REFERER']);
-        exit; 
+      set_message('Review successfully deleted!', 'success');
+      header('Location:' . $_SERVER['HTTP_REFERER']);
+      exit;
     } else {
-        set_message('Erreur lors de la suppression de l\'avis.' . $id, 'error'); 
-        header('Location:' . $_SERVER['HTTP_REFERER']);
-        exit; 
+      set_message('Error deleting the review.' . $id, 'error');
+      header('Location:' . $_SERVER['HTTP_REFERER']);
+      exit;
     }
-}
+  }
 }
 
 
@@ -92,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <button type="button" class="icon-button plus"><i style="color: #080100;" class="fa-solid fa-plus fa-xl"></i></button>
             <input type="text" name="quantity" value="1" class="qty-input">
             <button type="button" style="margin-right: 8px;" class="icon-button minus"><i style="color: #080100;" class="fa-solid fa-minus fa-xl"></i></button>
-            <button name="add" type="submit" class="secondary-btn-small"><i style="color: #ff988d;" class="fa-solid fa-cart-shopping fa-lg"></i> Ajouter au panier</button>
+            <button name="add" type="submit" class="secondary-btn-small"><i style="color: #ff988d;" class="fa-solid fa-cart-shopping fa-lg"></i> Add to cart</button>
           </form>
           <form style="display: inline-block;" method="post" action="wishlist.php">
             <input type="hidden" name="product_id" value="<?= $product_details['id'] ?>">
@@ -115,9 +116,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   </div>
   <div class="reviews-section">
     <div class="flex">
-      <h2>Ce que disent nos clients</h2>
+      <h2>Customer Testimonials and Reviews</h2>
       <?php if (is_logged_in() && $canReview) : ?>
-        <button class="secondary-btn-small-review modal-btn"><i style="color:#FAE264" class="fa-solid fa-star"></i> Donner un avis</button>
+        <button class="secondary-btn-small-review modal-btn"><i style="color:#FAE264" class="fa-solid fa-star"></i> Leave a review</button>
       <?php endif; ?>
     </div>
 
@@ -145,14 +146,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       </div>
     <?php else : ?>
       <div style="height:30vh; width: 100%; display:flex; align-items: center; justify-content: center;">
-        <p>Pas encore d'avis.</p>
+        <p>No reviews yet.</p>
       </div>
     <?php endif; ?>
 
   </div>
   <?php if (!empty($product_details['similar_products'])) : ?>
     <div class="suggestions-section">
-      <h2>Vous aimerez peut-être aussi</h2>
+      <h2>You might also like</h2>
       <div class="suggestions-container">
         <?php foreach ($product_details['similar_products'] as $product) : ?>
           <div class="product">
@@ -188,23 +189,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   <div class="modal">
     <button class="close modal-close"><i style="color: #080100;" class="fa-solid fa-x fa-lg"></i></button>
     <form method="post">
-      <h1>Évaluez Votre Achat!</h1>
-      <h2>Aidez-Nous à Améliorer.</h2>
+      <h1>Rate Your Purchase!</h1>
+      <h2>Your feedback helps us improve and serve you better.</h2>
       <input type="hidden" name="p_id" value="<?= $product_id ?>">
       <input type="hidden" name="u_id" value="<?= $user_id ?>">
       <div>
         <label class="login_label">
-          Évaluation
+          Rating
         </label>
         <input value="<?= post_old_value('rating') ?>" placeholder="Notez de 1 à 5 étoiles" type="text" name="rating" class="input">
       </div>
       <div>
         <label class="login_label">
-          Votre Avis
+          Your review
         </label>
         <textarea class="input" name="rating_text" id=""><?= post_old_value('rating_text') ?></textarea>
       </div>
-      <button name="add_review" class="primary-btn" style="width: 100%; margin-top: 8px;" type="submit">Soumettre</button>
+      <button name="add_review" class="primary-btn" style="width: 100%; margin-top: 8px;" type="submit">Submit</button>
 
     </form>
   </div>
@@ -217,3 +218,4 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <script src="<?= ROOT ?>/js/image.js" defer></script>
 
 <?php require '../../inc/footer.php' ?>
+<?php ob_end_flush();

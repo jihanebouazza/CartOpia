@@ -21,10 +21,10 @@ $products_with_images = getAllProducts($search, $minPrice, $maxPrice, $brands, $
 
 <div class="products-main">
   <form method="get" class="filter-container">
-    <h2>Filtrer les Produits</h2>
+    <h2>Filter Products</h2>
     <input value="<?= get_old_value('search') ?>" type="hidden" name="search" class="input" placeholder="Rechercher une catégorie...">
     <div class="wrapper">
-      <p class="filter-heading">Prix</p>
+      <p class="filter-heading">Price</p>
       <div class="price-input">
         <div class="field">
           <span>Min</span>
@@ -46,7 +46,7 @@ $products_with_images = getAllProducts($search, $minPrice, $maxPrice, $brands, $
     </div>
 
     <div style="margin-bottom: 8px;" class="brand">
-      <p class="filter-heading">Marque</p>
+      <p class="filter-heading">Brand</p>
       <ul class="brand-list">
         <?php foreach ($allBrands as $brand) : ?>
           <li>
@@ -57,7 +57,7 @@ $products_with_images = getAllProducts($search, $minPrice, $maxPrice, $brands, $
     </div>
 
     <div class="brand">
-      <p class="filter-heading">Avis</p>
+      <p class="filter-heading">Reviews</p>
       <ul class="brand-list">
         <li><input type="checkbox" name="rating1to2" <?= isset($_GET['rating1to2']) ? 'checked' : '' ?>>1 à 2 <i style="color:#FAE264" class="fa-solid fa-star"></i></li>
         <li><input type="checkbox" name="rating2to3" <?= isset($_GET['rating2to3']) ? 'checked' : '' ?>>2 à 3 <i style="color:#FAE264" class="fa-solid fa-star"></i></li>
@@ -66,15 +66,15 @@ $products_with_images = getAllProducts($search, $minPrice, $maxPrice, $brands, $
       </ul>
     </div>
     <div class="filter-btn-container">
-      <button type="submit" class="primary-btn-small">Appliquer</button>
-      <button type="button" class="secondary-btn-small clear">Effacer</button>
+      <button type="submit" class="primary-btn-small">Apply</button>
+      <button type="button" class="secondary-btn-small clear">Clear</button>
     </div>
   </form>
 
   <div class="products-container">
 
     <form method="get" class="search-container">
-      <input value="<?= htmlspecialchars($search) ?>" type="text" name="search" class="input searching" placeholder="Rechercher une catégorie...">
+      <input value="<?= htmlspecialchars($search) ?>" type="text" name="search" class="input searching" placeholder="Search for a category...">
       <input type="hidden" name="minPrice" value="<?= htmlspecialchars($minPrice) ?>">
       <input type="hidden" name="maxPrice" value="<?= htmlspecialchars($maxPrice) ?>">
       <?php if (!empty($brands)) : ?>
@@ -142,7 +142,7 @@ $products_with_images = getAllProducts($search, $minPrice, $maxPrice, $brands, $
 
       <?php else : ?>
         <div style="height:60vh; width: 100%; display:flex; align-items: center; justify-content: center;">
-          <p>Aucun produit trouvé !</p>
+          <p>No products found!</p>
         </div>
       <?php endif; ?>
     </div>

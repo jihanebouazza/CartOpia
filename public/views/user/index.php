@@ -15,7 +15,7 @@ $orderStatusCounts = getOrderStatusCounts($user_id);
 <main>
   <?php require '../../inc/user_sidebar.php'; ?>
   <div class="user-content">
-    <h2>Bonjour, <?= user('firstname') ?></h2>
+    <h2>Hello, <?= user('firstname') ?></h2>
     <div class="user-dashboard-numbers">
       <div class="number">
         <div class="number-div">
@@ -43,10 +43,10 @@ $orderStatusCounts = getOrderStatusCounts($user_id);
               <path d="M41 9V6a3 3 0 0 0-6 0v3a1 1 0 0 1-2 0V6a5 5 0 0 1 10 0v3a1 1 0 0 1-2 0z" style="fill:#a87e6b" />
             </g>
           </svg>
-          <p>Nombre de commandes</p>
+          <p>Number of Orders</p>
         </div>
         <div class="digit"><?= $order_number ?></div>
-        <div class="digit"><a href="<?= ROOT ?>/views/user/orders.php">Voir l'historique des commandes</a></div>
+        <div class="digit"><a href="<?= ROOT ?>/views/user/orders.php">View order history</a></div>
       </div>
       <div class="number">
         <div class="number-div">
@@ -92,10 +92,10 @@ $orderStatusCounts = getOrderStatusCounts($user_id);
               <path class="cls-3" d="M17 31h26a1 1 0 0 1 0 2H17a1 1 0 0 1 0-2z" />
             </g>
           </svg>
-          <p>Nombre de produits dans le panier</p>
+          <p>Number of products in the cart</p>
         </div>
         <div class="digit"><?= $cart_number ?></div>
-        <div class="digit"><a href="<?= ROOT ?>/views/products/cart.php">Voir le panier </a></div>
+        <div class="digit"><a href="<?= ROOT ?>/views/products/cart.php">View cart</a></div>
       </div>
       <div class="number">
         <div class="number-div">
@@ -133,19 +133,19 @@ $orderStatusCounts = getOrderStatusCounts($user_id);
               </g>
             </g>
           </svg>
-          <p>Nombre de produits dans la liste de souhaits</p>
+          <p>Number of products in the wishlist</p>
         </div>
         <div class="digit"><?= $wishlist_number ?></div>
-        <div class="digit"><a href="<?= ROOT ?>/views/products/wishlist.php">Voir la liste de souhaits </a></div>
+        <div class="digit"><a href="<?= ROOT ?>/views/products/wishlist.php">View wishlist</a></div>
       </div>
     </div>
     <div class="bar-chart-numbers">
       <div class="bar-chart">
-        <h3>Dépenses par catégorie</h3>
+        <h3>Expenses by category</h3>
         <canvas id="categorySpendingChart"></canvas>
       </div>
       <div class="pie-chart">
-        <h3>Statut des commandes</h3>
+        <h3>Order status</h3>
         <canvas id="orderStatusChart"></canvas>
       </div>
     </div>
@@ -157,7 +157,7 @@ $orderStatusCounts = getOrderStatusCounts($user_id);
     const data = {
       labels: <?= json_encode(array_column($categorySpending, 'category')) ?>,
       datasets: [{
-        label: 'Dépenses par catégorie',
+        label: 'Expenses by category',
         data: <?= json_encode(array_column($categorySpending, 'total_spent')) ?>,
         backgroundColor: [
           'rgba(255, 214, 209, 0.2)',
@@ -199,7 +199,7 @@ $orderStatusCounts = getOrderStatusCounts($user_id);
     const data1 = {
       labels: Object.keys(orderStatusCounts),
       datasets: [{
-        label: 'Statut des Commandes',
+        label: 'Order status',
         data: Object.values(orderStatusCounts),
         backgroundColor: [
           'rgba(255, 214, 209, 0.8)',
@@ -219,10 +219,6 @@ $orderStatusCounts = getOrderStatusCounts($user_id);
           legend: {
             position: 'top',
           },
-          // title: {
-          //   display: true,
-          //   text: 'Statut des Commandes'
-          // }
         }
       }
     };

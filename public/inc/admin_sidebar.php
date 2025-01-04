@@ -12,13 +12,13 @@ if (isset($_POST['logout'])) {
   <?php require '../../inc/logo.php'; ?>
   <div class="sidebar-row">
     <a class="dashboard-link <?= $_SERVER['PHP_SELF'] === '/cartopia/public/views/admin/index.php' ? 'active-dashboard-link' : '' ?>" href="<?= ROOT ?>/views/admin/"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
-    <a class="dashboard-link <?= $_SERVER['PHP_SELF'] === '/cartopia/public/views/admin/products.php' ? 'active-dashboard-link' : '' ?>" href="<?= ROOT ?>/views/admin/products.php"><i class="fa-solid fa-cart-shopping"></i> Gestion des Produits</a>
-    <a class="dashboard-link <?= $_SERVER['PHP_SELF'] === '/cartopia/public/views/admin/categories.php' ? 'active-dashboard-link' : '' ?>" href="<?= ROOT ?>/views/admin/categories.php"><i class="fa-solid fa-layer-group"></i>  Gestion des Catégories</a>
-    <a class="dashboard-link <?= $_SERVER['PHP_SELF'] === '/cartopia/public/views/admin/orders.php' ? 'active-dashboard-link' : '' ?>" href="<?= ROOT ?>/views/admin/orders.php"><i class="fa-solid fa-basket-shopping"></i> Gestion des Commandes</a>
-    <a class="dashboard-link <?= $_SERVER['PHP_SELF'] === '/cartopia/public/views/admin/users.php' ? 'active-dashboard-link' : '' ?>" href="<?= ROOT ?>/views/admin/users.php"><i class="fa-solid fa-user"></i>  Gestion des Utilisateurs</a>
+    <a class="dashboard-link <?= $_SERVER['PHP_SELF'] === '/cartopia/public/views/admin/products.php' ? 'active-dashboard-link' : '' ?>" href="<?= ROOT ?>/views/admin/products.php"><i class="fa-solid fa-cart-shopping"></i> Product Management</a>
+    <a class="dashboard-link <?= $_SERVER['PHP_SELF'] === '/cartopia/public/views/admin/categories.php' ? 'active-dashboard-link' : '' ?>" href="<?= ROOT ?>/views/admin/categories.php"><i class="fa-solid fa-layer-group"></i> Category Management</a>
+    <a class="dashboard-link <?= $_SERVER['PHP_SELF'] === '/cartopia/public/views/admin/orders.php' ? 'active-dashboard-link' : '' ?>" href="<?= ROOT ?>/views/admin/orders.php"><i class="fa-solid fa-basket-shopping"></i> Order Management</a>
+    <a class="dashboard-link <?= $_SERVER['PHP_SELF'] === '/cartopia/public/views/admin/users.php' ? 'active-dashboard-link' : '' ?>" href="<?= ROOT ?>/views/admin/users.php"><i class="fa-solid fa-user"></i> User Management</a>
     <form method="post" action="">
       <button class="dashboard-link" type="submit" name="logout">
-        <i class="fa-solid fa-right-from-bracket"></i> Logout
+        <i class="fa-solid fa-right-from-bracket"></i> Log out
       </button>
     </form>
   </div>

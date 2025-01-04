@@ -11,16 +11,16 @@ $user_orders = getAllOrdersByUserId($user_id);
 <main>
   <?php require '../../inc/user_sidebar.php'; ?>
   <div class="user-content">
-    <h2>Historique des commandes</h2>
+    <h2>Order history</h2>
     <?php if (!empty($user_orders)) : ?>
       <table style="margin-top: 16px;" class="table">
         <thead>
           <tr>
-            <th>Num</th>
-            <th>Statut</th>
+            <th>No.</th>
+            <th>Status</th>
             <th>Date</th>
-            <th>Montant Total</th>
-            <th>Mode de Paiement</th>
+            <th>Total Amount</th>
+            <th>Payment Method</th>
             <th>Action</th>
           </tr>
         </thead>
@@ -34,7 +34,7 @@ $user_orders = getAllOrdersByUserId($user_id);
               <td><?= $order['payment_type'] ?></td>
               <td>
                 <a target="_blank" href="<?= ROOT ?>/views/user/pdf.php?id=<?= $order['id'] ?>">
-                  <button class="secondary-btn-small"><i style="color: #ff988d;" class="fa-solid fa-print fa-lg"></i> Imprimer</button>
+                  <button class="secondary-btn-small"><i style="color: #ff988d;" class="fa-solid fa-print fa-lg"></i> Print</button>
                 </a>
               </td>
             </tr>
@@ -43,7 +43,7 @@ $user_orders = getAllOrdersByUserId($user_id);
       </table>
     <?php else : ?>
       <div style="height:26vh; width: 100%; display:flex; align-items: center; justify-content: center;">
-        <p>Vous n'avez pas encore de commandes.</p>
+        <p>You don't have any orders yet.</p>
       </div>
     <?php endif; ?>
   </div>
