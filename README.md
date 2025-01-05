@@ -11,16 +11,16 @@ CartOpia is a full-featured e-commerce website built using PHP, MySQL, HTML, CSS
 
 ## Libraries and Packages
 
-- **Animate.css**- CSS animations for smoother user interactions.
+- **Animate.css** – CSS animations for smoother user interactions.
 
-- **Stripe**- Payment gateway integration for secure transactions.
+- **Stripe** – Payment gateway integration for secure transactions.
 
-- **dompdf** - PDF generation for invoices.
+- **dompdf** – PDF generation for invoices.
 
 ## ER diagram
 ![ER diagram](screenshots/ER_diagram.png)  
 ## Features
-- **Shopping Cart:** Dynamic cart functionality with product quantity adjustments.
+- **Shopping Cart** – Dynamic cart functionality with product quantity adjustments.
 
 - **Wishlist** – Save products for future purchases.  
 
