@@ -16,6 +16,7 @@ if (isset($_POST['logout'])) {
     <a class="dashboard-link <?= $_SERVER['PHP_SELF'] === '/cartopia/public/views/admin/categories.php' ? 'active-dashboard-link' : '' ?>" href="<?= ROOT ?>/views/admin/categories.php"><i class="fa-solid fa-layer-group"></i> Category Management</a>
     <a class="dashboard-link <?= $_SERVER['PHP_SELF'] === '/cartopia/public/views/admin/orders.php' ? 'active-dashboard-link' : '' ?>" href="<?= ROOT ?>/views/admin/orders.php"><i class="fa-solid fa-basket-shopping"></i> Order Management</a>
     <a class="dashboard-link <?= $_SERVER['PHP_SELF'] === '/cartopia/public/views/admin/users.php' ? 'active-dashboard-link' : '' ?>" href="<?= ROOT ?>/views/admin/users.php"><i class="fa-solid fa-user"></i> User Management</a>
+    <a class="dashboard-link <?= $_SERVER['PHP_SELF'] === '/cartopia/public/views/admin/change_password.php' ? 'active-dashboard-link' : '' ?>" href="<?= ROOT ?>/views/admin/change_password.php"><i class="fa-solid fa-lock"></i> Password</a>
     <form method="post" action="">
       <button class="dashboard-link" type="submit" name="logout">
         <i class="fa-solid fa-right-from-bracket"></i> Log out
