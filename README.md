@@ -3,12 +3,13 @@
 CartOpia is a full-featured e-commerce website built using PHP, MySQL, HTML, CSS, and JavaScript. The project integrates third-party libraries and services such as Animate.css for UI animations, Stripe for payment processing, and dompdf for generating PDF invoices. The platform offers a seamless shopping experience with dynamic product listings, user management, and secure checkout functionality.
 
 ![Home page Screenshot](screenshots/half_homepage.png)  
-##Technologies Used
+
+## Technologies Used
 - **Backend:** PHP (Core functionality, server-side logic), MySQL (Relational database for storing various data).
 
 - **Frontend:** HTML5, CSS3, JavaScript (UI/UX design and interactivity)
 
-##Libraries and Packages
+## Libraries and Packages
 
 - **Animate.css**- CSS animations for smoother user interactions.
 
@@ -16,7 +17,7 @@ CartOpia is a full-featured e-commerce website built using PHP, MySQL, HTML, CSS
 
 - **dompdf** - PDF generation for invoices.
 
-##ER diagram
+## ER diagram
 ![ER diagram](screenshots/ER_diagram.png)  
 ## Features
 - **Shopping Cart:** Dynamic cart functionality with product quantity adjustments.
@@ -27,16 +28,16 @@ CartOpia is a full-featured e-commerce website built using PHP, MySQL, HTML, CSS
 
 - **Review System** – Leave feedback for purchased products. 
 
-- **Payment Integration:**Stripe API for secure payment processing.
+- **Payment Integration** – Stripe API for secure payment processing.
 
-- **PDF Generation:** Invoices are automatically generated using dompdf.
+- **PDF Generation** – Invoices are automatically generated using dompdf.
 
-- **Authentication and Authorization:** 
+- **Authentication and Authorization** – 
    - Secure login and signup with role-based access.  
    - Guest, User, and Admin permissions ensure data security and prevent unauthorized actions.  
    - Password recovery and reset functionalities. 
 
-##User Roles and Permissions
+## User Roles and Permissions
 ### Guest
 - **Browse Products** – View the entire catalog of products.  
 
@@ -88,8 +89,8 @@ CartOpia is a full-featured e-commerce website built using PHP, MySQL, HTML, CSS
 2. Navigate to the project directory:
 `cd CartOpia`
 3. Set up the environment:
- - Configure your database in src/config.php.
- - Create src/stripe.php and add the code below and update your Stripe API keys.
+ 	- Configure your database in src/config.php.
+ 	- Create src/stripe.php and add the code below and update your Stripe API keys.
  ```ruby
  define('STRIPE_API_KEY','PRIVATE_KEY');
 define('STRIPE_PUBLISHABLE_KEY','PUBLIC_KEY');
@@ -101,43 +102,43 @@ define('STRIPE_CANCEL_URL','http://localhost/cartopia/public/views/products/canc
 5. Start the development server:
 navigate to [http://localhost/CartOpia/public/](http://localhost/CartOpia/public/) 
 
-##Screenshots
-###Landing Page
+## Screenshots
+### Landing Page
 ![Landing page Screenshot](screenshots/landing_page.png)  
-###Products Page
+### Products Page
 ![Products page Screenshot](screenshots/products.png)  
-###Single Product Page
+### Single Product Page
 ![Product page Screenshot](screenshots/product.png)  
-###FAQ Page
+### FAQ Page
 ![FAQ page Screenshot](screenshots/FAQ.png)  
-###Log in Page
+### Log in Page
 ![Login page Screenshot](screenshots/login.png)  
-###Sign up Page
+### Sign up Page
 ![Signup page Screenshot](screenshots/signup.png)  
-###Cart Page
+### Cart Page
 ![Cart page Screenshot](screenshots/cart.png)  
-###Wishlist Page
+### Wishlist Page
 ![Wishlist page Screenshot](screenshots/wishlist.png)  
-###User Dashboard Page
+### User Dashboard Page
 ![User dashboard page Screenshot](screenshots/user_dashboard.png)  
-###Order History Page
+### Order History Page
 ![Order history page Screenshot](screenshots/order_history.png)  
-###Account Settings Page
+### Account Settings Page
 ![Account settings page Screenshot](screenshots/account_settings.png)  
-###Change Password Page
+### Change Password Page
 ![Password Change page Screenshot](screenshots/password_change.png)  
-###Admin Dashboard Page
+### Admin Dashboard Page
 ![Admin dashboard page Screenshot](screenshots/admin_dashboard.png)  
-###Product Management Page
+### Product Management Page
 ![Product management page Screenshot](screenshots/product_management.png)  
-###Category Management Page
+### Category Management Page
 ![Category management page Screenshot](screenshots/category_management.png)  
-###Order Management Page
+### Order Management Page
 ![Order management page Screenshot](screenshots/order_management.png)  
-###User Management Page
+### User Management Page
 ![User management page Screenshot](screenshots/user_management.png)  
-###Change Password Page for Admin
+### Change Password Page for Admin
 ![Admin Password page Screenshot](screenshots/admin_password.png)  
 
-##Contribution
+## Contribution
 Feel free to fork the project and submit pull requests. For major changes, please open an issue first to discuss what you would like to implement.
